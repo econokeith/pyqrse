@@ -12,7 +12,7 @@ from tqdm import tqdm
 import py3qrse.helpers as qh
 
 
-class Sampler(object):
+class Sampler:
 
     def __init__(self, model, hess_from_res=False):
 

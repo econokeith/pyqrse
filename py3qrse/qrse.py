@@ -20,16 +20,16 @@ from py3qrse.sampler import Sampler
 from py3qrse.helpers import mean_std_fun
 
 KERNEL_HASH = {"S": qk.SQRSEKernel, #Symmetric
-               "SL": qk.SQRSEKernelL, #Symmetric
-               "AB": qk.ABQRSEKernel, #Asymmetric Action
-               "AL": qk.ALQRSEKernel, #Asymmetric \beta
-               "ALL": qk.ALQRSEKernelL, #Asymmetric \beta
+
+               "AA": qk.AAQRSEKernel, #Asymmetric Action
+               "AB": qk.ABQRSEKernel, #Asymmetric \beta
+
                "A": qk.AQRSEKernel, #Asymmetric
                "SF": qk.SFQRSEKernel,
                "AT": qk.ATQRSEKernel,
-               "AB3": qk.ABQRSEKernel3,
+               "AB3": qk.AAQRSEKernel3,
                "ALT": qk.ALTBQRSEKernel,
-               "AL2": qk.ALQRSEKernel2,
+               "AL2": qk.ABQRSEKernel2,
                "S3": qk.S3QRSEKernel,
                "SNH": qk.SQRSEKernelNoH,
                "ABX": qk.ABXQRSEKernel,
@@ -118,6 +118,9 @@ class QRSE(PlotMixin):
         self._int_delta = self._part_int[1] - self._part_int[0]
         self._log_int_delta = np.log(self._int_delta)
 
+    @property
+    def actions(self):
+        return self.kernel.actions
 
     @property
     def params(self):

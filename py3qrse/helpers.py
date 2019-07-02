@@ -184,3 +184,9 @@ def mean_std_fun(data, weights=None):
         mean = data.dot(weights)/wsum
         std = np.sqrt(((data-mean)**2).dot(weights)/wsum)
     return mean, std
+
+
+def split_strip_parser(parser, key1, key2):
+    out = parser[key1][key2]
+    out = out.split(',')
+    return [x.strip() for x in out]
