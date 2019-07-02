@@ -17,26 +17,26 @@ this = sys.modules[__name__]
 this.BINARY_BASE_ACTIONS = ['buy', 'sell'] #this is the default
 this.TERNARY_BASE_ACTIONS = ['buy', 'sell', 'hold'] # this is the default
 
-#this function doesn't actually work
-def update_action_labels(new_labels=None):
+# #this function doesn't actually work
+# def update_action_labels(new_labels=None):
+#
+#     if new_labels is None:
+#         this.BINARY_BASE_ACTIONS = ['buy', 'sell']
+#         this.TERNARY_BASE_ACTIONS = ['buy', 'sell t', 'hold']
+#
+#     elif len(new_labels) == 2:
+#         this.BINARY_BASE_ACTIONS = new_labels
+#
+#     elif len(new_labels) == 3:
+#         this.TERNARY_BASE_ACTIONS = new_labels
+#
+#     else:
+#         pass
+#
+#
+# ### TODO fix how I'm dealing with \xi
 
-    if new_labels is None:
-        this.BINARY_BASE_ACTIONS = ['buy', 'sell']
-        this.TERNARY_BASE_ACTIONS = ['buy', 'sell t', 'hold']
-
-    elif len(new_labels) == 2:
-        this.BINARY_BASE_ACTIONS = new_labels
-
-    elif len(new_labels) == 3:
-        this.TERNARY_BASE_ACTIONS = new_labels
-
-    else:
-        pass
-
-
-### TODO fix how I'm dealing with \xi
-
-class QRSEKernelBase(object):
+class QRSEKernelBase:
     actions = this.BINARY_BASE_ACTIONS
     name = "QRSE"
     long_name = "QRSE"
@@ -64,8 +64,8 @@ class QRSEKernelBase(object):
     def entropy(self, x, params):
         t = params[0]
         m = params[2]
-        p = 1./(1.+ np.exp(np.abs(x-m)/t))
-        return -p*np.log(p)-(1.-p)*np.log(1.-p)
+
+
 
     def potential(self, x, params):
         pass
