@@ -190,3 +190,9 @@ def split_strip_parser(parser, key1, key2):
     out = parser[key1][key2]
     out = out.split(',')
     return [x.strip() for x in out]
+
+def al_prior(x):
+    if x[0] < 0 or x[1] < 0 or x[3] < 0:
+        return -np.inf
+    else:
+        return 0

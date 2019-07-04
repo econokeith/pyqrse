@@ -16,41 +16,34 @@ import py3qrse.kernels as qk
 import py3qrse.helpers as qh
 from py3qrse.mixins import PlotMixin
 from py3qrse.sampler import Sampler
-
 from py3qrse.helpers import mean_std_fun
 
-KERNEL_HASH = {"S": qk.SQRSEKernel, #Symmetric
-
+KERNEL_HASH = {
+               "S": qk.SQRSEKernel, #Symmetric
                "AA": qk.AAQRSEKernel, #Asymmetric Action
+               "AAC": qk.AACQRSEKernel, #Asymmetric Action (Centered)
                "AB": qk.ABQRSEKernel, #Asymmetric \beta
-
-               "A": qk.AQRSEKernel, #Asymmetric
-               "SF": qk.SFQRSEKernel,
-               "AT": qk.ATQRSEKernel,
-               "AB3": qk.AAQRSEKernel3,
-               "ALT": qk.ALTBQRSEKernel,
-               "AL2": qk.ABQRSEKernel2,
-               "S3": qk.S3QRSEKernel,
-               "SNH": qk.SQRSEKernelNoH,
-               "ABX": qk.ABXQRSEKernel,
-               "ABE": qk.ABESEKernel
+               "SF": qk.SFQRSEKernel, #Ellis and Duncan
+               "AB2": qk.ABQRSEKernel2, #Different Interal Parametization of AB
+               "SNH": qk.SQRSEKernelNoH, #Symmetric Without Entropy
+               "ABC": qk.ABCQRSEKernel, #AB Centered
+               "ABC2": qk.ABC2QRSEKernel, #AB Centered 2
                }
 
 
 class QRSE(PlotMixin):
-    """
-
-    """
 
     def __init__(self, kernel=qk.SQRSEKernel(), data=None, params=None, iticks=1000, i_std=10, i_bounds=(-10, 10)):
         """
 
-        :param data:
         :param kernel:
+        :param data:
+        :param params:
         :param iticks:
+        :param i_std:
+        :param i_bounds:
         :return:
         """
-
         if isinstance(kernel, qk.QRSEKernelBase):
             self.kernel = kernel
         else:
@@ -129,16 +122,16 @@ class QRSE(PlotMixin):
     @params.setter
     def params(self, new_params):
         self._params = np.asarray(new_params)
-        if isinstance(self.kernel, qk.ALQRSEKernelL) or isinstance(self.kernel, qk.SQRSEKernelL):
-            self.z = self.partition(new_params, use_sp=False)
-        else:
-            self.z = self.partition(new_params, use_sp=True)
+        # if isinstance(self.kernel, qk.ALQRSEKernelL) or isinstance(self.kernel, qk.SQRSEKernelL):
+        #     self.z = self.partition(new_params, use_sp=False)
+        # else:
+        self.z = self.partition(new_params, use_sp=False)
 
     @property
     def i_bounds(self):
         return self.i_min, self.i_max
 
-    @params.setter
+    @i_bounds.setter
     def i_bounds(self, new_bounds):
         self.i_min, self.i_max = new_bounds
 
@@ -209,6 +202,33 @@ class QRSE(PlotMixin):
     def bic(self):
         return self.params.shape[0]*np.log(self.data.shape[0])+2*self.nll()
 
+    def rvs(self, n=None, bounds=None):
+        """
+        random sampler using interpolated inverse cdf method
+        :param n: number of samples. must be either a positive integer or None.
+                if n is a positive int, rvs returns an np.array of length n
+                if n is None, rvs returns a scalar sample from the distribution
+        :param bounds: can take 3 forms:
+                list or tuple: i.e. [-10, 10, 10000] / (-10, 10, 10000)
+                            create 10000 ticks between -10 and 10
+                np.array([.....]): will use ticks supplied by user
+                None : will use predetermined ticks based on bounds of integration
+                bounds is preset to None and generally won't need to be adjusted
+        :return:float or np.array([float])
+        """
+
+        if isinstance(bounds, (tuple, list)) and len(bounds) == 3:
+            ll = np.linspace(*bounds)
+        elif isinstance(bounds, np.ndarray):
+            ll = bounds
+        else:
+            ll = self._part_int
+
+        cdf_data = np.cumsum(self.pdf(ll))*(ll[1]-ll[0])
+        cdf_inv = sp.interpolate.interp1d(cdf_data, ll)
+        return cdf_inv(np.random.uniform(size=n))
+
+
     def entropy(self, etype='joint'):
         """
 
@@ -276,7 +296,7 @@ class QRSE(PlotMixin):
 
     def partition(self, params=None, use_sp=False):
         """
-
+        :rtype : object
         :param params:
         :param use_sp:
         :return:
@@ -361,10 +381,23 @@ class QRSE(PlotMixin):
             check=False, silent=True, use_hess=False, smart_p0=True, use_sp=True,**kwargs):
         """
 
+        :param data:
+        :param params0:
+        :param summary:
         :param save:
+        :param use_jac:
+        :param weights:
+        :param hist:
+        :param check:
+        :param silent:
+        :param use_hess:
+        :param smart_p0:
+        :param use_sp:
         :param kwargs:
         :return:
         """
+
+
         the_data = self.data if data is None else data
         the_params0 = self.params0 if params0 is None else np.asarray(params0)
 
@@ -477,9 +510,6 @@ class QRSE(PlotMixin):
             print('Inverse Hessian Is Not Positive Definite')
         return self.hess_inv
 
-
-
-
     def sampler_init(self, **kwargs):
         if self.data is None:
             print("NO DATA")
@@ -496,7 +526,8 @@ class QRSE(PlotMixin):
 
 
     ### These are mainly for running the HMM.
-    ### Todo:  Maybe I should probably make this a mixin, fix the sampler and have it all run prettier
+    ### Todo:  Maybe I should probably make this a mixin
+    ### Fix the sampler and have it all run prettier
 
     def evidence(self, data=None):
         the_data = self.data if data is None else data

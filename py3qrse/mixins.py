@@ -50,7 +50,7 @@ class PlotMixin:
 
                 for i, logit in enumerate(logits):
                     plt.plot(xs, logit,label="p({} | x)".format(self.kernel.actions[i]),  color=colors[i+1], lw=lw)
-                plt.ylim((0. , 1.))
+                plt.ylim((-.03 , 1.03))
 
             plt.legend()
             plt.title(plot_title)

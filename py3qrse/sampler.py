@@ -16,7 +16,6 @@ class Sampler:
 
     def __init__(self, model, hess_from_res=False):
 
-
         self.model = model
         self.params = np.copy(self.model.params)
         self.log_p = self.model.log_p
@@ -33,14 +32,10 @@ class Sampler:
         # if self.model.fitted_q is True and hess_from_res is False:
         #     self.set_hess_inv(hess_from_res)
 
-
-
         self.jac_fun = egrad(self.log_p)
         self.hess_fun = jacobian(self.jac_fun)
         self.hess_inv_fun = lambda x: -sp.linalg.inv(self.hess_fun(x))
         self.hess_inv = np.eye(self.params.shape[0])
-
-
 
 
     @property
@@ -84,10 +79,6 @@ class Sampler:
     def set_params(self):
         if self._chain is not None:
             self.model.params = self.max_params
-
-
-
-
 
     def _single_sample(self, params=None, is_burn=False, ptype="corr", s=1.):
 
@@ -193,7 +184,6 @@ class Sampler:
             self.n_accepted = np.zeros(self.n_params, dtype=int)
             self.errors = []
 
-
         #build chain
         new_chain = np.empty((N, self.n_params + 1))
         #single or joint sampler
@@ -239,6 +229,3 @@ class Sampler:
             plt.subplot(n_rows, per_row, 1+i)
             sns.distplot(self.chain[i])
             plt.title(self.model.kernel.p_names_fancy[i-1])
-
-
-
