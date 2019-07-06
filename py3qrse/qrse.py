@@ -12,28 +12,29 @@ from tqdm import tqdm
 
 import pandas
 
-import py3qrse.kernels as qk
-import py3qrse.helpers as qh
-from py3qrse.mixins import PlotMixin
+import py3qrse.kernels as kernels
+import py3qrse.helpers as helpers
+import py3qrse.plottools as plottools
 from py3qrse.sampler import Sampler
 from py3qrse.helpers import mean_std_fun
 
+
 KERNEL_HASH = {
-               "S": qk.SQRSEKernel, #Symmetric
-               "AA": qk.AAQRSEKernel, #Asymmetric Action
-               "AAC": qk.AACQRSEKernel, #Asymmetric Action (Centered)
-               "AB": qk.ABQRSEKernel, #Asymmetric \beta
-               "SF": qk.SFQRSEKernel, #Ellis and Duncan
-               "AB2": qk.ABQRSEKernel2, #Different Interal Parametization of AB
-               "SNH": qk.SQRSEKernelNoH, #Symmetric Without Entropy
-               "ABC": qk.ABCQRSEKernel, #AB Centered
-               "ABC2": qk.ABC2QRSEKernel, #AB Centered 2
+               "S": kernels.SQRSEKernel, #Symmetric
+               "AA": kernels.AAQRSEKernel, #Asymmetric Action
+               "AAC": kernels.AACQRSEKernel, #Asymmetric Action (Centered)
+               "AB": kernels.ABQRSEKernel, #Asymmetric \beta
+               "SF": kernels.SFQRSEKernel, #Ellis and Duncan
+               "AB2": kernels.AB2QRSEKernel, #Different Interal Parametization of AB
+               "SNH": kernels.SQRSEKernelNoH, #Symmetric Without Entropy
+               "ABC": kernels.ABCQRSEKernel, #AB Centered
+               "ABC2": kernels.ABC2QRSEKernel, #AB Centered 2
                }
 
 
-class QRSE(PlotMixin):
+class QRSE:
 
-    def __init__(self, kernel=qk.SQRSEKernel(), data=None, params=None, iticks=1000, i_std=10, i_bounds=(-10, 10)):
+    def __init__(self, kernel=kernels.SQRSEKernel(), data=None, params=None, iticks=1000, i_std=10, i_bounds=(-10, 10)):
         """
 
         :param kernel:
@@ -44,14 +45,14 @@ class QRSE(PlotMixin):
         :param i_bounds:
         :return:
         """
-        if isinstance(kernel, qk.QRSEKernelBase):
+        if isinstance(kernel, kernels.QRSEKernelBase):
             self.kernel = kernel
         else:
             try:
                 self.kernel = KERNEL_HASH[kernel]()
             except:
                 print("QRSE Kernel Not Found: Default to SQRSEKernel")
-                self.kernel = qk.SQRSEKernel()
+                self.kernel = kernels.SQRSEKernel()
 
 
         self.data = data
@@ -81,7 +82,7 @@ class QRSE(PlotMixin):
         self._int_delta = self._part_int[1] - self._part_int[0]
         self._log_int_delta = np.log(self._int_delta)
 
-        if params is not None and len(params)==len(self.kernel.parameters):
+        if params is not None and len(params)==len(self.kernel.pnames):
             self.params0 = np.asarray(params)
         else:
             self.params0 = self.kernel.set_params0(data)
@@ -93,13 +94,16 @@ class QRSE(PlotMixin):
         self.fitted_q = False
 
         self.lprior = lambda x: 0
-        self.sampler = None
+        self._sampler = None
 
         self._history = None
         self._new_history = []
 
         self._switched = False
         self._min_sum_jac = 1e-3
+
+        self.plotter = plottools.QRSEPlotter(self)
+
 
 
     def update_p0(self, data, weights=None, i_std=7):
@@ -202,6 +206,13 @@ class QRSE(PlotMixin):
     def bic(self):
         return self.params.shape[0]*np.log(self.data.shape[0])+2*self.nll()
 
+    def plot(self, *args, **kwargs):
+        self.plotter.plot(*args, **kwargs)
+
+    def plotboth(self, *args, **kwargs):
+        self.plotter.plotboth(*args, **kwargs)
+
+
     def rvs(self, n=None, bounds=None):
         """
         random sampler using interpolated inverse cdf method
@@ -241,14 +252,14 @@ class QRSE(PlotMixin):
             return [self.entropy(et) for et in etype]
 
         if etype is 'marg':
-            return qh.marg_entropy(self)
+            return helpers.marg_entropy(self)
         elif etype is 'cond':
-            return qh.cond_entropy(self)
+            return helpers.cond_entropy(self)
         else:
-            return qh.marg_entropy(self)+qh.cond_entropy(self)
+            return helpers.marg_entropy(self)+helpers.cond_entropy(self)
 
     def marg_actions(self):
-        return qh.marg_actions(self)
+        return helpers.marg_actions(self)
 
 
     def pdf(self, x, params=None):
@@ -492,7 +503,7 @@ class QRSE(PlotMixin):
             self.params = res.x
 
         if summary is True:
-            qh.m_summary(self)
+            helpers.m_summary(self)
 
         if hist is True:
             self.save_history(self.params)
@@ -506,24 +517,33 @@ class QRSE(PlotMixin):
         self.hess_fun = jacobian(self.jac_fun)
         self.hess_inv_fun = lambda x: -sp.linalg.inv(self.hess_fun(x))
         self.hess_inv = self.hess_inv_fun(the_params)
-        if qh.is_pos_def(self.hess_inv) is False:
+        if helpers.is_pos_def(self.hess_inv) is False:
             print('Inverse Hessian Is Not Positive Definite')
         return self.hess_inv
 
     def sampler_init(self, **kwargs):
         if self.data is None:
-            print("NO DATA")
-            return
-        self.sampler = Sampler(self, **kwargs)
+            print("Cannot Initialize the Sampler() object until data has been added to the model.")
+        else:
+            self._sampler = Sampler(self, **kwargs)
 
-    def sample(self, *args, **kwargs):
+    @property
+    def sampler(self):
+        if self._sampler is None:
+            print("Must run self.sampler_init(**kwargs) to initialize (instantiate) Sampler() before it can be accessed.")
+        else:
+            return self._sampler
+
+    def mcmc(self, *args, **kwargs):
         if self.data is None:
             print("NO DATA")
             return
         if self.sampler is None:
             self.sampler = Sampler(self)
-        self.sampler.sample(*args, **kwargs)
+        self.sampler.mcmc(*args, **kwargs)
 
+    def sample(self, *args, **kwargs):
+        self.mcmc(*args, **kwargs)
 
     ### These are mainly for running the HMM.
     ### Todo:  Maybe I should probably make this a mixin
@@ -631,5 +651,108 @@ class QRSE(PlotMixin):
 
         if hist is True:
             self.save_history(self.params)
-
-
+#
+#
+# class QRSEPlotter:
+#
+#         def __init__(self, qrse_object, colors=None, color_order=None):
+#
+#
+#             self.qrse_object = qrse_object
+#
+#             if colors is None:
+#                 self.colors = [sns.xkcd_rgb["denim blue"], sns.xkcd_rgb["medium green"], sns.xkcd_rgb["pale red"],
+#                        sns.xkcd_rgb["mustard yellow"]]
+#
+#                 if color_order is None and qrse_object.kernel.n_actions == 3:
+#                     self.set_color_order([0, 1, 3, 2])
+#
+#             else:
+#                 self.colors=[]
+#                 self.set_colors(colors)
+#
+#         def set_colors(self, colors=None, output=False):
+#             if colors is not None:
+#                 assert len(colors) > self.qrse_object.kernel.n_actions
+#                 if output is False:
+#                     self.colors = colors
+#                     return
+#                 else:
+#                     return colors
+#
+#         def set_color_order(self, color_order=None, output=False):
+#             if color_order is not None:
+#                 assert isinstance(color_order, (tuple, list, np.ndarray))
+#                 assert len(color_order) > self.qrse_object.kernel.n_actions
+#                 assert all(isinstance(n, int) and (0<=n<(len(self.colors-1))) for n in color_order)
+#
+#                 if output is False:
+#                     self.colors = [self.colors[i] for i in color_order]
+#                 else:
+#                     return [self.colors[i] for i in color_order]
+#
+#
+#         def plot(self, which=0, params=None, bounds=None, ticks=1000, showdata=True,
+#                  bins=20, title=None, dcolor='w',
+#                  seaborn=True, lw=2, pi=1.,
+#                  colors=None, color_order=None):
+#
+#             """
+#
+#             :type seaborn: object
+#
+#             """
+#             qrse_object = self.qrse_object
+#
+#             if bounds is not None:
+#                 i_min, i_max = bounds
+#             elif qrse_object.data is not None:
+#                 i_min, i_max = qrse_object.data.min()-qrse_object.dstd, qrse_object.data.max()+qrse_object.dstd
+#             else:
+#                 i_min, i_max = qrse_object.i_min, qrse_object.i_max
+#
+#             plot_title = qrse_object.kernel.long_name if title is None else title
+#
+#             xs = np.linspace(i_min, i_max, ticks)
+#
+#             logits = qrse_object.logits(xs, params)
+#
+#             if colors is None and color_order is not None:
+#                 colors = self.set_color_order(color_order, output=True)
+#             elif colors is not None:
+#                 colors = self.set_colors(colors, output=True)
+#             else:
+#                 colors = self.colors
+#
+#             if which == 0:
+#
+#                 pdf = qrse_object.pdf(xs, params)*pi
+#
+#                 if showdata is True and qrse_object.data is not None:
+#                     if seaborn is False:
+#                         plt.hist(qrse_object.data, bins, normed=True, color=dcolor, label="data");
+#                     else:
+#                         sns.distplot(qrse_object.data, kde=False, hist=True, label="data", norm_hist=True, bins=bins)
+#
+#                 plt.plot(xs, pdf, label="p(x)", color=colors[0], lw=lw)
+#
+#                 for i, logit in enumerate(logits):
+#                     plt.plot(xs, logit*pdf,label="p({}, x)".format(qrse_object.kernel.actions[i]),
+#                              color=colors[i+1], lw=lw)
+#
+#             else:
+#                 for i, logit in enumerate(logits):
+#                     plt.plot(xs, logit, label="p({} | x)".format(qrse_object.kernel.actions[i]),  color=colors[i+1], lw=lw)
+#                 plt.ylim((-.03 , 1.03))
+#
+#
+#             plt.legend()
+#             plt.title(plot_title)
+#
+#
+#         def plotboth(self, *args, figsize=(12,4), **kwargs):
+#             plt.figure(figsize=figsize)
+#             plt.subplot(121)
+#             self.plot(*args, **kwargs)
+#             plt.subplot(122)
+#             self.plot(*args, which=1, **kwargs)

@@ -35,7 +35,7 @@ class Sampler:
         self.jac_fun = egrad(self.log_p)
         self.hess_fun = jacobian(self.jac_fun)
         self.hess_inv_fun = lambda x: -sp.linalg.inv(self.hess_fun(x))
-        self.hess_inv = np.eye(self.params.shape[0])
+        self.hess_inv = np.eye(self.params.shape[0])*.01
 
 
     @property
@@ -178,7 +178,7 @@ class Sampler:
         self._joint_sample(*args, **kwargs)
         return self.params
 
-    def sample(self, N=1000, burn=0, single=False, ptype="corr", s=1., update_hess=False, new=False):
+    def mcmc(self, N=1000, burn=0, single=False, ptype="corr", s=1., update_hess=False, new=False):
 
         if new is True:
             self.n_accepted = np.zeros(self.n_params, dtype=int)
@@ -187,10 +187,8 @@ class Sampler:
         #build chain
         new_chain = np.empty((N, self.n_params + 1))
         #single or joint sampler
-        if single is True:
-            sample_fun = self._single_sample
-        else:
-            sample_fun = self._joint_sample
+        if single is True: sample_fun = self._single_sample
+        else: sample_fun = self._joint_sample
         #burn in if it's a new chain
         if self._chain is None:
             for _ in range(burn):
@@ -228,4 +226,4 @@ class Sampler:
         for i in range(1, n_series):
             plt.subplot(n_rows, per_row, 1+i)
             sns.distplot(self.chain[i])
-            plt.title(self.model.kernel.p_names_fancy[i-1])
+            plt.title(self.model.kernel.pnames_fancy[i-1])
