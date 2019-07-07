@@ -165,6 +165,7 @@
 #
 #
 # class AAQRSEKernel3(AAQRSEKernel):
+
 #         parameters = 't mb ms b'.split()
 #         p_names_fancy =[r'$T$', r'$\mu_{buy}$', r'$\mu_{sell}$', r'$\beta$']
 #         name = "AB-QRSE-3"
@@ -244,3 +245,15 @@
 #         return np.array([std, std, mean+std/2., mean-std/2., 1./std, 0.])
 
 
+
+KERNEL_HASH = {
+               "S": kernels.SQRSEKernel, #Symmetric
+               "AA": kernels.AAQRSEKernel, #Asymmetric Action
+               "AAC": kernels.AACQRSEKernel, #Asymmetric Action (Centered)
+               "AB": kernels.ABQRSEKernel, #Asymmetric \beta
+               "SF": kernels.SFQRSEKernel, #Ellis and Duncan
+               "AB2": kernels.AB2QRSEKernel, #Different Interal Parametization of AB
+               "SNH": kernels.SQRSEKernelNoH, #Symmetric Without Entropy
+               "ABC": kernels.ABCQRSEKernel, #AB Centered
+               "ABC2": kernels.ABC2QRSEKernel, #AB Centered 2
+               }

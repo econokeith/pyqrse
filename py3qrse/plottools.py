@@ -79,7 +79,7 @@ class QRSEPlotter:
                  ticks=1000, showdata=True,
                  bins=20, title=None, dcolor='w',
                  seaborn=True, lw=2, pi=1.,
-                 colors=None, color_order=None):
+                 colors=None, color_order=None, show_legend=True):
 
             """
 
@@ -129,8 +129,8 @@ class QRSEPlotter:
                     plt.plot(xs, logit, label="p({} | x)".format(qrse_object.kernel.actions[i]),  color=colors[i+1], lw=lw)
                 plt.ylim((-.03 , 1.03))
 
-
-            plt.legend()
+            if show_legend is True:
+                plt.legend()
             plt.title(plot_title)
 
 

@@ -9,6 +9,8 @@ import seaborn as sns; sns.set()
 from tqdm import tqdm
 import datetime
 from tabulate import tabulate
+import collections
+
 
 def is_pos_def(x):
     return np.all(np.linalg.eigvals(x) > 0)
@@ -196,3 +198,34 @@ def al_prior(x):
         return -np.inf
     else:
         return 0
+
+
+
+def kernel_hierarchy_to_hash_bfs(kernel):
+
+    kernel_hash = {}
+    queue = [kernel]
+
+    while queue:
+        the_kernel = queue.pop(0)
+        sub_classes = the_kernel.__subclasses__()
+        queue += sub_classes
+        code = the_kernel.getcode()
+        if code is not None:
+            if code in kernel_hash:
+
+                k1_name = the_kernel.__name__
+                k2_name = kernel_hash[code].__name__
+                print("Warning: {} was used for {} and {}".format(code, k1_name, k2_name))
+
+                while True:
+                    code = code + '_'
+                    if code not in kernel_hash:
+                        break
+
+                print('  Code = {} was used for {} instead'.format(code, k1_name))
+
+
+            kernel_hash[code] = the_kernel
+
+    return kernel_hash

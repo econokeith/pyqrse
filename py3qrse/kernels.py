@@ -27,9 +27,14 @@ _this._TERNARY_BASE_ACTIONS = copy.deepcopy(_DEFAULT_TERNARY_ACTION_LABELS)
 
 ### TODO fix how I'm dealing with \xi
 
+
 class QRSEKernelBase:
 
-    __code = None
+    _code = None
+
+    @classmethod
+    def getcode(cls):
+        return cls._code
 
     def __init__(self, is_entropy=True):
         if is_entropy:
@@ -49,8 +54,8 @@ class QRSEKernelBase:
         self.n_actions = 0
 
     @property
-    def code(cls):
-        return cls.__code
+    def code(self):
+        return self._code
 
     def logits(self, x, params):
         pass
@@ -73,6 +78,7 @@ class QRSEKernelBase:
     def indifference(self, params):
         return False
 
+
 class QRSEKernelBaseBinary(QRSEKernelBase):
 
     def __init__(self, is_entropy=True):
@@ -80,6 +86,7 @@ class QRSEKernelBaseBinary(QRSEKernelBase):
 
         self.n_actions = 2
         self.actions = _this._BINARY_BASE_ACTIONS
+
 
 class QRSEKernelBaseTernary(QRSEKernelBase):
 
@@ -90,10 +97,8 @@ class QRSEKernelBaseTernary(QRSEKernelBase):
         self.actions = _this._TERNARY_BASE_ACTIONS
 
 
-
 class SQRSEKernel(QRSEKernelBaseBinary):
-
-    code = "S"
+    _code = "S"
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -136,7 +141,7 @@ class SQRSEKernel(QRSEKernelBaseBinary):
 
 class SQRSEKernelNoH(SQRSEKernel):
 
-    __code = "SNH"
+    _code = "SNH"
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -151,7 +156,7 @@ class SQRSEKernelNoH(SQRSEKernel):
 
 class SFQRSEKernel(SQRSEKernel):
 
-    __code = "SF"
+    _code = "SF"
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -175,9 +180,10 @@ class SFQRSEKernel(SQRSEKernel):
         self.xi = mean
         return np.array([std, 1./std, mean, 0.])
 
+
 class AB2QRSEKernel(SQRSEKernel):
 
-    __code = "AB2"
+    _code = "AB2"
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -200,10 +206,8 @@ class AB2QRSEKernel(SQRSEKernel):
         return np.array([std, 1./std, mean, 1./std])
 
 
-
 class ABQRSEKernel(SQRSEKernel):
-
-    __code = "AB"
+    _code = "AB"
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -227,8 +231,7 @@ class ABQRSEKernel(SQRSEKernel):
 
 
 class ABC2QRSEKernel(SQRSEKernel):
-
-    __code = "ABC2"
+    _code = "ABC2"
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -269,9 +272,10 @@ class ABC2QRSEKernel(SQRSEKernel):
         self.xi = mean
         return np.array([std, 1./std, 0., 1./std, mean])
 
+
 class ABCQRSEKernel(SQRSEKernel):
 
-    __code = "ABC"
+    _code = "ABC"
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -315,7 +319,7 @@ class ABCQRSEKernel(SQRSEKernel):
 
 class AAQRSEKernel(QRSEKernelBaseTernary):
 
-    __code = "AA"
+    _code = "AA"
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -386,15 +390,15 @@ class AAQRSEKernel(QRSEKernelBaseTernary):
         return (tb*ms+ts*mb)/(tb+ts)
 
 
-class AAC2QRSEKernel(AAQRSEKernel):
+class AACQRSEKernel(AAQRSEKernel):
 
-    __code = "AAC2"
+    _code = "AAC"
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        self.name = "AA-QRSE-C"
-        self.long_name = "Asymmetric-Action-C QRSE"
+        self.name = "AA-QRSE-C2"
+        self.long_name = "Asymmetric-Action-C2 QRSE"
 
     def potential(self, x , params):
         tb, ts, mb, ms, b = params
@@ -414,7 +418,7 @@ class AAC2QRSEKernel(AAQRSEKernel):
         part = e_b + e_s + e_h
 
         p_buy, p_sell = e_b/part, e_s/part
-        entropy = -(e_b*vb + e_s*vs)/part + np.log(part) + max_v
+        entropy = -(e_b*vb + e_s*vs)/part + np.log(part)
         indif = (ts*mb+tb*ms)/(ts+tb)
         potential = -b*(p_buy - p_sell)*(x-indif)
         return potential + entropy
@@ -428,10 +432,188 @@ class AAC2QRSEKernel(AAQRSEKernel):
         return np.array([std, std, mean+.1*std, mean-.1*std, 1/std])
 
 
+class AAC2QRSEKernel(AAQRSEKernel):
+
+    _code = "AAC2"
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        self.name = "AA-QRSE-C2"
+        self.long_name = "Asymmetric-Action-C2 QRSE"
+
+    def logits(self, x, params):
+
+        tb, ts, mb, ms = params[:4]
+        vb = (x-mb)/tb
+        vs = -(x-ms)/ts
+        #max_v = np.max([vb, vs], 0)
+        e_b = np.exp(vb)
+        e_s = np.exp(vs)
+        e_h = 1.
+        part = e_b + e_s + e_h
+
+        return e_b/part, e_h/part, e_s/part
+
+    def entropy(self, x, params):
+
+        tb, ts, mb, ms = params[:4]
+        vb = (x-mb)/tb
+        vs = -(x-ms)/ts
+        #max_v = np.max([vb, vs], 0)
+        e_b = np.exp(vb)
+        e_s = np.exp(vs)
+        e_h = 1.
+        part = e_b + e_s + e_h
+
+        return -(e_b*vb + e_s*vs)/part + np.log(part)
+
+    def potential(self, x , params):
+        tb, ts, mb, ms, b = params
+        p_buy, _, p_sell = self.logits(x, params)
+        indif = (ts*mb+tb*ms)/(ts+tb)
+        return -b*(p_buy - p_sell)*(x-indif)
+
+    def log_kernel(self, x, params):
+        tb, ts, mb, ms = params[:4]
+        b = params[-1]
+        vb = (x-mb)/tb
+        vs = -(x-ms)/ts
+
+        e_b = np.exp(vb)
+        e_s = np.exp(vs)
+        e_h = 1
+        part = e_b + e_s + e_h
+
+        p_buy, p_sell = e_b/part, e_s/part
+        entropy = -(e_b*vb + e_s*vs)/part + np.log(part)
+        indif = (ts*mb+tb*ms)/(ts+tb)
+        potential = -b*(p_buy - p_sell)*(x-indif)
+        return potential + entropy
+
+    def set_params0(self, data=None, weights=None):
+        if data is not None:
+            mean, std = mean_std_fun(data, weights)
+        else:
+            mean, std =  self._mean, self._std
+        self.xi = mean
+        return np.array([std, std, mean+.1*std, mean-.1*std, 1/std])
+
+
+class ATQRSEKernel(AAQRSEKernel):
+
+    _code = "AT"
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        self.pnames = 'tb ts m b'.split()
+        self.pnames_fancy = [r'$T_{buy}$', r'$T_{sell}$', r'$\mu$', r'$\beta$']
+        self.name = "AT-QRSE"
+        self.long_name = "Asymmetric-T QRSE"
+
+    def logits(self, x, params):
+
+        tb, ts, m= params[:3]
+        vb = (x-m)/tb
+        vs = -(x-m)/ts
+        #max_v = np.max([vb, vs], 0)
+        e_b = np.exp(vb)
+        e_s = np.exp(vs)
+        e_h = 1.
+        part = e_b + e_s + e_h
+
+        return e_b/part, e_h/part, e_s/part
+
+    def entropy(self, x, params):
+
+        tb, ts, m = params[:3]
+        vb = (x-m)/tb
+        vs = -(x-m)/ts
+        #max_v = np.max([vb, vs], 0)
+        e_b = np.exp(vb)
+        e_s = np.exp(vs)
+        e_h = 1.
+        part = e_b + e_s + e_h
+
+        return -(e_b*vb + e_s*vs)/part + np.log(part)
+
+    def potential(self, x , params):
+        tb, ts, m, b = params
+        p_buy, _, p_sell = self.logits(x, params)
+
+        return -b*(p_buy - p_sell)*(x-m)
+
+    def log_kernel(self, x, params):
+        tb, ts, m, b= params
+
+        vb = (x-m)/tb
+        vs = -(x-m)/ts
+
+        e_b = np.exp(vb)
+        e_s = np.exp(vs)
+        e_h = 1
+        part = e_b + e_s + e_h
+
+        p_buy, p_sell = e_b/part, e_s/part
+        entropy = -(e_b*vb + e_s*vs)/part + np.log(part)
+
+        potential = -b*(p_buy - p_sell)*(x-m)
+        return potential + entropy
+
+    def set_params0(self, data=None, weights=None):
+        if data is not None:
+            mean, std = mean_std_fun(data, weights)
+        else:
+            mean, std =  self._mean, self._std
+        self.xi = mean
+        return np.array([std, std, mean, 1/std])
+
+
+class AA2QRSEKernel(AAC2QRSEKernel):
+
+    _code = "AA2"
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        self.name = "AA-QRSE-2"
+        self.long_name = "Asymmetric-Action-2 QRSE"
+
+
+    def potential(self, x , params):
+        tb, ts, mb, ms, b = params
+        p_buy, _, p_sell = self.logits(x, params)
+
+        return -b*(p_buy - p_sell)*(x-self.xi)
+
+    def log_kernel(self, x, params):
+        tb, ts, mb, ms = params[:4]
+        b = params[-1]
+        vb = (x-mb)/tb
+        vs = -(x-ms)/ts
+
+        e_b = np.exp(vb)
+        e_s = np.exp(vs)
+        e_h = 1
+        part = e_b + e_s + e_h
+
+        p_buy, p_sell = e_b/part, e_s/part
+        entropy = -(e_b*vb + e_s*vs)/part + np.log(part)
+        potential = -b*(p_buy - p_sell)*(x-self.xi)
+        return potential + entropy
+
+    def set_params0(self, data=None, weights=None):
+        if data is not None:
+            mean, std = mean_std_fun(data, weights)
+        else:
+            mean, std =  self._mean, self._std
+        self.xi = mean
+        return np.array([std, std, mean+.1*std, mean-.1*std, 1/std])
 
 
 
-def update_action_labels(new_labels=None):
+def set_global_action_labels(new_labels=None):
     """
     This functions globally changes all action labels. This is a convenience
     function for using the printing functionalities of the QRSE object. It will affect both existing instantiations and
