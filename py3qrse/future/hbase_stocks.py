@@ -10,8 +10,8 @@ import matplotlib.pyplot as plt
 from scipy import stats
 import datetime
 from scipy.integrate import quad
-from py3qrse.helpers import date_to_datetime, datetime_to_date
-from py3qrse.qrse import QRSE
+from py3qrse.helpers2 import date_to_datetime, datetime_to_date
+from py3qrse.model import QRSE
 import seaborn as sns; sns.set()
 
 try:

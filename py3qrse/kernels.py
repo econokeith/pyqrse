@@ -9,21 +9,22 @@ from scipy import integrate
 import seaborn as sns; sns.set()
 from tqdm import tqdm
 from py3qrse.helpers import mean_std_fun, split_strip_parser
-
-from configparser import ConfigParser
-
-import sys, os
-_this = sys.modules[__name__]
-_DATA_PATH = os.path.join(os.path.split(__file__)[0], 'defaults.ini')
-
-_parser = ConfigParser()
-_parser.read(_DATA_PATH)
-
-_DEFAULT_BINARY_ACTION_LABELS = split_strip_parser(_parser,'ACTION_LABELS','BINARY_ACTION_LABELS')
-_DEFAULT_TERNARY_ACTION_LABELS = split_strip_parser(_parser,'ACTION_LABELS','TERNARY_ACTION_LABELS')
-
-_this._BINARY_BASE_ACTIONS = copy.deepcopy(_DEFAULT_BINARY_ACTION_LABELS)
-_this._TERNARY_BASE_ACTIONS = copy.deepcopy(_DEFAULT_TERNARY_ACTION_LABELS)
+import py3qrse.defaults as _defaults
+#
+# from configparser import ConfigParser
+#
+# import sys, os
+# _this = sys.modules[__name__]
+# _DATA_PATH = os.path.join(os.path.split(__file__)[0], 'defaults.ini')
+#
+# _parser = ConfigParser()
+# _parser.read(_DATA_PATH)
+#
+# _DEFAULT_BINARY_ACTION_LABELS = split_strip_parser(_parser,'ACTION_LABELS','BINARY_ACTION_LABELS')
+# _DEFAULT_TERNARY_ACTION_LABELS = split_strip_parser(_parser,'ACTION_LABELS','TERNARY_ACTION_LABELS')
+#
+# _this._BINARY_BASE_ACTIONS = copy.deepcopy(_DEFAULT_BINARY_ACTION_LABELS)
+# _this._TERNARY_BASE_ACTIONS = copy.deepcopy(_DEFAULT_TERNARY_ACTION_LABELS)
 
 ### TODO fix how I'm dealing with \xi
 
@@ -46,12 +47,14 @@ class QRSEKernelBase:
         self._std = 1.
         self._mean = 0.
 
-        self.name = "QRSE"
-        self.long_name = "QRSE"
-        self.pnames = [""]
-        self.pnames_fancy =[""]
-        self.actions = []
-        self.n_actions = 0
+        self._name = "QRSE"
+        self._long_name =  "QRSE"
+
+        self._pnames = [""]
+        self._pnames_fancy =[""]
+        self._actions = []
+        self.n_actions = 3
+
 
     @property
     def code(self):
@@ -85,7 +88,7 @@ class QRSEKernelBaseBinary(QRSEKernelBase):
         super().__init__(is_entropy)
 
         self.n_actions = 2
-        self.actions = _this._BINARY_BASE_ACTIONS
+        self.actions = _defaults.BINARY_ACTION_LABELS
 
 
 class QRSEKernelBaseTernary(QRSEKernelBase):
@@ -94,7 +97,7 @@ class QRSEKernelBaseTernary(QRSEKernelBase):
         super().__init__(is_entropy)
 
         self.n_actions = 3
-        self.actions = _this._TERNARY_BASE_ACTIONS
+        self.actions = _defaults.TERNARY_ACTION_LABELS
 
 
 class SQRSEKernel(QRSEKernelBaseBinary):
@@ -613,48 +616,48 @@ class AA2QRSEKernel(AAC2QRSEKernel):
 
 
 
-def set_global_action_labels(new_labels=None):
-    """
-    This functions globally changes all action labels. This is a convenience
-    function for using the printing functionalities of the QRSE object. It will affect both existing instantiations and
-    newly created objects of the QRSE type.
-    :param new_labels: Desired new global action labels. Must be a list or tuple of length 2 or 3.
-    Examples:
-            -To change the global binary action labels to 'enter' and 'leave' use:
-
-                update_action_labels(['enter', 'leave'])
-                or
-                update_action_labels(('enter', 'leave'))
-
-            -To change the global binary action labels to 'enter', 'stay', 'leave' run:
-
-                update_action_labels(['enter', 'stay', 'leave'])
-                or
-                update_action_labels(('enter', 'stay', 'leave'))
-
-    Running the function with no input (i.e. update_action_labels()) will reset all action labels to the values.
-    """
-
-    if new_labels is None:
-        for i, a in enumerate(_DEFAULT_BINARY_ACTION_LABELS):
-            _this._BINARY_BASE_ACTIONS[i]= a
-        for i, a in enumerate(_DEFAULT_TERNARY_ACTION_LABELS ):
-            _this._TERNARY_BASE_ACTIONS[i] = a
-        print("global action labels reset to defaults")
-        print("binary action labels are: {}, {}".format(*_this._BINARY_BASE_ACTIONS))
-        print("ternary action labels are: {}, {}, {}".format(*_this._TERNARY_BASE_ACTIONS))
-
-    elif isinstance(new_labels, (tuple, list)) and len(new_labels) == 2:
-        for i, a in enumerate(new_labels):
-            _this._BINARY_BASE_ACTIONS[i]=a
-        print("global binary action labels set to: {}, {}".format(*new_labels))
-
-    elif isinstance(new_labels, (tuple, list)) and len(new_labels) == 3:
-        for i, a in enumerate(new_labels):
-            _this._TERNARY_BASE_ACTIONS[i]=a
-        print("global ternary action labels set to: {}, {}, {}".format(*new_labels))
-    else:
-        print("no changes to global action labels \n-label input not in recognizable format")
-        print("-label input must be a tuple/list of length 2 or 3 to change labels")
-        print("-ex: ['jump', 'sit] or ['run', 'walk', 'jump']")
-        print("-running this function with no input will reset labels to default")
+# def set_global_action_labels(new_labels=None):
+#     """
+#     This functions globally changes all action labels. This is a convenience
+#     function for using the printing functionalities of the QRSE object. It will affect both existing instantiations and
+#     newly created objects of the QRSE type.
+#     :param new_labels: Desired new global action labels. Must be a list or tuple of length 2 or 3.
+#     Examples:
+#             -To change the global binary action labels to 'enter' and 'leave' use:
+#
+#                 update_action_labels(['enter', 'leave'])
+#                 or
+#                 update_action_labels(('enter', 'leave'))
+#
+#             -To change the global binary action labels to 'enter', 'stay', 'leave' run:
+#
+#                 update_action_labels(['enter', 'stay', 'leave'])
+#                 or
+#                 update_action_labels(('enter', 'stay', 'leave'))
+#
+#     Running the function with no input (i.e. update_action_labels()) will reset all action labels to the values.
+#     """
+#
+#     if new_labels is None:
+#         for i, a in enumerate(_DEFAULT_BINARY_ACTION_LABELS):
+#             _this._BINARY_BASE_ACTIONS[i]= a
+#         for i, a in enumerate(_DEFAULT_TERNARY_ACTION_LABELS ):
+#             _this._TERNARY_BASE_ACTIONS[i] = a
+#         print("global action labels reset to defaults")
+#         print("binary action labels are: {}, {}".format(*_this._BINARY_BASE_ACTIONS))
+#         print("ternary action labels are: {}, {}, {}".format(*_this._TERNARY_BASE_ACTIONS))
+#
+#     elif isinstance(new_labels, (tuple, list)) and len(new_labels) == 2:
+#         for i, a in enumerate(new_labels):
+#             _this._BINARY_BASE_ACTIONS[i]=a
+#         print("global binary action labels set to: {}, {}".format(*new_labels))
+#
+#     elif isinstance(new_labels, (tuple, list)) and len(new_labels) == 3:
+#         for i, a in enumerate(new_labels):
+#             _this._TERNARY_BASE_ACTIONS[i]=a
+#         print("global ternary action labels set to: {}, {}, {}".format(*new_labels))
+#     else:
+#         print("no changes to global action labels \n-label input not in recognizable format")
+#         print("-label input must be a tuple/list of length 2 or 3 to change labels")
+#         print("-ex: ['jump', 'sit] or ['run', 'walk', 'jump']")
+#         print("-running this function with no input will reset labels to default")

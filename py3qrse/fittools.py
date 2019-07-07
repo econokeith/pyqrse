@@ -12,7 +12,7 @@ import pandas
 import py3qrse.kernels as kernels
 import py3qrse.helpers as helpers
 import py3qrse.plottools as plottools
-import py3qrse.qrse as qrse
+import py3qrse.model as qrse
 import py3qrse.mixins as mixins
 
 
@@ -241,7 +241,7 @@ class QRSEFitter(mixins.HistoryMixin):
             model.params = copy.copy(res.x)
 
         if summary is True:
-            helpers.m_summary(copy.copy(res.x))
+            helpers2.m_summary(copy.copy(res.x))
 
         if hist is True:
             self.save_history(res.x)
@@ -255,7 +255,7 @@ class QRSEFitter(mixins.HistoryMixin):
         self.hess_fun = jacobian(self.jac_fun)
         self.hess_inv_fun = lambda x: -sp.linalg.inv(self.hess_fun(x))
         self.hess_inv = self.hess_inv_fun(the_params)
-        if helpers.is_pos_def(self.hess_inv) is False:
+        if helpers2.is_pos_def(self.hess_inv) is False:
             print('Inverse Hessian Is Not Positive Definite')
         return self.hess_inv
 

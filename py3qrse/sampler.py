@@ -11,6 +11,7 @@ from tqdm import tqdm
 
 import py3qrse.helpers as helpers
 
+__all__ = ["Sampler",]
 
 class Sampler:
 
@@ -73,7 +74,7 @@ class Sampler:
         else:
             self.hess_inv = self.hess_inv_fun(self.params)
 
-        print("hess pos def? :", helpers.is_pos_def(self.hess_inv))
+        print("hess pos def? :", helpers2.is_pos_def(self.hess_inv))
 
 
     def set_params(self):

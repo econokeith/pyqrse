@@ -1,4 +1,5 @@
 
+
 import autograd.numpy as np
 from autograd import elementwise_grad as egrad
 from autograd import grad, jacobian
@@ -15,18 +16,17 @@ import pandas
 import py3qrse.kernels as _kernels
 import py3qrse.helpers as _helpers
 import py3qrse.plottools as _plottools
-from py3qrse.sampler import Sampler
-from py3qrse.helpers import mean_std_fun
+from .sampler import Sampler
+from .helpers import mean_std_fun
 
 
 
+__all__ = ["QRSE", "available_kernels"]
 
 _kernel_hash = _helpers.kernel_hierarchy_to_hash_bfs(_kernels.QRSEKernelBase)
 
 
 class QRSE:
-
-
 
     """
 
@@ -204,6 +204,12 @@ class QRSE:
         return self.params.shape[0]*np.log(self.data.shape[0])+2*self.nll()
 
     def plot(self, *args, **kwargs):
+        """
+        see self.plotter? for details
+        :param args:
+        :param kwargs:
+        :return:
+        """
         self.plotter.plot(*args, **kwargs)
 
     def plotboth(self, *args, **kwargs):
@@ -256,6 +262,10 @@ class QRSE:
             return _helpers.marg_entropy(self)+_helpers.cond_entropy(self)
 
     def marg_actions(self):
+        """
+
+        :return:
+        """
         return _helpers.marg_actions(self)
 
 
@@ -651,7 +661,7 @@ class QRSE:
 
 
 def available_kernels():
-    print("{: ^6}   {: ^12}   {: ^8}   {: ^20}   {: ^20}".format("code", "name", "n_actions", "class", "long_name"))
-    print("-"*70)
+    print("{: ^6}   {: ^10}   {: ^20}   {: ^20}".format("code",  "n_actions", "class", "long_name"))
+    print("-"*60)
     for c, k in _kernel_hash.items():
-        print("{: ^6} | {: ^12} | {: ^8} | {: ^16} | {: ^16}".format(c, k().name,k().n_actions, k.__name__, k().long_name))
+        print("{: ^6} | {: ^10} | {: ^16} | {: ^16}".format(c, k().n_actions, k.__name__, k().long_name))

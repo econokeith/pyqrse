@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import scipy as sp
 from scipy import integrate
 import seaborn as sns; sns.set()
-import py3qrse.qrse as qrse
+import py3qrse.model as qrse
 
 # class PlotMixin:
 #
