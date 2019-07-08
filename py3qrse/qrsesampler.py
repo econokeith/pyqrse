@@ -11,11 +11,20 @@ from tqdm import tqdm
 
 import py3qrse.helpers as helpers
 
-__all__ = ["Sampler",]
+__all__ = ["QRSESampler",]
 
-class Sampler:
+class QRSESampler:
+    """
+    sampler doc_string
+    """
 
-    def __init__(self, model, hess_from_res=False):
+    def __init__(self, model, hess_inv=None):
+        """
+
+        :param model:
+        :param hess_inv:
+        :return:
+        """
 
         self.model = model
         self.params = np.copy(self.model.params)
@@ -30,13 +39,18 @@ class Sampler:
         self.n_accepted = np.zeros(self.n_params, dtype=int)
         self.errors = []
 
-        # if self.model.fitted_q is True and hess_from_res is False:
-        #     self.set_hess_inv(hess_from_res)
+        #These are somewhat awkwardly set to update when called to avoid problems of solving for hess_inv
+        #at initial instantiaion of the QRSE model. It also helps with pickling the object
+        self._jac_fun = None
+        self._hess_fun = None
 
-        self.jac_fun = egrad(self.log_p)
-        self.hess_fun = jacobian(self.jac_fun)
-        self.hess_inv_fun = lambda x: -sp.linalg.inv(self.hess_fun(x))
-        self.hess_inv = np.eye(self.params.shape[0])*.01
+
+        if isinstance(hess_inv, np.ndarray):
+            self.hess_inv = hess_inv
+        elif hess_inv is 'fit' and self.model.fitter.fitted_q is True:
+            self.set_hess_inv(True)
+        else:
+            self.hess_inv = np.eye(self.params.shape[0])*.01
 
 
     @property
@@ -68,13 +82,34 @@ class Sampler:
         if self._chain is not None:
             return self.chain[0].max()
 
+    def init(self, hess_inv=None):
+        """
+
+        :param hess_inv:
+        :return:
+        """
+        self.model.sampler = QRSESampler(self.model, hess_inv)
+
+    def jac_fun(self, x):
+        if self._jac_fun is None:
+            self._jac_fun = egrad(self.log_p)
+        return self._jac_fun(x)
+
+    def hess_fun(self, x):
+        if self._hess_fun is None:
+            self._hess_fun = jacobian(self.jac_fun)
+        return self._hess_fun(x)
+
+    def hess_inv_fun(self, x):
+        return -sp.linalg.inv(self.hess_fun(x))
+
     def set_hess_inv(self, from_res=False):
         if from_res is True and self.model.res is not None:
             self.hess_inv = self.model.res.hess_inv
         else:
             self.hess_inv = self.hess_inv_fun(self.params)
 
-        print("hess pos def? :", helpers2.is_pos_def(self.hess_inv))
+        print("hess pos def? :", helpers.is_pos_def(self.hess_inv))
 
 
     def set_params(self):
@@ -227,4 +262,4 @@ class Sampler:
         for i in range(1, n_series):
             plt.subplot(n_rows, per_row, 1+i)
             sns.distplot(self.chain[i])
-            plt.title(self.model.kernel.pnames_fancy[i-1])
+            plt.title(self.model.kernel.pnames_latex[i-1])

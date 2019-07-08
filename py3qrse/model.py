@@ -16,7 +16,7 @@ import pandas
 import py3qrse.kernels as _kernels
 import py3qrse.helpers as _helpers
 import py3qrse.plottools as _plottools
-from .sampler import Sampler
+from .qrsesampler import QRSESampler
 from .helpers import mean_std_fun
 
 
@@ -29,16 +29,22 @@ _kernel_hash = _helpers.kernel_hierarchy_to_hash_bfs(_kernels.QRSEKernelBase)
 class QRSE:
 
     """
-
+    THIS IS QRSE
     """
-    def __init__(self, kernel=_kernels.SQRSEKernel(), data=None, params=None, iticks=1000, i_std=10, i_bounds=(-10, 10)):
+
+    @classmethod
+    def load(cls, *args, **kwargs):
+        pass
+
+    def __init__(self, kernel=_kernels.SQRSEKernel(), data=None, params=None, i_ticks=1000,
+                 i_stds=10, i_bounds=(-10, 10)):
         """
 
         :param kernel:
         :param data:
         :param params:
-        :param iticks:
-        :param i_std:
+        :param i_ticks:
+        :param i_stds:
         :param i_bounds:
         :return:
         """
@@ -53,7 +59,7 @@ class QRSE:
 
 
         self.data = data
-        self.iticks=iticks
+        self.iticks=i_ticks
 
         if isinstance(self.data, pandas.core.series.Series):
             self.data = self.data.values
@@ -64,8 +70,8 @@ class QRSE:
             self.dstd = data.std()
             self.ndata = data.shape[0]
 
-            self.i_min = self.dmean-self.dstd*i_std
-            self.i_max = self.dmean+self.dstd*i_std
+            self.i_min = self.dmean-self.dstd*i_stds
+            self.i_max = self.dmean+self.dstd*i_stds
         else:
             self.dmean = None
             self.dstd = None
@@ -75,11 +81,11 @@ class QRSE:
             self.i_max = i_bounds[1]
 
 
-        self._part_int = np.linspace(self.i_min, self.i_max, iticks)
+        self._part_int = np.linspace(self.i_min, self.i_max, i_ticks)
         self._int_delta = self._part_int[1] - self._part_int[0]
         self._log_int_delta = np.log(self._int_delta)
 
-        if params is not None and len(params)==len(self.kernel.pnames):
+        if params is not None and len(params)==len(self.kernel._pnames):
             self.params0 = np.asarray(params)
         else:
             self.params0 = self.kernel.set_params0(data)
@@ -90,7 +96,6 @@ class QRSE:
         self.res = None
         self.fitted_q = False
 
-        self.lprior = lambda x: 0
         self._sampler = None
 
         self._history = None
@@ -100,6 +105,7 @@ class QRSE:
         self._min_sum_jac = 1e-3
 
         self.plotter = _plottools.QRSEPlotter(self)
+        self.sampler = QRSESampler(self)
 
 
 
@@ -211,6 +217,9 @@ class QRSE:
         :return:
         """
         self.plotter.plot(*args, **kwargs)
+
+    def lprior(self, params):
+        return 0.
 
     def plotboth(self, *args, **kwargs):
         self.plotter.plotboth(*args, **kwargs)
@@ -532,21 +541,21 @@ class QRSE:
         if self.data is None:
             print("Cannot Initialize the Sampler() object until data has been added to the model.")
         else:
-            self._sampler = Sampler(self, **kwargs)
+            self._sampler = QRSESampler(self, **kwargs)
 
-    @property
-    def sampler(self):
-        if self._sampler is None:
-            print("Must run self.sampler_init(**kwargs) to initialize (instantiate) Sampler() before it can be accessed.")
-        else:
-            return self._sampler
+    # @property
+    # def sampler(self):
+    #     if self._sampler is None:
+    #         print("Must run self.sampler_init(**kwargs) to initialize (instantiate) Sampler() before it can be accessed.")
+    #     else:
+    #         return self._sampler
 
     def mcmc(self, *args, **kwargs):
         if self.data is None:
             print("NO DATA")
             return
         if self.sampler is None:
-            self.sampler = Sampler(self)
+            self.sampler = QRSESampler(self)
         self.sampler.mcmc(*args, **kwargs)
 
     def sample(self, *args, **kwargs):

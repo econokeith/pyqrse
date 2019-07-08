@@ -10,46 +10,8 @@ import py3qrse.model as qrse
 
 import py3qrse.defaults as _defaults
 
-# from configparser import ConfigParser
-#
-# import sys, os
-# import ast
-#
-# this = sys.modules[__name__]
-# this_dir, this_filename = os.path.split(__file__)
-#
-# #import default.ini into config parser and load global defaults for plotting
-# DATA_PATH = os.path.join(this_dir, 'defaults.ini')
-#
-# parser = ConfigParser()
-# parser.read(DATA_PATH)
-#
-# _DEFAULT_BINARY_ACTION_COLORS = ast.literal_eval(parser['PLOTTING']["BINARY_ACTION_COLORS"])
-# _DEFAULT_TERNARY_ACTION_COLORS = ast.literal_eval(parser['PLOTTING']["TERNARY_ACTION_COLORS"])
-#
-# this._BINARY_ACTION_COLORS = copy.deepcopy(_DEFAULT_BINARY_ACTION_COLORS)
-# this._TERNARY_ACTION_COLORS = copy.deepcopy(_DEFAULT_TERNARY_ACTION_COLORS)
-
-
 class QRSEPlotter:
 
-
-        # def __init__(self, qrse_object, colors=None, color_order=None):
-        #
-        #     assert isinstance(qrse_object, qrse.QRSE)
-        #     self.qrse_object = qrse_object
-        #
-        #     if colors is None and qrse_object.kernel.n_actions==3:
-        #         self._colors = this._TERNARY_ACTION_COLORS
-        #
-        #     elif colors is None and qrse_object.kernel.n_actions == 2:
-        #         self._colors = this._BINARY_ACTION_COLORS
-        #
-        #     else:
-        #         self._colors=[]
-        #         self.set_colors(colors)
-        #
-        #     self.n_actions = self.qrse_object.kernel.n_actions
 
         def __init__(self, qrse_object, colors=None, color_order=None):
 
@@ -159,47 +121,3 @@ class QRSEPlotter:
             self.plot(*args, **kwargs)
             plt.subplot(122)
             self.plot(*args, which=1, **kwargs)
-
-
-# def set_global_action_colors(colors=None, palette=None, n_actions=None):
-#     """
-#
-#     :param colors:
-#     :param palette:
-#     :param n_actions:
-#     :return:
-#     """
-#
-#   # if colors is none, reset globals to default
-#     if colors is None and n_actions not in (3, 3):
-#         for i, c in enumerate(_DEFAULT_BINARY_ACTION_COLORS):
-#             this._BINARY_ACTION_COLORS[i] = c
-#         print('binary actions colors reset to default')
-#
-#     if colors is None and n_actions not in (2, 2):
-#         for i, c in enumerate(_DEFAULT_TERNARY_ACTION_COLORS):
-#            this._TERNARY_ACTION_COLORS[i] = c
-#         print('ternary actions colors reset to default')
-#
-#     if colors is None:
-#         return
-#
-#     # if colors is not None, set colors to colors based on length or specified
-#     assert isinstance(colors, (tuple, list, np.ndarray))
-#     if palette is None:
-#         palette = lambda x: x
-#
-#     if n_actions is None and len(colors)==3:
-#         for i, c in enumerate(colors):
-#             this._BINARY_ACTION_COLORS[i] = palette(c)
-#         print('binary actions colors changed')
-#
-#     elif n_actions is None and len(colors)==4:
-#         for i, c in enumerate(colors):
-#            this._TERNARY_ACTION_COLORS[i] = palette(c)
-#         print('ternary actions colors changed')
-#
-#     else:
-#         print("no change to actions colors because n_actions was not valid")
-#
-#

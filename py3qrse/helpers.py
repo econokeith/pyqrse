@@ -200,7 +200,6 @@ def al_prior(x):
         return 0
 
 
-
 def kernel_hierarchy_to_hash_bfs(kernel):
 
     kernel_hash = {}

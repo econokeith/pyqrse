@@ -10,21 +10,7 @@ import seaborn as sns; sns.set()
 from tqdm import tqdm
 from py3qrse.helpers import mean_std_fun, split_strip_parser
 import py3qrse.defaults as _defaults
-#
-# from configparser import ConfigParser
-#
-# import sys, os
-# _this = sys.modules[__name__]
-# _DATA_PATH = os.path.join(os.path.split(__file__)[0], 'defaults.ini')
-#
-# _parser = ConfigParser()
-# _parser.read(_DATA_PATH)
-#
-# _DEFAULT_BINARY_ACTION_LABELS = split_strip_parser(_parser,'ACTION_LABELS','BINARY_ACTION_LABELS')
-# _DEFAULT_TERNARY_ACTION_LABELS = split_strip_parser(_parser,'ACTION_LABELS','TERNARY_ACTION_LABELS')
-#
-# _this._BINARY_BASE_ACTIONS = copy.deepcopy(_DEFAULT_BINARY_ACTION_LABELS)
-# _this._TERNARY_BASE_ACTIONS = copy.deepcopy(_DEFAULT_TERNARY_ACTION_LABELS)
+
 
 ### TODO fix how I'm dealing with \xi
 
@@ -47,14 +33,46 @@ class QRSEKernelBase:
         self._std = 1.
         self._mean = 0.
 
-        self._name = "QRSE"
-        self._long_name =  "QRSE"
+        self.name = "QRSE"
+        self.long_name =  "QRSE"
 
         self._pnames = [""]
-        self._pnames_fancy =[""]
-        self._actions = []
-        self.n_actions = 3
+        self._pnames_latex =[""]
+        self.actions = ['buy', 'sell']
+        self.n_actions = 2
 
+        self.generic_actions = ['a0', 'a1']
+
+        self._pnames_set_by_user = False
+        self._pnames_latex_set_by_user = False
+
+    ## All of this is to make sure that labels on charts change with changes in actions
+
+    @property
+    def pnames(self):
+        if self._pnames_set_by_user:
+            return self._pnames
+        else:
+            action_dict = dict(zip(self.generic_actions, self.actions))
+            return [pname.format(**action_dict) for pname in self._pnames]
+
+    @pnames.setter
+    def pnames(self, names):
+        self._pnames_set_by_user = True
+        self._pnames = names
+
+    @property
+    def pnames_latex(self):
+        if self._pnames_latex_set_by_user:
+            return self._pnames_latex
+        else:
+            action_dict = dict(zip(self.generic_actions, self.actions))
+            return [pname.format(**action_dict) for pname in self._pnames_latex]
+
+    @pnames_latex.setter
+    def pnames_latex(self, names):
+        self._pnames_latex_set_by_user = True
+        self._pnames_latex = names
 
     @property
     def code(self):
@@ -89,6 +107,7 @@ class QRSEKernelBaseBinary(QRSEKernelBase):
 
         self.n_actions = 2
         self.actions = _defaults.BINARY_ACTION_LABELS
+        self.generic_actions = ['a0', 'a1']
 
 
 class QRSEKernelBaseTernary(QRSEKernelBase):
@@ -98,16 +117,18 @@ class QRSEKernelBaseTernary(QRSEKernelBase):
 
         self.n_actions = 3
         self.actions = _defaults.TERNARY_ACTION_LABELS
+        self.generic_actions = ['a0', 'a1', 'a2']
 
 
 class SQRSEKernel(QRSEKernelBaseBinary):
+
     _code = "S"
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        self.pnames = 't b m'.split()
-        self.pnames_fancy =[r'$T$', r'$\beta$', r'$\mu$']
+        self._pnames = 't b m'.split()
+        self._pnames_latex =[r'$T$', r'$\beta$', r'$\mu$']
         self.name = "S-QRSE"
         self.long_name = "Symmetric QRSE"
 
@@ -124,7 +145,6 @@ class SQRSEKernel(QRSEKernelBaseBinary):
         e_v = np.exp(v)
         part = 1 + e_v
         return - v*e_v/part + np.log(part)
-
 
     def potential(self, x , params):
         t, b, m = params
@@ -164,8 +184,8 @@ class SFQRSEKernel(SQRSEKernel):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        self.pnames = 't b m g'.split()
-        self.pnames_fancy =[r'$T$', r'$\beta$', r'$\mu$', r'$\gamma$']
+        self._pnames = 't b m g'.split()
+        self._pnames_latex =[r'$T$', r'$\beta$', r'$\mu$', r'$\gamma$']
         self.name = "SF-QRSE"
         self.long_name = "Scharfenaker and Foley QRSE"
 
@@ -184,63 +204,54 @@ class SFQRSEKernel(SQRSEKernel):
         return np.array([std, 1./std, mean, 0.])
 
 
-class AB2QRSEKernel(SQRSEKernel):
+class ABQRSEKernel(SQRSEKernel):
+
+    _code = "AB"
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        self._pnames = ['t', 'b_{a0}', 'm', 'b_{a1}']
+        self._pnames_latex = [r'$T$', r'$\beta_{{{a0}}}$', r'$\mu$', r'$\beta_{{{a1}}}$']
+        self.name = "AB-QRSE"
+        self.long_name = "Asymmetric-Beta QRSE"
+
+    def potential(self, x , params):
+        t, bb, m, bs = params
+        return -((bs+bb)/2.*np.tanh((x-m)/(2.*t))+(bs-bb)/2.)*(x-self.xi)
+
+    def set_params0(self, data=None, weights=None):
+        if data is not None:
+            mean, std = mean_std_fun(data, weights)
+        else:
+            mean, std =  self._mean, self._std
+        self.xi = mean
+        return np.array([std, 1./std, mean, 1./std])
+
+
+class AB2QRSEKernel(ABQRSEKernel):
 
     _code = "AB2"
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        self.pnames = 't bs m bb'.split()
-        self.pnames_fancy =[r'$T$', r'$\beta_{buy}$', r'$\mu$', r'$\beta_{sell}$']
-        self.name = "AB-QRSE"
-        self.long_name = "Asymmetric-Beta QRSE"
+
+        self.name = "AB2-QRSE"
+        self.long_name = "Asymmetric-Beta2 QRSE"
 
     def potential(self, x , params):
         t, bb, m, bs = params
-        return -((bs+bb)/2*np.tanh((x-m)/(2*t))+(bs-bb)/2)*x
-
-    def set_params0(self, data=None, weights=None):
-        if data is not None:
-            mean, std = mean_std_fun(data, weights)
-        else:
-            mean, std =  self._mean, self._std
-        self.xi = mean
-        return np.array([std, 1./std, mean, 1./std])
+        return -((bs+bb)/2.*np.tanh((x-m)/(2.*t))+(bs-bb)/2.)*x
 
 
-class ABQRSEKernel(SQRSEKernel):
-    _code = "AB"
+class ABC2QRSEKernel(ABQRSEKernel):
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
-        self.pnames = 't bs m bb'.split()
-        self.pnames_fancy =[r'$T$', r'$\beta_{buy}$', r'$\mu$', r'$\beta_{sell}$']
-        self.name = "AB-QRSE"
-        self.long_name = "Asymmetric-Beta QRSE"
-
-    def potential(self, x , params):
-        t, bb, m, bs = params
-        return -((bs+bb)/2*np.tanh((x-m)/(2*t))+(bs-bb)/2)*(x-self.xi)
-
-    def set_params0(self, data=None, weights=None):
-        if data is not None:
-            mean, std = mean_std_fun(data, weights)
-        else:
-            mean, std =  self._mean, self._std
-        self.xi = mean
-        return np.array([std, 1./std, mean, 1./std])
-
-
-class ABC2QRSEKernel(SQRSEKernel):
     _code = "ABC2"
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        self.pnames = 't bs m bb xi'.split()
-        self.pnames_fancy =[r'$T$', r'$\beta_{buy}$', r'$\mu$', r'$\beta_{sell}$', r'$\xi$']
         self.name = "AB-QRSE-C2"
         self.long_name = "Asymmetric-Beta-Centered2 QRSE"
 
@@ -264,7 +275,7 @@ class ABC2QRSEKernel(SQRSEKernel):
     def potential(self, x , params):
         t, bb, m, bs, xi = params
         x_xi = x-xi
-        return -((bs+bb)/2*np.tanh((x_xi-m)/(2*t))+(bs-bb)/2) * x_xi
+        return -((bs+bb)/2.*np.tanh((x_xi-m)/(2.*t))+(bs-bb)/2.) * x_xi
 
 
     def set_params0(self, data=None, weights=None):
@@ -276,15 +287,13 @@ class ABC2QRSEKernel(SQRSEKernel):
         return np.array([std, 1./std, 0., 1./std, mean])
 
 
-class ABCQRSEKernel(SQRSEKernel):
+class ABCQRSEKernel(ABQRSEKernel):
 
     _code = "ABC"
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        self.pnames = 't bs m bb'.split()
-        self.pnames_fancy =[r'$T$', r'$\beta_{buy}$', r'$\mu$', r'$\beta_{sell}$']
         self.name = "AB-QRSE-C"
         self.long_name = "Asymmetric-Beta-Centered QRSE"
 
@@ -311,13 +320,6 @@ class ABCQRSEKernel(SQRSEKernel):
         return -((bs+bb)/2*np.tanh((x_xi-m)/(2*t))+(bs-bb)/2) * x_xi
 
 
-    def set_params0(self, data=None, weights=None):
-        if data is not None:
-            mean, std = mean_std_fun(data, weights)
-        else:
-            mean, std =  self._mean, self._std
-        self.xi = mean
-        return np.array([std, 1./std, 0., 1./std])
 
 
 class AAQRSEKernel(QRSEKernelBaseTernary):
@@ -327,11 +329,10 @@ class AAQRSEKernel(QRSEKernelBaseTernary):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        self.pnames = 'tb ts mb ms b'.split()
-        self.pnames_fancy =[r'$T_{buy}$', r'$T_{sell}$', r'$\mu_{buy}$', r'$\mu_{sell}$', r'$\beta$']
+        self._pnames = ['t_{a0}', 't_{a2}', 'm_{a0}', 'm_{a2}', 'b']
+        self._pnames_latex =[r'$T_{{{a0}}}$', r'$T_{{{a2}}}$', r'$\mu_{{{a0}}}$', r'$\mu_{{{a2}}}$', r'$\beta$']
         self.name = "AA-QRSE"
         self.long_name = "Asymmetric-Action QRSE"
-
 
     def logits(self, x, params):
 
@@ -510,8 +511,8 @@ class ATQRSEKernel(AAQRSEKernel):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        self.pnames = 'tb ts m b'.split()
-        self.pnames_fancy = [r'$T_{buy}$', r'$T_{sell}$', r'$\mu$', r'$\beta$']
+        self._pnames = ['t_{a0}', 't_{a2}', 'm', 'b']
+        self._pnames_latex =[r'$T_{{{a0}}}$', r'$T_{{{a2}}}$', r'$\mu$', r'$\beta$']
         self.name = "AT-QRSE"
         self.long_name = "Asymmetric-T QRSE"
 
@@ -583,7 +584,6 @@ class AA2QRSEKernel(AAC2QRSEKernel):
         self.name = "AA-QRSE-2"
         self.long_name = "Asymmetric-Action-2 QRSE"
 
-
     def potential(self, x , params):
         tb, ts, mb, ms, b = params
         p_buy, _, p_sell = self.logits(x, params)
@@ -614,50 +614,3 @@ class AA2QRSEKernel(AAC2QRSEKernel):
         self.xi = mean
         return np.array([std, std, mean+.1*std, mean-.1*std, 1/std])
 
-
-
-# def set_global_action_labels(new_labels=None):
-#     """
-#     This functions globally changes all action labels. This is a convenience
-#     function for using the printing functionalities of the QRSE object. It will affect both existing instantiations and
-#     newly created objects of the QRSE type.
-#     :param new_labels: Desired new global action labels. Must be a list or tuple of length 2 or 3.
-#     Examples:
-#             -To change the global binary action labels to 'enter' and 'leave' use:
-#
-#                 update_action_labels(['enter', 'leave'])
-#                 or
-#                 update_action_labels(('enter', 'leave'))
-#
-#             -To change the global binary action labels to 'enter', 'stay', 'leave' run:
-#
-#                 update_action_labels(['enter', 'stay', 'leave'])
-#                 or
-#                 update_action_labels(('enter', 'stay', 'leave'))
-#
-#     Running the function with no input (i.e. update_action_labels()) will reset all action labels to the values.
-#     """
-#
-#     if new_labels is None:
-#         for i, a in enumerate(_DEFAULT_BINARY_ACTION_LABELS):
-#             _this._BINARY_BASE_ACTIONS[i]= a
-#         for i, a in enumerate(_DEFAULT_TERNARY_ACTION_LABELS ):
-#             _this._TERNARY_BASE_ACTIONS[i] = a
-#         print("global action labels reset to defaults")
-#         print("binary action labels are: {}, {}".format(*_this._BINARY_BASE_ACTIONS))
-#         print("ternary action labels are: {}, {}, {}".format(*_this._TERNARY_BASE_ACTIONS))
-#
-#     elif isinstance(new_labels, (tuple, list)) and len(new_labels) == 2:
-#         for i, a in enumerate(new_labels):
-#             _this._BINARY_BASE_ACTIONS[i]=a
-#         print("global binary action labels set to: {}, {}".format(*new_labels))
-#
-#     elif isinstance(new_labels, (tuple, list)) and len(new_labels) == 3:
-#         for i, a in enumerate(new_labels):
-#             _this._TERNARY_BASE_ACTIONS[i]=a
-#         print("global ternary action labels set to: {}, {}, {}".format(*new_labels))
-#     else:
-#         print("no changes to global action labels \n-label input not in recognizable format")
-#         print("-label input must be a tuple/list of length 2 or 3 to change labels")
-#         print("-ex: ['jump', 'sit] or ['run', 'walk', 'jump']")
-#         print("-running this function with no input will reset labels to default")
