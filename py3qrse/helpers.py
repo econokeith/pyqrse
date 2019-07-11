@@ -228,3 +228,12 @@ def kernel_hierarchy_to_hash_bfs(kernel):
             kernel_hash[code] = the_kernel
 
     return kernel_hash
+
+
+def docthief(mark_function):
+    def decorator(thief_function):
+        def wrapper(*args, **kwargs):
+            return thief_function(*args, **kwargs)
+        wrapper.__doc__ = mark_function.__doc__
+        return wrapper
+    return decorator

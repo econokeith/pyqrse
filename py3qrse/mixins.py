@@ -7,6 +7,7 @@ import scipy as sp
 from scipy import integrate
 import seaborn as sns; sns.set()
 import py3qrse.model as qrse
+import pickle
 
 class HistoryMixin:
 
@@ -48,4 +49,42 @@ class HistoryMixin:
         self._new_history = []
         self._history = None
 
+
+class PickleMixin:
+
+    @classmethod
+    def from_pickle(cls, path_to_pickle, *args, **kwargs):
+        """
+
+        :param path_to_pickle: individual or list of paths to saved pickled QRSE objects
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        # if path_to_pickle is a list it will return a list of qrses
+        if isinstance(path_to_pickle, (tuple, list)):
+            object_list = []
+            for path in path_to_pickle:
+                try:
+                    object_list.append(cls.from_pickle(path, *args, **kwargs))
+                except:
+                    print('unable to import: ', path)
+
+            return object_list
+
+        with open(path_to_pickle, 'rb') as f:
+            new_object = pickle.load(f)
+
+        return new_object
+
+    def to_pickle(self, path_to_pickle, *args, **kwargs):
+        """
+        pickles the instance of this object
+        :param path_to_pickle:
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        with open(path_to_pickle, 'wb') as file:
+            pickle.dump(self, file)
 

@@ -23,7 +23,7 @@ class QRSEFitter(mixins.HistoryMixin):
 
         assert isinstance(model, qrse.QRSE)
         self.model = model
-        self.lprior_fun = lambda x: 0
+        self.lprior_fun = l_prior_fun
 
         self.kl_target = None
         self.res = None
@@ -36,6 +36,11 @@ class QRSEFitter(mixins.HistoryMixin):
         self.model.params = copy.copy(self.params)
 
     def set_kl_target(self, target):
+        """
+
+        :param target:
+        :return:
+        """
 
         model = self.model
         self.kl_target = target
@@ -45,9 +50,16 @@ class QRSEFitter(mixins.HistoryMixin):
         except:
             self._target_weights = target(model._part_int)
 
+
         self._target_weights /= self._target_weights.sum()
 
     def kld(self, params=None, target=None):
+        """
+
+        :param params:
+        :param target:
+        :return:
+        """
 
         if target is not None:
             self.set_kl_target(target)
@@ -65,7 +77,17 @@ class QRSEFitter(mixins.HistoryMixin):
 
         return -(kernel_values*weights).sum() + log_z - self.lprior_fun(the_params)
 
-    def klmin(self, save=True, use_jac=True, **kwargs):
+    def klmin(self, target=None, save=True, use_jac=True, **kwargs):
+        """
+
+        :param target:
+        :param save:
+        :param use_jac:
+        :param kwargs:
+        :return:
+        """
+        if target is not None:
+            self.set_kl_target(target)
 
         if use_jac is True:
             try:
@@ -76,11 +98,17 @@ class QRSEFitter(mixins.HistoryMixin):
         else:
             jac=None
 
+        #set xi to mean of target dist
+        self.model.kernel.xi = self._target_weights.dot(self.model._part_int)
+
         res = sp.optimize.minimize(self.kld, self.params0, jac=jac, **kwargs)
+
         self.res = res
         self.params = copy.copy(res.x)
+
         if save is True:
             self.model.params = copy.copy(res.x)
+
         self.fitted_q = True
         return res
 
@@ -276,3 +304,6 @@ class QRSEFitter(mixins.HistoryMixin):
     @property
     def bic(self):
         return self.params.shape[0]*np.log(self.data.shape[0])+2*self.nll()
+
+def l_prior_fun(params):
+    return 0.

@@ -29,7 +29,12 @@ class QRSESampler:
         self.model = model
         self.params = np.copy(self.model.params)
         self.log_p = self.model.log_p
-        self.last_log_p = self.model.log_p(params=self.params)
+
+        try:
+            self.last_log_p = self.model.log_p(params=self.params)
+        except:
+            self.last_log_p = -np.inf
+
         self.n_params = self.params.shape[0]
 
         self.stds = np.ones(self.n_params)
@@ -47,7 +52,7 @@ class QRSESampler:
 
         if isinstance(hess_inv, np.ndarray):
             self.hess_inv = hess_inv
-        elif hess_inv is 'fit' and self.model.fitter.fitted_q is True:
+        elif hess_inv is 'fit':
             self.set_hess_inv(True)
         else:
             self.hess_inv = np.eye(self.params.shape[0])*.01
@@ -215,6 +220,17 @@ class QRSESampler:
         return self.params
 
     def mcmc(self, N=1000, burn=0, single=False, ptype="corr", s=1., update_hess=False, new=False):
+        """
+        mcmc(self, N=1000, burn=0, single=False, ptype="corr", s=1., update_hess=False, new=False)
+        :param N:
+        :param burn:
+        :param single:
+        :param ptype:
+        :param s:
+        :param update_hess:
+        :param new:
+        :return:
+        """
 
         if new is True:
             self.n_accepted = np.zeros(self.n_params, dtype=int)
@@ -251,6 +267,12 @@ class QRSESampler:
         print(self.a_rates)
 
     def plot(self, per_row=2, figsize=(12, 4)):
+        """
+        plot(self, per_row=2, figsize=(12, 4)):
+        :param per_row:
+        :param figsize:
+        :return:
+        """
 
         n_series = self.chain.shape[0]
         per_row = 2

@@ -10,34 +10,34 @@ import scipy as sp
 from scipy import integrate
 import seaborn as sns; sns.set()
 from tqdm import tqdm
+import os
 
 import pandas
+import pickle
 
-import py3qrse.kernels as _kernels
-import py3qrse.helpers as _helpers
-import py3qrse.plottools as _plottools
+import py3qrse.kernels as kernels
+import py3qrse.helpers as helpers
+import py3qrse.plottools as plottools
+
+from .plottools import QRSEPlotter
+from .mixins import PickleMixin
 from .qrsesampler import QRSESampler
-from .helpers import mean_std_fun
-
-
+from .helpers import mean_std_fun, docthief
+import pandas as pd
 
 __all__ = ["QRSE", "available_kernels"]
 
-_kernel_hash = _helpers.kernel_hierarchy_to_hash_bfs(_kernels.QRSEKernelBase)
+kernel_hash = helpers.kernel_hierarchy_to_hash_bfs(kernels.QRSEKernelBase)
 
 
-class QRSE:
+class QRSE(PickleMixin):
 
     """
     THIS IS QRSE
     """
 
-    @classmethod
-    def load(cls, *args, **kwargs):
-        pass
-
-    def __init__(self, kernel=_kernels.SQRSEKernel(), data=None, params=None, i_ticks=1000,
-                 i_stds=10, i_bounds=(-10, 10)):
+    def __init__(self, kernel=kernels.SQRSEKernel(), data=None, params=None, i_ticks=1000,
+                 i_stds=10, i_bounds=(-10, 10), about_data="", load_kwargs={}):
         """
 
         :param kernel:
@@ -48,35 +48,35 @@ class QRSE:
         :param i_bounds:
         :return:
         """
-        if isinstance(kernel, _kernels.QRSEKernelBase):
+
+        if isinstance(kernel, kernels.QRSEKernelBase):
             self.kernel = kernel
         else:
             try:
-                self.kernel = _kernel_hash[kernel]()
+                self.kernel = kernel_hash[kernel]()
             except:
                 print("QRSE Kernel Not Found: Default to SQRSEKernel")
-                self.kernel = _kernels.SQRSEKernel()
+                self.kernel = kernels.SQRSEKernel()
+
+        #conveniently track things I want to remember about results
+        #this is especially useful pickling the object
+        self.notes = {'kernel': self.kernel.name,
+                      'about_data' : about_data}
 
 
-        self.data = data
         self.iticks=i_ticks
+        self.istds = i_stds
 
-        if isinstance(self.data, pandas.core.series.Series):
-            self.data = self.data.values
+        self.dmean = 0.
+        self.dstd = 1.
+        self.ndata = 0
+        self.data = None
+
 
         if data is not None:
-            self.data = self.data[np.isfinite(self.data)]
-            self.dmean = data.mean()
-            self.dstd = data.std()
-            self.ndata = data.shape[0]
+            self.add_data(data, in_init=True, **load_kwargs)
 
-            self.i_min = self.dmean-self.dstd*i_stds
-            self.i_max = self.dmean+self.dstd*i_stds
         else:
-            self.dmean = None
-            self.dstd = None
-            self.ndata = None
-
             self.i_min = i_bounds[0]
             self.i_max = i_bounds[1]
 
@@ -85,10 +85,12 @@ class QRSE:
         self._int_delta = self._part_int[1] - self._part_int[0]
         self._log_int_delta = np.log(self._int_delta)
 
+
         if params is not None and len(params)==len(self.kernel._pnames):
             self.params0 = np.asarray(params)
+
         else:
-            self.params0 = self.kernel.set_params0(data)
+            self.params0 = self.kernel.set_params0(self.data)
 
         self._params = np.copy(self.params0)
         self.z = self.partition()
@@ -96,7 +98,7 @@ class QRSE:
         self.res = None
         self.fitted_q = False
 
-        self._sampler = None
+        # self._sampler = None
 
         self._history = None
         self._new_history = []
@@ -104,9 +106,8 @@ class QRSE:
         self._switched = False
         self._min_sum_jac = 1e-3
 
-        self.plotter = _plottools.QRSEPlotter(self)
+        self.plotter = QRSEPlotter(self)
         self.sampler = QRSESampler(self)
-
 
 
     def update_p0(self, data, weights=None, i_std=7):
@@ -117,6 +118,63 @@ class QRSE:
         self._part_int = np.linspace(self.i_min, self.i_max, self.iticks)
         self._int_delta = self._part_int[1] - self._part_int[0]
         self._log_int_delta = np.log(self._int_delta)
+
+
+
+
+    def add_data(self, data, *args, index_col=0, header=None, squeeze=True, in_init=False,
+                 silent=False, save_abs_path=False, **kwargs):
+        """
+
+        :param data:
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        assert isinstance(data, (str, np.ndarray, pandas.core.series.Series))
+        if isinstance(data, str):
+            assert os.path.exists(data)
+
+            abs_path = os.path.abspath(data)
+            if silent is not False:
+                print('importing : ', abs_path)
+
+            self.data = pandas.read_csv(data, *args, index_col=index_col, header=header,
+                                        squeeze=squeeze, **kwargs).values
+            if save_abs_path is True:
+                self.notes['data_path'] = abs_path
+            else:
+                self.notes['data_path'] = data
+
+        elif isinstance(data, np.ndarray):
+            self.data = data
+
+        elif isinstance(self.data, pandas.core.series.Series):
+            self.data = self.data.values
+
+
+        assert isinstance(self.data, np.ndarray)
+        assert self.data is not np.array([0.])
+        assert len(self.data.shape) == 1
+
+        self.data = self.data[np.isfinite(self.data)]
+        self.dmean = self.data.mean()
+        self.dstd = self.data.std()
+        self.ndata = self.data.shape[0]
+        self.ndata = self.data.shape[0]
+
+        self.i_min = self.dmean-self.dstd* self.istds
+        self.i_max = self.dmean+self.dstd* self.istds
+
+        if in_init is False:
+            self._part_int = np.linspace(self.i_min, self.i_max, self.iticks)
+            self._int_delta = self._part_int[1] - self._part_int[0]
+            self._log_int_delta = np.log(self._int_delta)
+
+            self.params0 = self.kernel.set_params0(self.data)
+
+            self.params = np.copy(self.params0)
+
 
     @property
     def actions(self):
@@ -129,10 +187,15 @@ class QRSE:
     @params.setter
     def params(self, new_params):
         self._params = np.asarray(new_params)
-        # if isinstance(self.kernel, qk.ALQRSEKernelL) or isinstance(self.kernel, qk.SQRSEKernelL):
-        #     self.z = self.partition(new_params, use_sp=False)
-        # else:
         self.z = self.partition(new_params, use_sp=False)
+
+    @property
+    def pnames(self):
+        return self.kernel.pnames
+
+    @property
+    def pnames_latex(self):
+        return self.kernel.pnames_latex
 
     @property
     def i_bounds(self):
@@ -141,6 +204,14 @@ class QRSE:
     @i_bounds.setter
     def i_bounds(self, new_bounds):
         self.i_min, self.i_max = new_bounds
+
+    @property
+    def xi(self):
+        return self.kernel.xi
+
+    @xi.setter
+    def xi(self, new_xi):
+        self.kernel.xi = new_xi
 
     @property
     def indifference(self, actions=(0, 1)):
@@ -209,6 +280,7 @@ class QRSE:
     def bic(self):
         return self.params.shape[0]*np.log(self.data.shape[0])+2*self.nll()
 
+    @docthief(QRSEPlotter.plot)
     def plot(self, *args, **kwargs):
         """
         see self.plotter? for details
@@ -218,11 +290,12 @@ class QRSE:
         """
         self.plotter.plot(*args, **kwargs)
 
-    def lprior(self, params):
-        return 0.
-
+    @docthief(QRSEPlotter.plotboth)
     def plotboth(self, *args, **kwargs):
         self.plotter.plotboth(*args, **kwargs)
+
+    def lprior(self, params):
+        return 0.
 
 
     def rvs(self, n=None, bounds=None):
@@ -264,18 +337,18 @@ class QRSE:
             return [self.entropy(et) for et in etype]
 
         if etype is 'marg':
-            return _helpers.marg_entropy(self)
+            return helpers.marg_entropy(self)
         elif etype is 'cond':
-            return _helpers.cond_entropy(self)
+            return helpers.cond_entropy(self)
         else:
-            return _helpers.marg_entropy(self)+_helpers.cond_entropy(self)
+            return helpers.marg_entropy(self)+helpers.cond_entropy(self)
 
     def marg_actions(self):
         """
 
         :return:
         """
-        return _helpers.marg_actions(self)
+        return helpers.marg_actions(self)
 
 
     def pdf(self, x, params=None):
@@ -401,6 +474,12 @@ class QRSE:
 
 
     def log_p(self, *args, **kwargs):
+        """
+
+        :param args:
+        :param kwargs:
+        :return:
+        """
         return -self.nll( *args, **kwargs)
 
     def fit(self, data=None, params0=None, summary=False, save=True, use_jac=True,
@@ -519,7 +598,7 @@ class QRSE:
             self.params = res.x
 
         if summary is True:
-            _helpers.m_summary(self)
+            helpers.m_summary(self)
 
         if hist is True:
             self.save_history(self.params)
@@ -533,7 +612,7 @@ class QRSE:
         self.hess_fun = jacobian(self.jac_fun)
         self.hess_inv_fun = lambda x: -sp.linalg.inv(self.hess_fun(x))
         self.hess_inv = self.hess_inv_fun(the_params)
-        if _helpers.is_pos_def(self.hess_inv) is False:
+        if helpers.is_pos_def(self.hess_inv) is False:
             print('Inverse Hessian Is Not Positive Definite')
         return self.hess_inv
 
@@ -550,6 +629,7 @@ class QRSE:
     #     else:
     #         return self._sampler
 
+    @docthief(QRSESampler.mcmc)
     def mcmc(self, *args, **kwargs):
         if self.data is None:
             print("NO DATA")
@@ -558,6 +638,7 @@ class QRSE:
             self.sampler = QRSESampler(self)
         self.sampler.mcmc(*args, **kwargs)
 
+    @docthief(QRSESampler.mcmc)
     def sample(self, *args, **kwargs):
         self.mcmc(*args, **kwargs)
 
@@ -672,5 +753,5 @@ class QRSE:
 def available_kernels():
     print("{: ^6}   {: ^10}   {: ^20}   {: ^20}".format("code",  "n_actions", "class", "long_name"))
     print("-"*60)
-    for c, k in _kernel_hash.items():
+    for c, k in kernel_hash.items():
         print("{: ^6} | {: ^10} | {: ^16} | {: ^16}".format(c, k().n_actions, k.__name__, k().long_name))

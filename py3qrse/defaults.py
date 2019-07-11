@@ -3,12 +3,13 @@ import sys, os
 import configparser
 import copy
 import ast
+from collections import defaultdict
 
 __all__ = ["set_global_action_colors", "get_global_action_colors", "set_global_action_labels",
            "get_global_action_labels", "flip_global_action_defaults"]
 
 this = sys.modules[__name__]
-DATA_PATH = os.path.join(os.path.split(__file__)[0], 'defaults.ini')
+DATA_PATH = os.path.join(os.path.split(__file__)[0], 'DEFAULTS.ini')
 
 parser = configparser.ConfigParser()
 parser.read(DATA_PATH)
@@ -25,6 +26,20 @@ DEFAULT_TERNARY_ACTION_COLORS = ast.literal_eval(parser['PLOTTING']["TERNARY_ACT
 
 this.BINARY_ACTION_COLORS = copy.deepcopy(DEFAULT_BINARY_ACTION_COLORS)
 this.TERNARY_ACTION_COLORS = copy.deepcopy(DEFAULT_TERNARY_ACTION_COLORS)
+
+# Todo: clean this up and turn it all into a dictionary
+# PLOT_DEFAULTS = defaultdict(dict)
+# PLOT_DEFAULTS['Labels'][2] = DEFAULT_BINARY_ACTION_LABELS
+# PLOT_DEFAULTS['Labels'][3] = DEFAULT_TERNARY_ACTION_LABELS
+# PLOT_DEFAULTS['Colors'][2] = DEFAULT_BINARY_ACTION_COLORS
+# PLOT_DEFAULTS['Colors'][3] = DEFAULT_TERNARY_ACTION_COLORS
+#
+# PLOT_SETTINGS = copy.deepcopy(PLOT_DEFAULTS)
+#
+# for key, value in py3qrse.defaults.parser.items():
+#     print(key)
+#     for k, v in value.items():
+#         print(k, '=', v)
 
 
 
