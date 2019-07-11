@@ -1,17 +1,8 @@
 import numpy as np
 # import Quandl as qd
-import pandas as pd
-import scipy as sp
-import numpy.random as npr
-import scipy.stats as sps
-from numpy import array
-from pandas import Series, DataFrame
 import matplotlib.pyplot as plt
-from scipy import stats
 import datetime
-from scipy.integrate import quad
-from py3qrse.helpers import date_to_datetime, datetime_to_date
-from py3qrse.model import QRSE
+from py3qrse.utilities.helpers import datetime_to_date
 import seaborn as sns; sns.set()
 
 try:
