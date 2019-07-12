@@ -18,7 +18,7 @@ class QRSEFitter(mixins.HistoryMixin):
     def __init__(self, model):
         super().__init__()
 
-        assert isinstance(model, qrse.QRSE)
+        assert isinstance(model, qrse.QRSEModel)
         self.model = model
 
         #todo - centralize prior fun on model

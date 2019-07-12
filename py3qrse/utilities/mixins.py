@@ -1,15 +1,9 @@
 import autograd.numpy as np
-from autograd import elementwise_grad as egrad
-import copy
-from autograd import grad, jacobian
-import matplotlib.pyplot as plt
-import scipy as sp
-from scipy import integrate
 import seaborn as sns; sns.set()
-import py3qrse.model as qrse
 import pickle
+from distutils.util import strtobool
 
-#this technically isn't a mixin
+#Todo: HistoryMixin feels a bit hacky and could be improved
 class HistoryMixin:
 
     def save_history(self, new_hist=None):
@@ -54,48 +48,60 @@ class HistoryMixin:
         self._history = None
 
 
-
 class PickleMixin:
 
     @classmethod
-    def from_pickle(cls, path_to_pickle, *args, **kwargs):
+    def from_pickle(cls, path_to_pickle, trust_check=False, **kwargs):
         """
         !!!DO NOT RUN THIS FUNCTION UNLESS YOU TRUST THE SOURCE WITH ABSOLUTE CERTAINTY!!!
 
         Pickling is extremely convenient from a workflow perspective, as you can save the results of
         inquiries and instantly load them back into your python environment.
 
-        However, there are not safety checks on the code that will be run, which mean:
+        However, there are no safety checks on the code that will be run. That means:
 
-        if you don't trust the source, don't unpickle it.
+        -If you don't trust the source, don't unpickle it.
+        -Python will run all code in the pickle malicious or not!
 
         :param path_to_pickle: individual or list of paths to saved pickled QRSE objects
         :param args:
         :param kwargs:
+        :param trust_check:
+
+                prompts the user to verify that they trust the source of the file to be unpickled
+                default value is True
+
         :return:
         """
         # if path_to_pickle is a list it will return a list of qrses
-        if isinstance(path_to_pickle, (tuple, list)):
-            object_list = []
-            for path in path_to_pickle:
-                try:
-                    object_list.append(cls.from_pickle(path, *args, **kwargs))
-                except:
-                    print('unable to import: ', path)
 
-            return object_list
+        print('Are you absolutely sure you trust the source of this pickle?')
+        answer = strtobool(input('yes or no (y or n) : ').strip())
+        if answer==1:
 
-        with open(path_to_pickle, 'rb') as f:
-            new_object = pickle.load(f)
+            if isinstance(path_to_pickle, (tuple, list)):
+                object_list = []
+                for path in path_to_pickle:
+                    try:
+                        object_list.append(cls.from_pickle(path, trust_check=False, **kwargs))
+                    except:
+                        print('unable to import: ', path)
 
-        return new_object
+                return object_list
 
-    def to_pickle(self, path_to_pickle, *args, **kwargs):
+            with open(path_to_pickle, 'rb') as f:
+                new_object = pickle.load(f)
+
+            return new_object
+        else:
+            print('unpickling cancelled')
+
+    def to_pickle(self, path_to_pickle):
         """
-        pickles the instance of this object
+        Uses the python pickle module to serialize the object (pickle it).
+        Pickling allows it to be saved and reloaded later.
+
         :param path_to_pickle:
-        :param args:
-        :param kwargs:
         :return:
         """
         with open(path_to_pickle, 'wb') as file:

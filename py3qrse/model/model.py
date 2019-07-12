@@ -17,12 +17,12 @@ from ..utilities.mixins import PickleMixin, HistoryMixin
 from ..fittools import QRSESampler, QRSEFitter
 from ..utilities.helpers import mean_std_fun, docthief
 
-__all__ = ["QRSE", "available_kernels"]
+__all__ = ["QRSEModel", "available_kernels"]
 
 kernel_hash = helpers.kernel_hierarchy_to_hash_bfs(kernels.QRSEKernelBase)
 
 
-class QRSE(HistoryMixin, PickleMixin):
+class QRSEModel(HistoryMixin, PickleMixin):
     """
     THIS IS QRSE
     """
