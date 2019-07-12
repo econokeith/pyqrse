@@ -1,2 +1,2 @@
 from .optimizer import *
-from .sampler import *
+from .sampling import *

@@ -1,3 +1,4 @@
-from .base_kernels import *
-from .binary_kernels import *
-from .ternary_kernels import *
+from .base import *
+from .binary import *
+from .ternary import *
+from .testing import *

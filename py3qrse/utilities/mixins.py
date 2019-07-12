@@ -73,12 +73,16 @@ class PickleMixin:
 
         :return:
         """
-        # if path_to_pickle is a list it will return a list of qrses
 
-        print('Are you absolutely sure you trust the source of this pickle?')
-        answer = strtobool(input('yes or no (y or n) : ').strip())
+
+        if trust_check is True:
+            print('Are you absolutely sure you trust the source of this pickle?')
+            answer = strtobool(input('yes or no (y or n) : ').strip())
+        else:
+            answer = 1
+
         if answer==1:
-
+            # if path_to_pickle is a list it will return a list of qrses
             if isinstance(path_to_pickle, (tuple, list)):
                 object_list = []
                 for path in path_to_pickle:

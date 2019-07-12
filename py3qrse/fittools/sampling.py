@@ -15,7 +15,7 @@ class QRSESampler:
     """
     sampler doc_string
     """
-    def __init__(self, model, hess_inv=None):
+    def __init__(self, model):
         """
 
         :param model:
@@ -42,15 +42,15 @@ class QRSESampler:
 
         #These are somewhat awkwardly set to update when called to avoid problems of solving for hess_inv
         #at initial instantiaion of the QRSE model. It also helps with pickling the object
-        self._jac_fun = None
-        self._hess_fun = None
-
-        if isinstance(hess_inv, np.ndarray):
-            self.hess_inv = hess_inv
-        elif hess_inv is 'fit':
-            self.set_hess_inv(True)
-        else:
-            self.hess_inv = np.eye(self.params.shape[0])*.01
+        # self._jac_fun = None
+        # self._hess_fun = None
+        #
+        # if isinstance(hess_inv, np.ndarray):
+        #     self.hess_inv = hess_inv
+        # elif hess_inv is 'fit':
+        #     self.set_hess_inv(True)
+        # else:
+        #     self.hess_inv = np.eye(self.params.shape[0])*.01
 
     @property
     def a_rates(self):
@@ -81,34 +81,33 @@ class QRSESampler:
         if self._chain is not None:
             return self.chain[0].max()
 
-    def init(self, hess_inv=None):
+    def init(self):
         """
 
-        :param hess_inv:
         :return:
         """
-        self.model.sampler = QRSESampler(self.model, hess_inv)
+        self.model.sampler = QRSESampler(self.model)
 
-    def jac_fun(self, x):
-        if self._jac_fun is None:
-            self._jac_fun = egrad(self.log_p)
-        return self._jac_fun(x)
+    # def jac_fun(self, x):
+    #     if self._jac_fun is None:
+    #         self._jac_fun = egrad(self.log_p)
+    #     return self._jac_fun(x)
+    #
+    # def hess_fun(self, x):
+    #     if self._hess_fun is None:
+    #         self._hess_fun = jacobian(self.jac_fun)
+    #     return self._hess_fun(x)
 
-    def hess_fun(self, x):
-        if self._hess_fun is None:
-            self._hess_fun = jacobian(self.jac_fun)
-        return self._hess_fun(x)
-
-    def hess_inv_fun(self, x):
-        return -sp.linalg.inv(self.hess_fun(x))
-
-    def set_hess_inv(self, from_res=False):
-        if from_res is True and self.model.res is not None:
-            self.hess_inv = self.model.res.hess_inv
-        else:
-            self.hess_inv = self.hess_inv_fun(self.params)
-
-        print("hess pos def? :", helpers.is_pos_def(self.hess_inv))
+    # def hess_inv_fun(self, x):
+    #     return -sp.linalg.inv(self.hess_fun(x))
+    #
+    # def set_hess_inv(self, from_res=False):
+    #     if from_res is True and self.model.res is not None:
+    #         self.hess_inv = self.model.res.hess_inv
+    #     else:
+    #         self.hess_inv = self.hess_inv_fun(self.params)
+    #
+    #     print("hess pos def? :", helpers.is_pos_def(self.hess_inv))
 
     def set_params(self):
         if self._chain is not None:
@@ -167,7 +166,7 @@ class QRSESampler:
         the_params = self.params if params is None else params
 
         if ptype is "corr":
-            hess_inv = self.hess_inv*s
+            hess_inv = self.model.hess_inv*s
             new_params = sp.stats.multivariate_normal(the_params, hess_inv).rvs()
         else:
             new_params = np.random.randn(self.n_params) * self.stds + the_params
@@ -196,7 +195,7 @@ class QRSESampler:
 
             #update hessian if we do?
             if update_hess is True:
-                self.hess_inv = self.hess_inv_fun(self.params)
+                self.model.hess_inv = self.model.hess_inv_fun(self.params)
 
             if is_burn is False:
                     self.n_accepted[0]+= 1
@@ -205,8 +204,13 @@ class QRSESampler:
             self.last_log_p = ll0
             self.params = params0
 
-    def next(self, *args, **kwargs):
-        self._joint_sample(*args, **kwargs)
+    def next(self, sample_fun='joint', **kwargs):
+
+        if sample_fun is 'single':
+            self._single_sample(**kwargs)
+        else:
+            self._joint_sample(**kwargs)
+
         return self.params
 
     def mcmc(self, N=1000, burn=0, single=False, ptype="corr", s=1., update_hess=False, new=False):

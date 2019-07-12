@@ -5,6 +5,7 @@ from autograd import elementwise_grad as egrad
 from autograd import grad, jacobian
 import scipy as sp
 import seaborn as sns;
+import py3qrse.utilities.mathstats
 
 sns.set()
 import py3qrse.utilities.helpers as helpers
@@ -18,7 +19,7 @@ class QRSEFitter(mixins.HistoryMixin):
     def __init__(self, model):
         super().__init__()
 
-        assert isinstance(model, qrse.QRSEModel)
+        # assert isinstance(model, qrse.QRSEModel)
         self.model = model
 
         #todo - centralize prior fun on model
@@ -44,9 +45,9 @@ class QRSEFitter(mixins.HistoryMixin):
         self.kl_target = target
 
         try:
-            self._target_weights = target.pdf(model._integrate_ticks)
+            self._target_weights = target.pdf(model._integration_ticks)
         except:
-            self._target_weights = target(model._integrate_ticks)
+            self._target_weights = target(model._integration_ticks)
 
 
         self._target_weights /= self._target_weights.sum()
@@ -68,7 +69,7 @@ class QRSEFitter(mixins.HistoryMixin):
         else:
             the_params = params
 
-        kernel_values = model.kernel.log_kernel(model._integrate_ticks, the_params)
+        kernel_values = model.kernel.log_kernel(model._integration_ticks, the_params)
         weights = self._target_weights
         log_z = model.log_partition(the_params)
 
@@ -96,7 +97,7 @@ class QRSEFitter(mixins.HistoryMixin):
             jac=None
 
         #set xi to mean of target dist
-        self.model.kernel.xi = self._target_weights.dot(self.model._integrate_ticks)
+        self.model.kernel.xi = self._target_weights.dot(self.model._integration_ticks)
 
         res = sp.optimize.minimize(self.kld, self.params0, jac=jac, **kwargs)
 
@@ -142,10 +143,10 @@ class QRSEFitter(mixins.HistoryMixin):
         else:
             log_z = model.log_partition(the_params)
 
-        return -sum_kern + n_z*log_z - self.lprior_fun(the_params)
+        return -sum_kern + n_z*log_z - self.model.log_prior(the_params)
 
     def log_p(self, *args, **kwargs):
-        return -self.nll( *args, **kwargs)
+        return -self.model.nll( *args, **kwargs)
 
     def fit(self, data=None, params0=None, summary=False, save=True, use_jac=True,
             weights=None, hist=False,
@@ -198,7 +199,7 @@ class QRSEFitter(mixins.HistoryMixin):
         ## Set nll with data and weights
         ## Note to self. use_sp is not included here because it throws an error with most of the methods
 
-        nll_fun = lambda x : self.nll(params=x, data=the_data, weights=weights)
+        nll_fun = lambda x : self.model.nll(params=x, data=the_data, weights=weights)
 
         ## This is a kind of long thing to allow the fit to try different methods if 1 fit is more.
         if 'method' in list(kwargs.keys()):
@@ -214,7 +215,7 @@ class QRSEFitter(mixins.HistoryMixin):
 
         if the_method == 'nelder-mead':
             if use_sp is True:
-                nll_fun = lambda x : self.nll(params=x, data=the_data, weights=weights, use_sp=True)
+                nll_fun = lambda x : self.model.nll(params=x, data=the_data, weights=weights, use_sp=True)
             res = sp.optimize.minimize(nll_fun, the_params0, method='nelder-mead', **copy_kwargs)
 
             if check is True and res.success is False:
@@ -267,23 +268,12 @@ class QRSEFitter(mixins.HistoryMixin):
             model.params = copy.copy(res.x)
 
         if summary is True:
-            helpers.m_summary(copy.copy(res.x))
+            py3qrse.utilities.mathstats.m_summary(copy.copy(res.x))
 
         if hist is True:
             self.save_history(res.x)
 
-    def find_hess_inv(self, params=None):
 
-        the_params = self.params if params is None else params
-
-        self._log_p = lambda x : -self.nll(x)
-        self.jac_fun = grad(self._log_p)
-        self.hess_fun = jacobian(self.jac_fun)
-        self.hess_inv_fun = lambda x: -sp.linalg.inv(self.hess_fun(x))
-        self.hess_inv = self.hess_inv_fun(the_params)
-        if helpers.is_pos_def(self.hess_inv) is False:
-            print('Inverse Hessian Is Not Positive Definite')
-        return self.hess_inv
 
 
 def l_prior_fun(params):

@@ -13,6 +13,7 @@ class QRSEKernelBase:
     _generic_actions = ['a0', 'a1'] #generic names of actions for .format(a0=buy, a1=sell, etc)
     _action_setting = 'binary' #binary or ternary
     _n_actions = 2 #2 or 3
+    in_testing = False
 
     @classmethod
     def getcode(cls):

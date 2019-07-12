@@ -1,4 +1,3 @@
-import numpy as np
 import sys, os
 import configparser
 import copy
@@ -6,6 +5,8 @@ import ast
 from collections import defaultdict
 
 __all__ = ['reset_label_settings', 'view_label_settings', 'LABEL_SETTINGS']
+
+# this module sets package wide defaults to allow for consistent labels and plot styles across instances
 
 #find path to defaults
 this = sys.modules[__name__] #this controls the path not just the value
