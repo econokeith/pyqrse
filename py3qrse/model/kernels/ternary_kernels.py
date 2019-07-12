@@ -304,4 +304,3 @@ class AA2QRSEKernel(AAC2QRSEKernel):
             mean, std =  self._mean, self._std
         self.xi = mean
         return np.array([std, std, mean+.1*std, mean-.1*std, 1/std])
-

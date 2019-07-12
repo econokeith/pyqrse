@@ -25,14 +25,12 @@ class HistoryMixin:
         else:
             self._new_history.append(new_hist)
 
-
     def history(self):
         try:
             self._history
         except:
             self._history = None
             self._new_history = []
-
 
         if self._history is None and self._new_history == []:
             return 0
@@ -48,7 +46,6 @@ class HistoryMixin:
             new_history = np.asarray(self._new_history)
             self._history = np.vstack((self._history, new_history))
             self._new_history = []
-
 
         return self._history
 

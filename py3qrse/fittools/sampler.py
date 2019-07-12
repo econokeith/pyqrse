@@ -15,7 +15,6 @@ class QRSESampler:
     """
     sampler doc_string
     """
-
     def __init__(self, model, hess_inv=None):
         """
 
@@ -23,7 +22,6 @@ class QRSESampler:
         :param hess_inv:
         :return:
         """
-
         self.model = model
         self.params = np.copy(self.model.params)
         self.log_p = self.model.log_p
@@ -47,14 +45,12 @@ class QRSESampler:
         self._jac_fun = None
         self._hess_fun = None
 
-
         if isinstance(hess_inv, np.ndarray):
             self.hess_inv = hess_inv
         elif hess_inv is 'fit':
             self.set_hess_inv(True)
         else:
             self.hess_inv = np.eye(self.params.shape[0])*.01
-
 
     @property
     def a_rates(self):
@@ -113,7 +109,6 @@ class QRSESampler:
             self.hess_inv = self.hess_inv_fun(self.params)
 
         print("hess pos def? :", helpers.is_pos_def(self.hess_inv))
-
 
     def set_params(self):
         if self._chain is not None:
@@ -188,10 +183,8 @@ class QRSESampler:
             params0 = params
             self.last_log_p = self.model.log_p(params=params)
 
-
         #sample from proposal: either use correlated samples or not
         params1 = self.propose_new(params, ptype, s=1.)
-
 
         ll0 = self.last_log_p
         ll1 = self.model.log_p(params=params1)
@@ -212,7 +205,6 @@ class QRSESampler:
             self.last_log_p = ll0
             self.params = params0
 
-
     def next(self, *args, **kwargs):
         self._joint_sample(*args, **kwargs)
         return self.params
@@ -229,7 +221,6 @@ class QRSESampler:
         :param new:
         :return:
         """
-
         if new is True:
             self.n_accepted = np.zeros(self.n_params, dtype=int)
             self.errors = []
@@ -263,8 +254,6 @@ class QRSESampler:
             self._chain = np.vstack((self._chain, new_chain))
 
         print(self.a_rates)
-
-
 
     def plot(self, per_row=2, figsize=(12, 4)):
         """

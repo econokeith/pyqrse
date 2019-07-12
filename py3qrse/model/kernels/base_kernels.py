@@ -7,7 +7,6 @@ __all__ = ['QRSEKernelBase', 'QRSEKernelBaseBinary', 'QRSEKernelBaseTernary']
 
 class QRSEKernelBase:
 
-
     _code = None #identifier code for QRSE to load
     _pnames_base = ['t', 'b', 'm'] #base name to update with new labels
     _pnames_latex_base =[r'$T$', r'$\beta$', r'$\mu$'] #base name to update with new labels for latex
@@ -20,7 +19,6 @@ class QRSEKernelBase:
         return cls._code
 
     def __init__(self,  use_xi=False, use_entropy=True,):
-
 
         assert isinstance(use_entropy, bool)
         self.use_entropy = int(use_entropy)
@@ -43,7 +41,6 @@ class QRSEKernelBase:
         self.pnames_latex= []
         #actions sets self._actions0, self.pnames, self.pnames_latex
         self.actions = [a for a in self._actions]
-
 
     @property
     def actions(self)->list:
@@ -88,13 +85,11 @@ class QRSEKernelBase:
 
 class QRSEKernelBaseBinary(QRSEKernelBase):
     #here for use with issubclass()
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
 
 class QRSEKernelBaseTernary(QRSEKernelBase):
-
     #updates for 3 states
     _n_actions = 3
     _generic_actions = ['a0', 'a1', 'a2']

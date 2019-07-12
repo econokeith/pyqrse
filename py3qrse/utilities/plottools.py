@@ -16,8 +16,6 @@ class QRSEPlotter:
         """
         This does lots of stuff
         """
-
-
         # assert isinstance(qrse_object, qrse.QRSE)
         self.qrse_object = qrse_object
 
@@ -38,9 +36,11 @@ class QRSEPlotter:
         return self._colors
 
     def set_colors(self, colors=None, output=False):
+
         if colors is not None:
             assert isinstance(colors, (tuple, list, np.ndarray))
             assert len(colors) > self.qrse_object.kernel.n_actions
+
             if output is False:
                 self._colors = colors
                 return
@@ -48,6 +48,7 @@ class QRSEPlotter:
                 return colors
 
     def set_color_order(self, color_order=None, output=False):
+
         if color_order is not None:
 
             assert isinstance(color_order, (tuple, list, np.ndarray))
@@ -135,10 +136,16 @@ class QRSEPlotter:
 
         if show_legend is True:
             plt.legend()
+
         plt.title(plot_title)
 
-
     def plotboth(self, *args, **kwargs):
+        """
+        plot marginal distribution side by side with
+        :param args:
+        :param kwargs:
+        :return:
+        """
         copykwargs = copy.deepcopy(kwargs)
 
         if 'figsize' not in kwargs:
@@ -147,7 +154,6 @@ class QRSEPlotter:
             figsize=kwargs['figsize']
 
             del copykwargs['figsize']
-
 
         plt.figure(figsize=figsize)
         plt.subplot(121)

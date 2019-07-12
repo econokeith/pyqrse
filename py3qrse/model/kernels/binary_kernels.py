@@ -59,7 +59,6 @@ class SQRSEKernelNoH(SQRSEKernel):
         self.name = "S-QRSE-NO-H"
         self.long_name = "Symmetric QRSE (NO Entropy Term)"
 
-
     def entropy(self, x, params):
         return 0.
 
@@ -89,6 +88,7 @@ class SFQRSEKernel(SQRSEKernel):
 
         self.xi = mean
         return np.array([std, 1./std, mean, 0.])
+
 
 class SFCQRSEKernel(SFQRSEKernel):
 
@@ -240,12 +240,10 @@ class ABCQRSEKernel(ABQRSEKernel):
         part = 1 + e_v
         return - v*e_v/part + np.log(part)
 
-
     def potential(self, x , params):
         t, bb, m, bs = params
         x_xi = x-self.xi
         return -((bs+bb)/2*np.tanh((x_xi-m)/(2*t))+(bs-bb)/2) * x_xi
-
 
 # class AAQRSEKernel(QRSEKernelBaseTernary):
 #

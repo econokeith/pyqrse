@@ -23,11 +23,9 @@ kernel_hash = helpers.kernel_hierarchy_to_hash_bfs(kernels.QRSEKernelBase)
 
 
 class QRSE(HistoryMixin, PickleMixin):
-
     """
     THIS IS QRSE
     """
-
     def __init__(self, kernel=kernels.SQRSEKernel(), data=None, params=None, i_ticks=1000,
                  i_stds=10, i_bounds=(-10, 10), about_data="", load_kwargs={}):
         """
@@ -54,7 +52,6 @@ class QRSE(HistoryMixin, PickleMixin):
         self.notes = {'kernel': self.kernel.name,
                       'about_data' : about_data}
 
-
         self.iticks=i_ticks
         self.istds = i_stds
 
@@ -63,14 +60,12 @@ class QRSE(HistoryMixin, PickleMixin):
         self.ndata = 0
         self.data = None
 
-
         if data is not None:
             self.add_data(data, in_init=True, **load_kwargs)
 
         else:
             self.i_min = i_bounds[0]
             self.i_max = i_bounds[1]
-
 
         self._integrate_ticks = np.linspace(self.i_min, self.i_max, i_ticks)
         self._int_tick_delta = self._integrate_ticks[1] - self._integrate_ticks[0]
@@ -111,7 +106,6 @@ class QRSE(HistoryMixin, PickleMixin):
         self._int_tick_delta = self._integrate_ticks[1] - self._integrate_ticks[0]
         self._log_int_tick_delta = np.log(self._int_tick_delta)
 
-
     def add_data(self, data, *args, index_col=0, header=None, squeeze=True, in_init=False,
                  silent=False, save_abs_path=False, **kwargs):
         """
@@ -141,7 +135,6 @@ class QRSE(HistoryMixin, PickleMixin):
 
         elif isinstance(self.data, pandas.core.series.Series):
             self.data = self.data.values
-
 
         assert isinstance(self.data, np.ndarray)
         assert self.data is not np.array([0.])
@@ -173,20 +166,20 @@ class QRSE(HistoryMixin, PickleMixin):
     def i_bounds(self, new_bounds):
         self.i_min, self.i_max = new_bounds
 
-    #properties that get/set kernel attributes -----------------------
-
-    @property
-    def actions(self):
-        return self.kernel.actions
-
     @property
     def params(self):
         return self._params
 
+    #reevaluates the partition function after
     @params.setter
     def params(self, new_params):
         self._params = np.asarray(new_params)
         self.z = self.partition(new_params, use_sp=False)
+
+    #properties that get/set kernel attributes -----------------------
+    @property
+    def actions(self):
+        return self.kernel.actions
 
     @property
     def pnames(self):
@@ -204,9 +197,7 @@ class QRSE(HistoryMixin, PickleMixin):
     def xi(self, new_xi):
         self.kernel.xi = new_xi
 
-
     #STATS FUNCTIONALITY ----------------------------------------------
-
     @property
     def mode(self):
         """
@@ -233,7 +224,6 @@ class QRSE(HistoryMixin, PickleMixin):
         integrand = lambda x: self.pdf(x)*(x-mean)**2
         return np.sqrt(integrate.quad(integrand, self.i_min, self.i_max)[0])
 
-
     def pdf(self, x, params=None):
         """
 
@@ -250,7 +240,6 @@ class QRSE(HistoryMixin, PickleMixin):
 
         return np.exp(self.kernel.log_kernel(x, the_params))/z
 
-
     def rvs(self, n=None, bounds=None):
         """
         random sampler using interpolated inverse cdf method
@@ -265,7 +254,6 @@ class QRSE(HistoryMixin, PickleMixin):
                 bounds is preset to None and generally won't need to be adjusted
         :return:float or np.array([float])
         """
-
         if isinstance(bounds, (tuple, list)) and len(bounds) == 3:
             ll = np.linspace(*bounds)
         elif isinstance(bounds, np.ndarray):
@@ -283,13 +271,12 @@ class QRSE(HistoryMixin, PickleMixin):
         :param params:
         :return:
         """
+        assert isinstance(params, (tuple, list, np.ndarray))
         the_params = self.params if params is None else params
         logs = self.kernel.log_kernel(self._integrate_ticks, the_params)
         max_logs = np.max(logs)
 
         return max_logs + np.log(np.sum(np.exp(logs-max_logs))) + self._log_int_tick_delta
-
-
 
     def partition(self, params=None, use_sp=False):
         """
@@ -304,7 +291,6 @@ class QRSE(HistoryMixin, PickleMixin):
             the_params = self.params if params is None else params
             fun = lambda x: self.kernel.kernel(x, the_params)
             return sp.integrate.quad(fun, self.i_min, self.i_max)[0]
-
 
     def nll(self, data=None, params=None, weights=None, use_sp=False):
         """
@@ -339,8 +325,6 @@ class QRSE(HistoryMixin, PickleMixin):
 
         return -sum_kern + n_z*log_z - self.lprior(the_params)
 
-
-
     def log_p(self, *args, **kwargs):
         """
          log probability = -1 * ( negative log likelihood )
@@ -354,9 +338,7 @@ class QRSE(HistoryMixin, PickleMixin):
         :return:
 
         """
-
         return -self.nll( *args, **kwargs)
-
 
     def evidence(self, data=None):
         the_data = self.data if data is None else data
@@ -367,7 +349,6 @@ class QRSE(HistoryMixin, PickleMixin):
 
     ## Inverse Hessian Stuff
     #todo - get this in working order
-
     def jac_fun(self, x):
         if self._jac_fun is None:
             self._jac_fun = egrad(self.log_p)
@@ -389,10 +370,7 @@ class QRSE(HistoryMixin, PickleMixin):
 
         print("hess pos def? :", helpers.is_pos_def(self.hess_inv))
 
-
-
     ## QRSE Specific Functionality ------------------------------------
-
 
     def logits(self, x, params=None):
         """
@@ -415,7 +393,6 @@ class QRSE(HistoryMixin, PickleMixin):
 
         return sp.optimize.brentq(indif_fun, self.i_min, self.i_max)
 
-
     def entropy(self, etype='joint'):
         """
 
@@ -433,7 +410,6 @@ class QRSE(HistoryMixin, PickleMixin):
             return helpers.cond_entropy(self)
         else:
             return helpers.marg_entropy(self)+ helpers.cond_entropy(self)
-
 
     def marg_actions(self):
         """
@@ -468,7 +444,6 @@ class QRSE(HistoryMixin, PickleMixin):
         integrand = lambda x: self.pdf(x)*(self.kernel.entropy(x, self.params))
         return sp.integrate.quad(integrand, self.i_min, self.i_max)[0]
 
-
     #MODEL SELECTION CRITERIA ----------------------------------------------
 
     def aic(self):
@@ -477,16 +452,13 @@ class QRSE(HistoryMixin, PickleMixin):
         else:
             return 0.
 
-
     def aicc(self):
         k = self.params.shape[0]
         n = self.data.shape[0]
         return self.aic() + (2*k**2+2*k)/(n-k-1)
 
-
     def bic(self):
         return self.params.shape[0]*np.log(self.data.shape[0])+2*self.nll()
-
 
     #Shortcut Functionality For Sampling, Plotting, Fitting -------------------------
 
@@ -515,13 +487,6 @@ class QRSE(HistoryMixin, PickleMixin):
     def res(self):
         self._res = self.fitter.res
         return self._res
-
-
-
-
-
-
-
 
 
 def available_kernels():

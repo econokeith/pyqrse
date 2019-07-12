@@ -13,7 +13,6 @@ import py3qrse.utilities.mixins as mixins
 
 __all__ = ['QRSEFitter']
 
-
 class QRSEFitter(mixins.HistoryMixin):
 
     def __init__(self, model):
@@ -37,7 +36,6 @@ class QRSEFitter(mixins.HistoryMixin):
 
     def set_kl_target(self, target):
         """
-
         :param target:
         :return:
         """
@@ -55,7 +53,6 @@ class QRSEFitter(mixins.HistoryMixin):
 
     def kld(self, params=None, target=None):
         """
-
         :param params:
         :param target:
         :return:
@@ -121,7 +118,6 @@ class QRSEFitter(mixins.HistoryMixin):
         :param use_sp:
         :return:
         """
-
         model = self.model
 
         if params is None:
@@ -199,12 +195,10 @@ class QRSEFitter(mixins.HistoryMixin):
             model.update_p0(data, weights)
             the_params0 = model.params0
 
-
         ## Set nll with data and weights
         ## Note to self. use_sp is not included here because it throws an error with most of the methods
 
         nll_fun = lambda x : self.nll(params=x, data=the_data, weights=weights)
-
 
         ## This is a kind of long thing to allow the fit to try different methods if 1 fit is more.
         if 'method' in list(kwargs.keys()):

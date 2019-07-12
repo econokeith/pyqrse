@@ -51,7 +51,6 @@ def model_p(log_marginals, n=None):
         denom += np.exp(lm-the_log_marg)
     return denom**-1
 
-
 def log_marginal(sampler):
     if isinstance(sampler, list):
         out = []
@@ -113,7 +112,6 @@ def rejection_sample(target, proposal, m, n, jmax=10):
     print(i,'samples returned after ', j,'attempts')
     return sample[:i+1]
 
-
 def date_to_datetime(d):
     return datetime.date(int(d[:4]),int(d[4:6]), int(d[6:]) )
 
@@ -123,7 +121,6 @@ def datetime_to_date(d):
     day = '0'+str(day) if day < 10 else str(day)
     month = '0'+str(month) if month < 10 else str(month)
     return '{}{}{}'.format(d.year, month, day)
-
 
 def m_summary(model):
     print("success =", model.res.success)
@@ -146,7 +143,6 @@ def m_summary(model):
     print("")
     print("marginal action probabilities")
     print(tabulate([ model.marg_actions().round(2)]))
-
 
 def ab_prior_make(value=0, lam=1.):
     """
@@ -186,7 +182,6 @@ def mean_std_fun(data, weights=None):
         mean = data.dot(weights)/wsum
         std = np.sqrt(((data-mean)**2).dot(weights)/wsum)
     return mean, std
-
 
 def split_strip_parser(parser, key1, key2):
     out = parser[key1][key2]
