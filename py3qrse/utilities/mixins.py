@@ -57,11 +57,20 @@ class HistoryMixin:
         self._history = None
 
 
+
 class PickleMixin:
 
     @classmethod
     def from_pickle(cls, path_to_pickle, *args, **kwargs):
         """
+        !!!DO NOT RUN THIS FUNCTION UNLESS YOU TRUST THE SOURCE WITH ABSOLUTE CERTAINTY!!!
+
+        Pickling is extremely convenient from a workflow perspective, as you can save the results of
+        inquiries and instantly load them back into your python environment.
+
+        However, there are not safety checks on the code that will be run, which mean:
+
+        if you don't trust the source, don't unpickle it.
 
         :param path_to_pickle: individual or list of paths to saved pickled QRSE objects
         :param args:

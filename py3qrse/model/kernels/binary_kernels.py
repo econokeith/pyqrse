@@ -10,8 +10,8 @@ __all__ = ['SQRSEKernel', 'SQRSEKernelNoH', 'SQRSEKernelNoH','SFQRSEKernel',
 class SQRSEKernel(QRSEKernelBaseBinary):
 
     _code = "S"
-    _pnames = 't b m'.split()
-    _pnames_latex =[r'$T$', r'$\beta$', r'$\mu$']
+    _pnames_base = 't b m'.split()
+    _pnames_latex_base =[r'$T$', r'$\beta$', r'$\mu$']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -67,8 +67,8 @@ class SQRSEKernelNoH(SQRSEKernel):
 class SFQRSEKernel(SQRSEKernel):
 
     _code = "SF"
-    _pnames = 't b m g'.split()
-    _pnames_latex =[r'$T$', r'$\beta$', r'$\mu$', r'$\gamma$']
+    _pnames_base = 't b m g'.split()
+    _pnames_latex_base =[r'$T$', r'$\beta$', r'$\mu$', r'$\gamma$']
 
     def __init__(self, use_xi=True, **kwargs):
         super().__init__(**kwargs)
@@ -93,8 +93,8 @@ class SFQRSEKernel(SQRSEKernel):
 class SFCQRSEKernel(SFQRSEKernel):
 
     _code = "SFC"
-    _pnames = 't b m g'.split()
-    _pnames_latex =[r'$T$', r'$\beta$', r'$\mu$', r'$\gamma$']
+    _pnames_base = 't b m g'.split()
+    _pnames_latex_base =[r'$T$', r'$\beta$', r'$\mu$', r'$\gamma$']
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -134,8 +134,8 @@ class SFCQRSEKernel(SFQRSEKernel):
 class ABQRSEKernel(SFQRSEKernel):
 
     _code = "AB"
-    _pnames = ['t', 'b_{a0}', 'm', 'b_{a1}']
-    _pnames_latex = [r'$T$', r'$\beta_{{{a0}}}$', r'$\mu$', r'$\beta_{{{a1}}}$']
+    _pnames_base = ['t', 'b_{a0}', 'm', 'b_{a1}']
+    _pnames_latex_base = [r'$T$', r'$\beta_{{{a0}}}$', r'$\mu$', r'$\beta_{{{a1}}}$']
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

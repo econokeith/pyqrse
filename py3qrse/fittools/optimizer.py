@@ -21,6 +21,8 @@ class QRSEFitter(mixins.HistoryMixin):
 
         assert isinstance(model, qrse.QRSE)
         self.model = model
+
+        #todo - centralize prior fun on model
         self.lprior_fun = l_prior_fun
 
         self.kl_target = None
@@ -44,9 +46,9 @@ class QRSEFitter(mixins.HistoryMixin):
         self.kl_target = target
 
         try:
-            self._target_weights = target.pdf(model._part_int)
+            self._target_weights = target.pdf(model._integrate_ticks)
         except:
-            self._target_weights = target(model._part_int)
+            self._target_weights = target(model._integrate_ticks)
 
 
         self._target_weights /= self._target_weights.sum()
@@ -69,7 +71,7 @@ class QRSEFitter(mixins.HistoryMixin):
         else:
             the_params = params
 
-        kernel_values = model.kernel.log_kernel(model._part_int, the_params)
+        kernel_values = model.kernel.log_kernel(model._integrate_ticks, the_params)
         weights = self._target_weights
         log_z = model.log_partition(the_params)
 
@@ -97,7 +99,7 @@ class QRSEFitter(mixins.HistoryMixin):
             jac=None
 
         #set xi to mean of target dist
-        self.model.kernel.xi = self._target_weights.dot(self.model._part_int)
+        self.model.kernel.xi = self._target_weights.dot(self.model._integrate_ticks)
 
         res = sp.optimize.minimize(self.kld, self.params0, jac=jac, **kwargs)
 
@@ -153,6 +155,9 @@ class QRSEFitter(mixins.HistoryMixin):
             weights=None, hist=False,
             check=False, silent=True, use_hess=False, smart_p0=True, use_sp=True,**kwargs):
         """
+        fit(self, data=None, params0=None, summary=False, save=True, use_jac=True,
+            weights=None, hist=False,
+            check=False, silent=True, use_hess=False, smart_p0=True, use_sp=True,**kwargs):
 
         :param data:
         :param params0:
@@ -286,22 +291,6 @@ class QRSEFitter(mixins.HistoryMixin):
             print('Inverse Hessian Is Not Positive Definite')
         return self.hess_inv
 
-    @property
-    def aic(self):
-        if self.data is not None:
-            return 2*self.params.shape[0]+2*self.nll()
-        else:
-            return 0.
-
-    @property
-    def aicc(self):
-        k = self.params.shape[0]
-        n = self.data.shape[0]
-        return self.aic + (2*k**2+2*k)/(n-k-1)
-
-    @property
-    def bic(self):
-        return self.params.shape[0]*np.log(self.data.shape[0])+2*self.nll()
 
 def l_prior_fun(params):
     return 0.

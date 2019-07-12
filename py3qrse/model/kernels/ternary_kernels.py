@@ -9,8 +9,8 @@ __all__ = ['AAQRSEKernel', 'AACQRSEKernel', "ATQRSEKernel", 'AAC2QRSEKernel', 'A
 class AAQRSEKernel(QRSEKernelBaseTernary):
 
     _code = "AA"
-    _pnames = ['t_{a0}', 't_{a2}', 'm_{a0}', 'm_{a2}', 'b']
-    _pnames_latex =[r'$T_{{{a0}}}$', r'$T_{{{a2}}}$', r'$\mu_{{{a0}}}$', r'$\mu_{{{a2}}}$', r'$\beta$']
+    _pnames_base = ['t_{a0}', 't_{a2}', 'm_{a0}', 'm_{a2}', 'b']
+    _pnames_latex_base =[r'$T_{{{a0}}}$', r'$T_{{{a2}}}$', r'$\mu_{{{a0}}}$', r'$\mu_{{{a2}}}$', r'$\beta$']
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -198,8 +198,8 @@ class AAC2QRSEKernel(AAQRSEKernel):
 class ATQRSEKernel(AAQRSEKernel):
 
     _code = "AT"
-    _pnames = ['t_{a0}', 't_{a2}', 'm', 'b']
-    _pnames_latex =[r'$T_{{{a0}}}$', r'$T_{{{a2}}}$', r'$\mu$', r'$\beta$']
+    _pnames_base = ['t_{a0}', 't_{a2}', 'm', 'b']
+    _pnames_latex_base =[r'$T_{{{a0}}}$', r'$T_{{{a2}}}$', r'$\mu$', r'$\beta$']
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

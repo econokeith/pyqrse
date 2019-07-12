@@ -1,5 +1,3 @@
-
-
 import autograd.numpy as np
 from autograd import elementwise_grad as egrad
 from autograd import grad, jacobian
@@ -42,7 +40,7 @@ class QRSE(HistoryMixin, PickleMixin):
         :param i_bounds:
         :return:
         """
-        if isinstance(kernel, kernels.QRSEKernelBase):
+        if issubclass(kernel, kernels.QRSEKernelBase):
             self.kernel = kernel
         else:
             try:
@@ -74,12 +72,12 @@ class QRSE(HistoryMixin, PickleMixin):
             self.i_max = i_bounds[1]
 
 
-        self._part_int = np.linspace(self.i_min, self.i_max, i_ticks)
-        self._int_delta = self._part_int[1] - self._part_int[0]
-        self._log_int_delta = np.log(self._int_delta)
+        self._integrate_ticks = np.linspace(self.i_min, self.i_max, i_ticks)
+        self._int_tick_delta = self._integrate_ticks[1] - self._integrate_ticks[0]
+        self._log_int_tick_delta = np.log(self._int_tick_delta)
 
 
-        if params is not None and len(params)==len(self.kernel._pnames):
+        if params is not None and len(params)==len(self.kernel._pnames_base):
             self.params0 = np.asarray(params)
 
         else:
@@ -93,8 +91,8 @@ class QRSE(HistoryMixin, PickleMixin):
 
         # self._sampler = None
         #
-        # self._history = None
-        self._new_history = []
+        # # self._history = None
+        # self._new_history = []
 
         self._switched = False
         self._min_sum_jac = 1e-3
@@ -109,9 +107,9 @@ class QRSE(HistoryMixin, PickleMixin):
         mean, std = mean_std_fun(data, weights)
         self.i_min = mean-std*i_std
         self.i_max = mean+std*i_std
-        self._part_int = np.linspace(self.i_min, self.i_max, self.iticks)
-        self._int_delta = self._part_int[1] - self._part_int[0]
-        self._log_int_delta = np.log(self._int_delta)
+        self._integrate_ticks = np.linspace(self.i_min, self.i_max, self.iticks)
+        self._int_tick_delta = self._integrate_ticks[1] - self._integrate_ticks[0]
+        self._log_int_tick_delta = np.log(self._int_tick_delta)
 
 
     def add_data(self, data, *args, index_col=0, header=None, squeeze=True, in_init=False,
@@ -159,9 +157,9 @@ class QRSE(HistoryMixin, PickleMixin):
         self.i_max = self.dmean+self.dstd* self.istds
 
         if in_init is False:
-            self._part_int = np.linspace(self.i_min, self.i_max, self.iticks)
-            self._int_delta = self._part_int[1] - self._part_int[0]
-            self._log_int_delta = np.log(self._int_delta)
+            self._integrate_ticks = np.linspace(self.i_min, self.i_max, self.iticks)
+            self._int_tick_delta = self._integrate_ticks[1] - self._integrate_ticks[0]
+            self._log_int_tick_delta = np.log(self._int_tick_delta)
 
             self.params0 = self.kernel.set_params0(self.data)
 
@@ -273,7 +271,7 @@ class QRSE(HistoryMixin, PickleMixin):
         elif isinstance(bounds, np.ndarray):
             ll = bounds
         else:
-            ll = self._part_int
+            ll = self._integrate_ticks
 
         cdf_data = np.cumsum(self.pdf(ll))*(ll[1]-ll[0])
         cdf_inv = sp.interpolate.interp1d(cdf_data, ll)
@@ -286,10 +284,10 @@ class QRSE(HistoryMixin, PickleMixin):
         :return:
         """
         the_params = self.params if params is None else params
-        logs = self.kernel.log_kernel(self._part_int, the_params)
+        logs = self.kernel.log_kernel(self._integrate_ticks, the_params)
         max_logs = np.max(logs)
 
-        return max_logs + np.log(np.sum(np.exp(logs-max_logs))) + self._log_int_delta
+        return max_logs + np.log(np.sum(np.exp(logs-max_logs))) + self._log_int_tick_delta
 
 
 
@@ -310,8 +308,11 @@ class QRSE(HistoryMixin, PickleMixin):
 
     def nll(self, data=None, params=None, weights=None, use_sp=False):
         """
-
+        nll(self, data=None, params=None, weights=None, use_sp=False)
+        :param data:
         :param params:
+        :param weights:
+        :param use_sp:
         :return:
         """
         if params is None:
@@ -339,13 +340,21 @@ class QRSE(HistoryMixin, PickleMixin):
         return -sum_kern + n_z*log_z - self.lprior(the_params)
 
 
+
     def log_p(self, *args, **kwargs):
         """
+         log probability = -1 * ( negative log likelihood )
 
-        :param args:
-        :param kwargs:
+         - nll(self, data=None, params=None, weights=None, use_sp=False)
+
+        :param data:
+        :param params:
+        :param weights:
+        :param use_sp:
         :return:
+
         """
+
         return -self.nll( *args, **kwargs)
 
 
@@ -355,6 +364,30 @@ class QRSE(HistoryMixin, PickleMixin):
 
     def lprior(self, params):
         return 0.
+
+    ## Inverse Hessian Stuff
+    #todo - get this in working order
+
+    def jac_fun(self, x):
+        if self._jac_fun is None:
+            self._jac_fun = egrad(self.log_p)
+        return self._jac_fun(x)
+
+    def hess_fun(self, x):
+        if self._hess_fun is None:
+            self._hess_fun = jacobian(self.jac_fun)
+        return self._hess_fun(x)
+
+    def hess_inv_fun(self, x):
+        return -sp.linalg.inv(self.hess_fun(x))
+
+    def set_hess_inv(self, from_res=False):
+        if from_res is True and self.res is not None:
+            self.hess_inv = self.res.hess_inv
+        else:
+            self.hess_inv = self.hess_inv_fun(self.params)
+
+        print("hess pos def? :", helpers.is_pos_def(self.hess_inv))
 
 
 
@@ -407,9 +440,9 @@ class QRSE(HistoryMixin, PickleMixin):
 
         :return:
         """
-        log_actions = self.logits(self._part_int)
-        pdfs_values = self.pdf(self._part_int)
-        return (log_actions*pdfs_values*self._int_delta).sum(axis=1).round(8)
+        log_actions = self.logits(self._integrate_ticks)
+        pdfs_values = self.pdf(self._integrate_ticks)
+        return (log_actions*pdfs_values*self._int_tick_delta).sum(axis=1).round(8)
 
     def joint_entropy(self):
         """
@@ -436,7 +469,7 @@ class QRSE(HistoryMixin, PickleMixin):
         return sp.integrate.quad(integrand, self.i_min, self.i_max)[0]
 
 
-    #MODEL SELECTION  ----------------------------------------------
+    #MODEL SELECTION CRITERIA ----------------------------------------------
 
     def aic(self):
         if self.data is not None:
