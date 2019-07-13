@@ -2,6 +2,7 @@
 import autograd.numpy as np
 from autograd import elementwise_grad as egrad
 from autograd import jacobian
+import pandas
 import matplotlib.pyplot as plt
 import scipy as sp
 import seaborn as sns; sns.set()
@@ -15,7 +16,7 @@ class QRSESampler:
     """
     sampler doc_string
     """
-    def __init__(self, model):
+    def __init__(self, model, chain_format='np'):
         """
 
         :param model:
@@ -40,6 +41,8 @@ class QRSESampler:
         self.n_accepted = np.zeros(self.n_params, dtype=int)
         self.errors = []
 
+        self.chain_format = chain_format
+
         #These are somewhat awkwardly set to update when called to avoid problems of solving for hess_inv
         #at initial instantiaion of the QRSE model. It also helps with pickling the object
         # self._jac_fun = None
@@ -59,7 +62,10 @@ class QRSESampler:
 
     @property
     def chain(self):
-        return self._chain.T
+        if self.chain_format in ('df', 'DF', 'pandas'):
+            return pandas.DataFrame(self._chain, columns=['ll']+self.model.kernel.pnames)
+        else:
+            return self._chain.T
 
     @property
     def marg_like(self):
@@ -76,17 +82,16 @@ class QRSESampler:
             i_argmax = np.argmax(self.chain[0])
             return self._chain[i_argmax][1:]
 
-    @property
     def max_like(self):
         if self._chain is not None:
             return self.chain[0].max()
 
-    def init(self):
+    def init(self, *args, **kwargs):
         """
 
         :return:
         """
-        self.model.sampler = QRSESampler(self.model)
+        self.model.sampler = QRSESampler(self.model, *args, **kwargs)
 
     # def jac_fun(self, x):
     #     if self._jac_fun is None:
@@ -213,7 +218,8 @@ class QRSESampler:
 
         return self.params
 
-    def mcmc(self, N=1000, burn=0, single=False, ptype="corr", s=1., update_hess=False, new=False):
+    def mcmc(self, N=1000, burn=0, single=False, ptype="corr", s=1., update_hess=False,
+             new=False, use_tqdm=True):
         """
         mcmc(self, N=1000, burn=0, single=False, ptype="corr", s=1., update_hess=False, new=False)
         :param N:
@@ -242,7 +248,12 @@ class QRSESampler:
                 except:
                     pass
         #sample
-        for i in tqdm(range(N)):
+        if use_tqdm is True:
+            range_fun = lambda n: tqdm(range(n))
+        else:
+            range_fun = lambda n: range(n)
+
+        for i in range_fun(N):
             try:
                 sample_fun(ptype=ptype, s=s)
             except:

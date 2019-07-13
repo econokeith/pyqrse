@@ -69,6 +69,34 @@ def docthief(mark_function):
         return wrapper
     return decorator
 
+def kwarg_filter(kwargs, target_function):
+    """
+    filters kwargs of outside function to make sure they work in target function.
+    Note: this function may have unexpected results if outer and target functions have the same
+    keyword arguments assigned to different uses.
+
+    :param kwargs: kwargs from outer function
+    :param target_function: function filtered kwargs will be given to
+                            if target accepts kwargs kwarg_filter is an identity function
+    :param outer_function: include if out function feeds key words directly to target as defaults
+                           defaults is None
+    :param remove_kws: if there are keywords in kwargs that should not be fed for any other reason
+    :return: dictionary of keyword arguments
+    """
+    t_args = inspect.getfullargspec(target_function)
+
+    if t_args.varkw:
+        return kwargs
+
+    new_kwargs = {}
+
+    for k, v in kwargs.items():
+        if k in t_args.args:
+            new_kwargs[k]=v
+
+    return new_kwargs
+
+#this was unneeded and a bit overkill
 # def kwarg_filter(kwargs, target_function, outer_function=None, remove_kws=None):
 #     """
 #     filters kwargs of outside function to make sure they work in target function.
@@ -102,39 +130,4 @@ def docthief(mark_function):
 #         if k in t_args and k not in remove_kws:
 #             new_kwargs[k]=v
 # #
-#         return new_kwargs
-
-def kwarg_filter(kwargs, target_function):
-    """
-    filters kwargs of outside function to make sure they work in target function.
-    Note: this function may have unexpected results if outer and target functions have the same
-    keyword arguments assigned to different uses.
-
-    :param kwargs: kwargs from outer function
-    :param target_function: function filtered kwargs will be given to
-                            if target accepts kwargs kwarg_filter is an identity function
-    :param outer_function: include if out function feeds key words directly to target as defaults
-                           defaults is None
-    :param remove_kws: if there are keywords in kwargs that should not be fed for any other reason
-    :return: dictionary of keyword arguments
-    """
-    t_args = inspect.getfullargspec(target_function)
-
-    if t_args.varkw:
-        return kwargs
-
-    # if outer_function is not None:
-    #     o_args = set(inspect.getfullargspec(outer_function).args)
-    #     t_args = set(t_args) - o_args
-    # else:
-    #     t_args = t_args.args
-
-    new_kwargs = {}
-    # if not isinstance(remove_kws, (tuple, list)):
-    #     remove_kws = [remove_kws]
-
-    for k, v in kwargs.items():
-        if k in t_args.args:
-            new_kwargs[k]=v
-#
-    return new_kwargs
+#     return new_kwargs

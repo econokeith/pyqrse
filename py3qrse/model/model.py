@@ -30,7 +30,7 @@ class QRSEModel(HistoryMixin, PickleMixin):
     THIS IS QRSE
     """
     def __init__(self, kernel='S', data=None, params=None, i_ticks=1000,
-                 i_stds=10, i_bounds=(-10, 10), about_data="", load_kwargs={}, param_kwargs={},
+                 i_stds=10, i_bounds=(-10, 10), about_data="",
                  norm_data=False, **kwargs):
         """
 
@@ -171,10 +171,19 @@ class QRSEModel(HistoryMixin, PickleMixin):
     def add_data(self, data, index_col=0, header=None, squeeze=True, in_init=False,
                  silent=False, save_abs_path=False, norm_data=False, **kwargs):
         """
+        Primary means of adding data to model. It will set integration defaults according to the
+        shape of the data.
 
-        :param data:
-        :param args:
-        :param kwargs:
+        :param data: either pandas.Series, np.ndarray, or "path/to/data"
+        :param index_col: pandas.read_csv keyword argument
+        :param header: pandas.read_csv keyword argument
+        :param squeeze: pandas.read_csv keyword argument
+        :param in_init: deprecated
+        :param silent: no printing while running. default is False
+        :param save_abs_path: if True will save absolute instead of relative path to the data
+                              useful if saving object to different location
+        :param norm_data: True or False to normalize data
+        :param kwargs: keyword arguments for pandas.read_csv
         :return:
         """
         assert isinstance(data, (str, np.ndarray, pandas.core.series.Series))
@@ -454,10 +463,42 @@ class QRSEModel(HistoryMixin, PickleMixin):
         return self.pdf(the_data)
 
     def log_prior(self, params):
+        """
+        The log_prior function used in the negative log likelihood functionality (fitting, sampling)
+        By default it returns 0.
+
+        log_prior can be overridden for an individual QRSEModel instance as follows:
+
+        1. instantiate an instance of the QRSEModel
+
+            qrse1 = QRSEModel(...) or qrse1 = QRSE(...)
+
+        2. define a new function for the prior:
+
+            def new_log_prior(self, params):
+
+                squared_loss = (params - [prior0, prior1, prior2, ...])**2
+                return squared_loss.sum()
+
+            note 1 - prior hyper_parameters must be hardcoded into the function
+            note 2 - the input variable, 'self',  must be included first
+                     regardless of whether or not it's used in the function
+            note 3 - params must be a 1d numpy.array
+            note 4 - the output is added to the negative log likelihood, which is minimized. Thus,
+                     the penalty of moving away from the prior should be positive (check this)
+
+        3. redefine the instance method to be the new function:
+
+            qrse1.log_prior = new_log_prior
+
+        :param params:
+        :return: float
+        """
         return 0.
 
     ## Inverse Hessian Functionality Using autograd
-    #todo - get this in working order
+    ## It's somewhat awkwardly organzied to make it play nice with pickling
+    #todo - get jacobian, hessian stuff in working order
     def jac_fun(self, x):
         if self._jac_fun is None:
             self._jac_fun = egrad(self.log_prob)
@@ -567,7 +608,7 @@ class QRSEModel(HistoryMixin, PickleMixin):
         integrand = lambda x: self.pdf(x)*(self.kernel.entropy(x, self.params))
         return sp.integrate.quad(integrand, self.i_min, self.i_max)[0]
 
-    #MODEL SELECTION CRITERIA ----------------------------------------------
+    # ------------------ MODEL SELECTION CRITERIA ----------------------------------------------
 
     def aic(self):
         if self.data is not None:
@@ -599,7 +640,6 @@ class QRSEModel(HistoryMixin, PickleMixin):
     @docthief(QRSEPlotter.plotboth)
     def plotboth(self, *args, **kwargs):
         self.plotter.plotboth(*args, **kwargs)
-
 
     #fitting
     @docthief(QRSEFitter.fit)

@@ -4,12 +4,12 @@ import autograd.numpy as np
 from autograd import elementwise_grad as egrad
 from autograd import grad, jacobian
 import scipy as sp
-import seaborn as sns;
+import seaborn as sns
 import py3qrse.utilities.mathstats
 
 sns.set()
-import py3qrse.utilities.helpers as helpers
-import py3qrse.model as qrse
+# import py3qrse.utilities.helpers as helpers
+# import py3qrse.model as qrse
 import py3qrse.utilities.mixins as mixins
 
 __all__ = ['QRSEFitter']
@@ -107,43 +107,43 @@ class QRSEFitter(mixins.HistoryMixin):
         self.fitted_q = True
         return res
 
-    def nll(self, data=None, params=None, weights=None, use_sp=False):
-        """
-
-        :param data:
-        :param params:
-        :param weights:
-        :param use_sp:
-        :return:
-        """
-        the_model = self.the_model
-
-        if params is None:
-            the_params = the_model.params
-        else:
-            the_params = params
-
-        the_data = the_model.data if data is None else data
-
-        log_kerns = the_model.kernel.log_kernel(the_data, the_params)
-
-        if weights is None:
-            sum_kern = log_kerns.sum()
-            n_z = the_data.shape[0]
-        else:
-            sum_kern = (log_kerns*weights).sum()
-            n_z = weights.sum()
-
-        ## to test if nelder mead is better at this shit.
-        if use_sp is True:
-            log_z = np.log(the_model.partition(the_params, use_sp=True))
-        else:
-            log_z = the_model.log_partition(the_params)
-
-        return -sum_kern + (n_z*log_z) - self.the_model.log_prior(the_params)
-
-    def log_p(self, *args, **kwargs):
-        return -self.the_model.nll(*args, **kwargs)
+    # def nll(self, data=None, params=None, weights=None, use_sp=False):
+    #     """
+    #
+    #     :param data:
+    #     :param params:
+    #     :param weights:
+    #     :param use_sp:
+    #     :return:
+    #     """
+    #     the_model = self.the_model
+    #
+    #     if params is None:
+    #         the_params = the_model.params
+    #     else:
+    #         the_params = params
+    #
+    #     the_data = the_model.data if data is None else data
+    #
+    #     log_kerns = the_model.kernel.log_kernel(the_data, the_params)
+    #
+    #     if weights is None:
+    #         sum_kern = log_kerns.sum()
+    #         n_z = the_data.shape[0]
+    #     else:
+    #         sum_kern = (log_kerns*weights).sum()
+    #         n_z = weights.sum()
+    #
+    #     ## to test if nelder mead is better at this shit.
+    #     if use_sp is True:
+    #         log_z = np.log(the_model.partition(the_params, use_sp=True))
+    #     else:
+    #         log_z = the_model.log_partition(the_params)
+    #
+    #     return -sum_kern + (n_z*log_z) - self.the_model.log_prior(the_params)
+    #
+    # def log_p(self, *args, **kwargs):
+    #     return -self.the_model.nll(*args, **kwargs)
 
     def fit(self, data=None, params0=None, summary=False, save=True, use_jac=True,
             weights=None, hist=False,
