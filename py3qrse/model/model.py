@@ -88,7 +88,7 @@ class QRSEModel(HistoryMixin, PickleMixin):
 
         else:
             assert len(params)==len(self.kernel._pnames_base)
-            self.set_parameters(params, **param_kwargs)
+            self.setup_from_params(params, **param_kwargs)
 
 
         self._params = np.copy(self.params0)
@@ -115,7 +115,7 @@ class QRSEModel(HistoryMixin, PickleMixin):
 
     # functions and attributes related to using the model object -------
 
-    def set_parameters(self, parameters, start=2, imax=100, minmax=(2e-07, 4.5e-05), find_mode=True, stds=None):
+    def setup_from_params(self, parameters, start=2, imax=100, minmax=(2e-07, 4.5e-05), find_mode=True, stds=None):
 
         """
         Will attempt to set model wide variables appropriate to model given parameters. does a binary search
@@ -426,7 +426,7 @@ class QRSEModel(HistoryMixin, PickleMixin):
 
         return -sum_kern + n_z*log_z - self.log_prior(the_params)
 
-    def log_p(self, *args, **kwargs):
+    def log_prob(self, *args, **kwargs):
         """
          log probability = -1 * ( negative log likelihood )
 
@@ -452,7 +452,7 @@ class QRSEModel(HistoryMixin, PickleMixin):
     #todo - get this in working order
     def jac_fun(self, x):
         if self._jac_fun is None:
-            self._jac_fun = egrad(self.log_p)
+            self._jac_fun = egrad(self.log_prob)
         return self._jac_fun(x)
 
     def hess_fun(self, x):

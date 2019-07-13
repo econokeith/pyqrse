@@ -24,10 +24,10 @@ class QRSESampler:
         """
         self.model = model
         self.params = np.copy(self.model.params)
-        self.log_p = self.model.log_p
+        self.log_p = self.model.log_prob
 
         try:
-            self.last_log_p = self.model.log_p(params=self.params)
+            self.last_log_p = self.model.log_prob(params=self.params)
         except:
             self.last_log_p = -np.inf
 
@@ -180,13 +180,13 @@ class QRSESampler:
             params0 = self.params
         else:
             params0 = params
-            self.last_log_p = self.model.log_p(params=params)
+            self.last_log_p = self.model.log_prob(params=params)
 
         #sample from proposal: either use correlated samples or not
         params1 = self.propose_new(params, ptype, s=1.)
 
         ll0 = self.last_log_p
-        ll1 = self.model.log_p(params=params1)
+        ll1 = self.model.log_prob(params=params1)
 
         #accept or reject
         if np.isfinite(ll1) and (ll1-ll0 >= np.log(np.random.rand())):

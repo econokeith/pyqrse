@@ -1,9 +1,7 @@
-import seaborn as sns;
-sns.set()
 import datetime
+import inspect
 
 
-## ------- mathstats ---------------------------------
 
 ### utilities and convenience tools
 
@@ -58,3 +56,13 @@ def docthief(mark_function):
         wrapper.__doc__ = mark_function.__doc__
         return wrapper
     return decorator
+
+def kwarg_filter(kwargs, target_function):
+    t_args = inspect.getfullargspec(target_function).args
+    new_kwargs = {}
+
+    for k, v in kwargs.items():
+        if k in t_args:
+            new_kwargs[k]=v
+
+    return new_kwargs

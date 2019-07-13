@@ -16,24 +16,21 @@ __all__ = ['QRSEFitter']
 
 class QRSEFitter(mixins.HistoryMixin):
 
-    def __init__(self, model):
+    def __init__(self, the_model):
         super().__init__()
 
         # assert isinstance(model, qrse.QRSEModel)
-        self.model = model
-
-        #todo - centralize prior fun on model
-        self.lprior_fun = l_prior_fun
+        self.the_model = the_model
 
         self.kl_target = None
         self.res = None
-        self.params0 = copy.copy(model.params0)
-        self.params = copy.copy(model.params)
+        self.params0 = copy.copy(the_model.params0)
+        self.params = copy.copy(the_model.params)
 
         self._min_sum_jac = 1e-3
 
     def update_model(self):
-        self.model.params = copy.copy(self.params)
+        self.the_model.params = copy.copy(self.params)
 
     def set_kl_target(self, target):
         """
@@ -41,7 +38,7 @@ class QRSEFitter(mixins.HistoryMixin):
         :return:
         """
 
-        model = self.model
+        model = self.the_model
         self.kl_target = target
 
         try:
@@ -62,18 +59,18 @@ class QRSEFitter(mixins.HistoryMixin):
         if target is not None:
             self.set_kl_target(target)
 
-        model = self.model
+        the_model = self.the_model
 
         if params is None:
-            the_params = model.params
+            the_params = the_model.params
         else:
             the_params = params
 
-        kernel_values = model.kernel.log_kernel(model._integration_ticks, the_params)
+        kernel_values = the_model.kernel.log_kernel(the_model._integration_ticks, the_params)
         weights = self._target_weights
-        log_z = model.log_partition(the_params)
+        log_z = the_model.log_partition(the_params)
 
-        return -(kernel_values*weights).sum() + log_z - self.lprior_fun(the_params)
+        return -kernel_values.dot(weights) + log_z - the_model.log_prior(the_params)
 
     def klmin(self, target=None, save=True, use_jac=True, **kwargs):
         """
@@ -97,7 +94,7 @@ class QRSEFitter(mixins.HistoryMixin):
             jac=None
 
         #set xi to mean of target dist
-        self.model.kernel.xi = self._target_weights.dot(self.model._integration_ticks)
+        self.the_model.kernel.xi = self._target_weights.dot(self.the_model._integration_ticks)
 
         res = sp.optimize.minimize(self.kld, self.params0, jac=jac, **kwargs)
 
@@ -105,7 +102,7 @@ class QRSEFitter(mixins.HistoryMixin):
         self.params = copy.copy(res.x)
 
         if save is True:
-            self.model.params = copy.copy(res.x)
+            self.the_model.params = copy.copy(res.x)
 
         self.fitted_q = True
         return res
@@ -119,16 +116,16 @@ class QRSEFitter(mixins.HistoryMixin):
         :param use_sp:
         :return:
         """
-        model = self.model
+        the_model = self.the_model
 
         if params is None:
-            the_params = model.params
+            the_params = the_model.params
         else:
             the_params = params
 
-        the_data = model.data if data is None else data
+        the_data = the_model.data if data is None else data
 
-        log_kerns = model.kernel.log_kernel(the_data, the_params)
+        log_kerns = the_model.kernel.log_kernel(the_data, the_params)
 
         if weights is None:
             sum_kern = log_kerns.sum()
@@ -139,14 +136,14 @@ class QRSEFitter(mixins.HistoryMixin):
 
         ## to test if nelder mead is better at this shit.
         if use_sp is True:
-            log_z = np.log(model.partition(the_params, use_sp=True))
+            log_z = np.log(the_model.partition(the_params, use_sp=True))
         else:
-            log_z = model.log_partition(the_params)
+            log_z = the_model.log_partition(the_params)
 
-        return -sum_kern + n_z*log_z - self.model.log_prior(the_params)
+        return -sum_kern + (n_z*log_z) - self.the_model.log_prior(the_params)
 
     def log_p(self, *args, **kwargs):
-        return -self.model.nll( *args, **kwargs)
+        return -self.the_model.nll(*args, **kwargs)
 
     def fit(self, data=None, params0=None, summary=False, save=True, use_jac=True,
             weights=None, hist=False,
@@ -172,15 +169,15 @@ class QRSEFitter(mixins.HistoryMixin):
 
         :return:
         """
-        model = self.model
+        the_model = self.the_model
 
-        the_data = model.data if data is None else data
-        the_params0 = model.params0 if params0 is None else np.asarray(params0)
+        the_data = the_model.data if data is None else data
+        the_params0 = the_model.params0 if params0 is None else np.asarray(params0)
 
         ## If there is nothing to solve. There is nothing to solve
         if the_data is None:
             if hist is True:
-                self.save_history(model.params)
+                self.save_history(the_model.params)
             if silent is False:
                 print("NO DATA")
             return
@@ -188,18 +185,18 @@ class QRSEFitter(mixins.HistoryMixin):
         ## If there is new data and/or there are new weights
         if data is not None or weights is not None:
             if weights is not None:
-                model.kernel.xi = data.dot(weights)/weights.sum()
+                the_model.kernel.xi = data.dot(weights)/weights.sum()
             else:
-                model.kernel.xi = data.mean()
+                the_model.kernel.xi = data.mean()
 
         if (smart_p0 is True) and (data is not None or weights is not None) and (params0 == 0):
-            model.update_p0(data, weights)
-            the_params0 = model.params0
+            the_model.update_p0(data, weights)
+            the_params0 = the_model.params0
 
         ## Set nll with data and weights
         ## Note to self. use_sp is not included here because it throws an error with most of the methods
 
-        nll_fun = lambda x : self.model.nll(params=x, data=the_data, weights=weights)
+        nll_fun = lambda x : self.the_model.nll(params=x, data=the_data, weights=weights)
 
         ## This is a kind of long thing to allow the fit to try different methods if 1 fit is more.
         if 'method' in list(kwargs.keys()):
@@ -215,7 +212,7 @@ class QRSEFitter(mixins.HistoryMixin):
 
         if the_method == 'nelder-mead':
             if use_sp is True:
-                nll_fun = lambda x : self.model.nll(params=x, data=the_data, weights=weights, use_sp=True)
+                nll_fun = lambda x : self.the_model.nll(params=x, data=the_data, weights=weights, use_sp=True)
             res = sp.optimize.minimize(nll_fun, the_params0, method='nelder-mead', **copy_kwargs)
 
             if check is True and res.success is False:
@@ -265,16 +262,10 @@ class QRSEFitter(mixins.HistoryMixin):
 
         self.params = copy.copy(res.x)
         if save is True:
-            model.params = copy.copy(res.x)
+            the_model.params = copy.copy(res.x)
 
         if summary is True:
             py3qrse.utilities.mathstats.m_summary(copy.copy(res.x))
 
         if hist is True:
             self.save_history(res.x)
-
-
-
-
-def l_prior_fun(params):
-    return 0.
