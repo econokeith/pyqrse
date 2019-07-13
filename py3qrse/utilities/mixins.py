@@ -47,6 +47,7 @@ class HistoryMixin:
         self._new_history = []
         self._history = None
 
+#TODO Turn this into a 'safer' save method. such as from_save_dict or something
 
 class PickleMixin:
 
@@ -73,7 +74,6 @@ class PickleMixin:
 
         :return:
         """
-
 
         if trust_check is True:
             print('Are you absolutely sure you trust the source of this pickle?')

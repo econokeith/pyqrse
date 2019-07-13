@@ -18,7 +18,7 @@ import py3qrse.utilities.helpers as helpers
 from ..utilities.plottools import QRSEPlotter
 from ..utilities.mixins import PickleMixin, HistoryMixin
 from ..fittools import QRSESampler, QRSEFitter
-from ..utilities.helpers import docthief
+from ..utilities.helpers import docthief, kwarg_filter
 from py3qrse.utilities.mathstats import is_pos_def, mean_std_fun, find_support_bounds
 
 __all__ = ["QRSEModel", "available_kernels"]
@@ -29,9 +29,9 @@ class QRSEModel(HistoryMixin, PickleMixin):
     """
     THIS IS QRSE
     """
-    def __init__(self, kernel=kernels.SQRSEKernel(), data=None, params=None, i_ticks=1000,
+    def __init__(self, kernel='S', data=None, params=None, i_ticks=1000,
                  i_stds=10, i_bounds=(-10, 10), about_data="", load_kwargs={}, param_kwargs={},
-                 norm_data=False):
+                 norm_data=False, **kwargs):
         """
 
         :param kernel:
@@ -72,7 +72,6 @@ class QRSEModel(HistoryMixin, PickleMixin):
         self.data_normed = False
         self.data_suff_stats = np.array([0., 1.]) # unnormalized mean and standard deviation
 
-
         ## sets up integration bounds, etc for when there is data/no data and params/no params
 
         if data is None and params is None:
@@ -84,12 +83,11 @@ class QRSEModel(HistoryMixin, PickleMixin):
             self.params0 = self.kernel.set_params0(self.data)
 
         elif data is not None:
-            self.add_data(data, **load_kwargs)
+            self.add_data(data, **kwargs)
 
         else:
             assert len(params)==len(self.kernel._pnames_base)
-            self.setup_from_params(params, **param_kwargs)
-
+            self.setup_from_params(params, **kwarg_filter(kwargs, QRSEModel.setup_from_params))
 
         self._params = np.copy(self.params0)
         self.z = self.partition()
@@ -151,7 +149,8 @@ class QRSEModel(HistoryMixin, PickleMixin):
         else:
             mode = start_value
 
-        self.i_min, self.i_max = find_support_bounds(support_fun, start=mode, which='both', minmax=minmax, imax=imax)
+        self.i_min, self.i_max = find_support_bounds(support_fun, start=mode, which='both',
+                                                     minmax=minmax, imax=imax)
 
         self._integration_ticks = np.linspace(self.i_min, self.i_max, self.i_ticks)
         self._int_tick_delta = self._integration_ticks[1] - self._integration_ticks[0]
@@ -186,8 +185,10 @@ class QRSEModel(HistoryMixin, PickleMixin):
             if silent is not False:
                 print('importing : ', abs_path)
 
+
             self.data = pandas.read_csv(data, index_col=index_col, header=header,
-                                        squeeze=squeeze, **kwargs).values
+                                        squeeze=squeeze,
+                                        **kwarg_filter(kwargs, pandas.read_csv)).values
             if save_abs_path is True:
                 self.notes['data_path'] = abs_path
             else:
@@ -273,9 +274,17 @@ class QRSEModel(HistoryMixin, PickleMixin):
     def xi(self, new_xi):
         self.kernel.xi = new_xi
 
+    @property
+    def use_xi(self):
+        return self.kernel.use_xi
+
+    @property
+    def n_actions(self):
+        return self.kernel.n_actions
+
     #----------- STATS FUNCTIONALITY ----------------------------------------------
 
-    def mode(self, use_sp=False):
+    def mode(self, use_sp=True):
         """
         :use_sp: if False (default) will find optimum over grid of ticks
                  if True will use scipy integrate/maximize
@@ -291,7 +300,6 @@ class QRSEModel(HistoryMixin, PickleMixin):
             mode = ticks[np.argmax(self.pdf(ticks))]
 
         return mode
-
 
     def mean(self, use_sp=False):
         """

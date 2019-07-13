@@ -8,6 +8,9 @@ __all__ = ['AAQRSEKernel', "ATQRSEKernel", 'AAXQRSEKernel']
 
 
 class AAQRSEKernel(QRSEKernelBaseTernary):
+    """
+
+    """
 
     _code = "AA"
     _pnames_base = ['t_{a0}', 't_{a2}', 'm_{a0}', 'm_{a2}', 'b']
@@ -104,6 +107,9 @@ class AAQRSEKernel(QRSEKernelBaseTernary):
 
 
 class AAXQRSEKernel(AAQRSEKernel):
+    """
+    potential = -b*(p_buy - p_sell)*(x-xi)
+    """
 
     _code = "AAX"
 

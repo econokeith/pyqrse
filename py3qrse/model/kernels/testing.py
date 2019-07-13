@@ -6,9 +6,14 @@ import py3qrse.model.kernels.base as base
 import py3qrse.model.kernels.binary as binary
 import py3qrse.model.kernels.ternary as ternary
 
+
+## Kernels in this section should be given a code of None
+## However, once they are finalized and moved to either binary or ternary they must
+## be assigned a unique code
+
 class AAQRSEKernelLSE(ternary.QRSEKernelBaseTernary):
 
-    _code = "AALSE"
+    _code = None #'AA-LSE'
     _pnames_base = ['t_{a0}', 't_{a2}', 'm_{a0}', 'm_{a2}', 'b']
     _pnames_latex_base =[r'$T_{{{a0}}}$', r'$T_{{{a2}}}$', r'$\mu_{{{a0}}}$', r'$\mu_{{{a2}}}$', r'$\beta$']
     _in_testing = True
@@ -75,7 +80,7 @@ class AAQRSEKernelLSE(ternary.QRSEKernelBaseTernary):
 
 class AAC2QRSEKernel(ternary.AAQRSEKernel):
 
-    _code = "AA2-OLD"
+    _code = None #"AA2-OLD"
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
