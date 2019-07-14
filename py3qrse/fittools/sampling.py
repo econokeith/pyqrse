@@ -43,20 +43,6 @@ class QRSESampler:
 
         self.chain_format = chain_format
 
-        #These are somewhat awkwardly set to update when called to avoid problems of solving for hess_inv
-        #at initial instantiaion of the QRSE model. It also helps with pickling the object
-        # self._jac_fun = None
-        # self._hess_fun = None
-        #
-        # if isinstance(hess_inv, np.ndarray):
-        #     self.hess_inv = hess_inv
-        # elif hess_inv is 'fit':
-        #     self.set_hess_inv(True)
-        # else:
-        #     self.hess_inv = np.eye(self.params.shape[0])*.01
-
-
-
     @property
     def a_rates(self):
         if self._chain is not None:
@@ -323,56 +309,3 @@ class QRSESampler:
             plt.plot(c1-c2, **kwargs)
 
         plt.title('{} distribution of ({} - {})'.format(qrse_model.name, parameter1, parameter2))
-
-
-
-    # def sample_posterior(self, data=None, params=None, is_burn=False,
-    #                      ptype="corr", s=1, hist=True):
-    #
-    #     # select params
-    #     if params is None:
-    #         params0 = self.params
-    #         if data is not None:
-    #             self.last_log_p = self.log_p(data, params)
-    #
-    #     else:
-    #         params0 = params
-    #         self.last_log_p = self.log_p(data, params)
-    #
-    #     try:
-    #         self._runs
-    #         self._accepted
-    #     except:
-    #         self._runs=0
-    #         self._accepted=0
-    #
-    #
-    #     #sample from proposal: either use correlated samples or not
-    #     params1 = self._propose_new(params, ptype, s=s)
-    #
-    #     if params1[0]<0.:
-    #         params1[0]=params0[0]
-    #
-    #     self.last_propose = params1
-    #
-    #     ll0 = self.last_log_p
-    #     ll1 = self.log_p(data, params1)
-    #
-    #     #accept or reject
-    #     if ll1-ll0 >= np.log(np.random.rand()):
-    #         self.last_log_p = ll1
-    #         self.params = params1
-    #
-    #         #update hessian if we do
-    #
-    #         if is_burn is False:
-    #                 self._accepted += 1
-    #
-    #     else:
-    #         self.last_log_p = ll0
-    #         self.params = params0
-    #
-    #     self._runs += 1
-    #
-    #     if hist is True:
-    #         self.save_history(self.params)

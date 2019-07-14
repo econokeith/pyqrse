@@ -7,12 +7,11 @@ import py3qrse.utilities.mathstats as mathstats
 from autograd import elementwise_grad as egrad
 from autograd import grad, jacobian
 
-
-import py3qrse.utilities.mixins as mixins
+from py3qrse.utilities.mixins import HistoryMixin
 
 __all__ = ['QRSEFitter']
 
-class QRSEFitter(mixins.HistoryMixin):
+class QRSEFitter(HistoryMixin):
 
     def __init__(self, the_model):
         super().__init__()
