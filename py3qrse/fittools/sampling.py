@@ -16,19 +16,19 @@ class QRSESampler:
     """
     sampler doc_string
     """
-    def __init__(self, model, chain_format='np'):
+    def __init__(self, qrse_model, chain_format='df'):
         """
 
-        :param model:
-        :param hess_inv:
+        :param qrse_model: QRSEModel()
+        :param chain_format: 'df' for DataFrame, 'np' for np.ndarray
         :return:
         """
-        self.model = model
-        self.params = np.copy(self.model.params)
-        self.log_p = self.model.log_prob
+        self.qrse_model = qrse_model
+        self.params = np.copy(self.qrse_model.params)
+        self.log_p = self.qrse_model.log_prob
 
         try:
-            self.last_log_p = self.model.log_prob(params=self.params)
+            self.last_log_p = self.qrse_model.log_prob(params=self.params)
         except:
             self.last_log_p = -np.inf
 
@@ -36,7 +36,7 @@ class QRSESampler:
 
         self.stds = np.ones(self.n_params)
 
-        self._chain = None
+        self._chain = np.zeros((1, self.n_params+1))
 
         self.n_accepted = np.zeros(self.n_params, dtype=int)
         self.errors = []
@@ -55,6 +55,8 @@ class QRSESampler:
         # else:
         #     self.hess_inv = np.eye(self.params.shape[0])*.01
 
+
+
     @property
     def a_rates(self):
         if self._chain is not None:
@@ -62,8 +64,8 @@ class QRSESampler:
 
     @property
     def chain(self):
-        if self.chain_format in ('df', 'DF', 'pandas'):
-            return pandas.DataFrame(self._chain, columns=['ll']+self.model.kernel.pnames)
+        if self.chain_format in ('df', 'DF', 'pandas', 'pd'):
+            return pandas.DataFrame(self._chain, columns=['ll']+self.qrse_model.pnames)
         else:
             return self._chain.T
 
@@ -88,35 +90,14 @@ class QRSESampler:
 
     def init(self, *args, **kwargs):
         """
-
+        updates sampler with recent activity of the QRSEModel()
         :return:
         """
-        self.model.sampler = QRSESampler(self.model, *args, **kwargs)
-
-    # def jac_fun(self, x):
-    #     if self._jac_fun is None:
-    #         self._jac_fun = egrad(self.log_p)
-    #     return self._jac_fun(x)
-    #
-    # def hess_fun(self, x):
-    #     if self._hess_fun is None:
-    #         self._hess_fun = jacobian(self.jac_fun)
-    #     return self._hess_fun(x)
-
-    # def hess_inv_fun(self, x):
-    #     return -sp.linalg.inv(self.hess_fun(x))
-    #
-    # def set_hess_inv(self, from_res=False):
-    #     if from_res is True and self.model.res is not None:
-    #         self.hess_inv = self.model.res.hess_inv
-    #     else:
-    #         self.hess_inv = self.hess_inv_fun(self.params)
-    #
-    #     print("hess pos def? :", helpers.is_pos_def(self.hess_inv))
+        self.qrse_model.sampler = QRSESampler(self.qrse_model, *args, **kwargs)
 
     def set_params(self):
         if self._chain is not None:
-            self.model.params = self.max_params
+            self.qrse_model.params = self.max_params
 
     def _single_sample(self, params=None, is_burn=False, ptype="corr", s=1.):
 
@@ -171,7 +152,7 @@ class QRSESampler:
         the_params = self.params if params is None else params
 
         if ptype is "corr":
-            hess_inv = self.model.hess_inv*s
+            hess_inv = self.qrse_model.hess_inv*s
             new_params = sp.stats.multivariate_normal(the_params, hess_inv).rvs()
         else:
             new_params = np.random.randn(self.n_params) * self.stds + the_params
@@ -185,13 +166,13 @@ class QRSESampler:
             params0 = self.params
         else:
             params0 = params
-            self.last_log_p = self.model.log_prob(params=params)
+            self.last_log_p = self.qrse_model.log_prob(params=params)
 
         #sample from proposal: either use correlated samples or not
         params1 = self.propose_new(params, ptype, s=1.)
 
         ll0 = self.last_log_p
-        ll1 = self.model.log_prob(params=params1)
+        ll1 = self.qrse_model.log_prob(params=params1)
 
         #accept or reject
         if np.isfinite(ll1) and (ll1-ll0 >= np.log(np.random.rand())):
@@ -200,7 +181,7 @@ class QRSESampler:
 
             #update hessian if we do?
             if update_hess is True:
-                self.model.hess_inv = self.model.hess_inv_fun(self.params)
+                self.qrse_model.hess_inv = self.qrse_model.hess_inv_fun(self.params)
 
             if is_burn is False:
                     self.n_accepted[0]+= 1
@@ -241,7 +222,7 @@ class QRSESampler:
         if single is True: sample_fun = self._single_sample
         else: sample_fun = self._joint_sample
         #burn in if it's a new chain
-        if self._chain is None:
+        if self._chain.sum() == 0.:
             for _ in range(burn):
                 try:
                     sample_fun(is_burn=True, ptype=ptype, s=s)
@@ -263,14 +244,27 @@ class QRSESampler:
             new_chain[i, 1:] = self.params
 
         #either save chain or add new_chain to existing chain
-        if self._chain is None or new is True:
+        if self._chain.sum()==0. or new is True:
             self._chain = new_chain
         else:
             self._chain = np.vstack((self._chain, new_chain))
 
         print(self.a_rates)
 
-    def plot(self, per_row=2, figsize=(12, 4)):
+    def getdiff(self, parameter1, parameter2):
+        """
+
+        Get the difference between the chains of two parameters
+
+        :param parameter1: string name for p1 (i.e. 't_buy')
+        :param parameter2: string name for p2 (i.e. 't_sell')
+        :return: np.ndarray
+        """
+        qrse_model = self.qrse_model
+        chains = pandas.DataFrame(self._chain, columns=['ll'] + qrse_model.pnames)
+        return (chains[parameter1]-chains[parameter2]).values
+
+    def plot(self, per_row=2, figsize=(12, 4), use_latex=True):
         """
         plot(self, per_row=2, figsize=(12, 4)):
         :param per_row:
@@ -278,17 +272,59 @@ class QRSESampler:
         :return:
         """
 
-        n_series = self.chain.shape[0]
-        per_row = 2
+        n_series = self._chain.shape[1]
+        per_row = per_row
         n_rows = int(round(n_series/per_row) + n_series%per_row)
+
         plt.figure(figsize=(figsize[0], figsize[1]*n_rows))
+
         plt.subplot(n_rows, per_row, 1)
-        plt.plot(self.chain[0])
+        plt.plot(self._chain[:, 0])
         plt.title("log-likelihood")
+
+        if use_latex is True: names = self.qrse_model.pnames_latex
+        else: names = self.qrse_model.pnames
+
         for i in range(1, n_series):
             plt.subplot(n_rows, per_row, 1+i)
-            sns.distplot(self.chain[i])
-            plt.title(self.model.kernel.pnames_latex[i-1])
+            sns.distplot(self._chain[:, i])
+            plt.title(names[i-1])
+
+    def plotdiff(self, parameter1, parameter2, kind='hist', use_latex=True, figsize=None, **kwargs):
+        """
+        Quickly view the difference between the chains of two parameters
+
+        :param parameter1: string name for p1 (i.e. 't_buy')
+        :param parameter2: string name for p2 (i.e. 't_sell')
+        :param kind: 'hist' for histogram or 'line' for time-series
+        :param use_latex: use latex version of parameter names. default is True
+        :param figsize: invokes plt.figure(figsize=figsize).
+        :param kwargs: additional arguments for sns.distplot() and plt.plot()
+        :return:
+        """
+        qrse_model = self.qrse_model
+        chains = pandas.DataFrame(self._chain, columns=['ll'] + qrse_model.pnames)
+
+        c1 = chains[parameter1]
+        c2 = chains[parameter2]
+
+        if use_latex is True:
+            i1 = qrse_model.pnames.index(parameter1)
+            i2 = qrse_model.pnames.index(parameter2)
+            parameter1 = qrse_model.pnames_latex[i1]
+            parameter2 = qrse_model.pnames_latex[i2]
+
+        if figsize is not None:
+            plt.figure(figsize=figsize)
+
+        if kind is 'hist':
+            sns.distplot(c1-c2, **kwargs)
+        else:
+            plt.plot(c1-c2, **kwargs)
+
+        plt.title('{} distribution of ({} - {})'.format(qrse_model.name, parameter1, parameter2))
+
+
 
     # def sample_posterior(self, data=None, params=None, is_burn=False,
     #                      ptype="corr", s=1, hist=True):

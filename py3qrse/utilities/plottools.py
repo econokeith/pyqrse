@@ -1,11 +1,8 @@
 import copy
-
 import autograd.numpy as np
 import matplotlib.pyplot as plt
-import seaborn as sns;
-
+import seaborn as sns
 sns.set()
-
 import py3qrse.utilities.defaults
 
 class QRSEPlotter:

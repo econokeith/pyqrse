@@ -11,13 +11,18 @@ class QRSEKernelBase:
     _pnames_base = ['t', 'b', 'm'] #base name to update with new labels
     _pnames_latex_base =[r'$T$', r'$\beta$', r'$\mu$'] #base name to update with new labels for latex
     _generic_actions = ['a0', 'a1'] #generic names of actions for .format(a0=buy, a1=sell, etc)
-    _action_setting = 'binary' #binary or ternary
     _n_actions = 2 #2 or 3
     in_testing = False
+
+    _ktype = 'binary' #binary or ternary
 
     @classmethod
     def getcode(cls):
         return cls._code
+
+    @classmethod
+    def getktype(cls):
+        return cls._ktype
 
     def __init__(self,  use_xi=False, use_entropy=True,):
 
@@ -36,7 +41,8 @@ class QRSEKernelBase:
         ## All of this is to make sure that labels
         ## on charts change with changes in actions
         ## only occurs for newly instantiated kernels
-        self._actions = copy.deepcopy(py3qrse.utilities.defaults.LABEL_SETTINGS['ACTION_LABELS'][self._action_setting])
+        ## full path is used to always call the default
+        self._actions = copy.deepcopy(py3qrse.utilities.defaults.LABEL_SETTINGS['ACTION_LABELS'][self._ktype])
 
         self.pnames = []
         self.pnames_latex= []
@@ -52,7 +58,7 @@ class QRSEKernelBase:
         self._actions = new_actions
         action_dict = dict(zip(self._generic_actions, self._actions))
         self.pnames = [pname.format(**action_dict) for pname in self._pnames_base]
-        self.pnames_latex = [pname.format(**action_dict) for pname in self._pnames_base]
+        self.pnames_latex = [pname.format(**action_dict) for pname in self._pnames_latex_base]
 
     @property
     def code(self):
@@ -83,6 +89,9 @@ class QRSEKernelBase:
     def indifference(self, params):
         return False
 
+    def denorm_params(self, params):
+        return False
+
 
 class QRSEKernelBaseBinary(QRSEKernelBase):
     #here for use with issubclass()
@@ -94,7 +103,7 @@ class QRSEKernelBaseTernary(QRSEKernelBase):
     #updates for 3 states
     _n_actions = 3
     _generic_actions = ['a0', 'a1', 'a2']
-    _action_setting = 'ternary'
+    _ktype = 'ternary'
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

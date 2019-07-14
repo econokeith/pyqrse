@@ -33,11 +33,14 @@ def kernel_hierarchy_to_hash_bfs(kernel):
     queue = [kernel]
 
     while queue:
+
         the_kernel = queue.pop(0)
         sub_classes = the_kernel.__subclasses__()
         queue += sub_classes
         code = the_kernel.getcode()
+
         if code is not None:
+
             if code in kernel_hash:
 
                 k1_name = the_kernel.__name__
@@ -50,7 +53,6 @@ def kernel_hierarchy_to_hash_bfs(kernel):
                         break
 
                 print('  Code = {} was used for {} instead'.format(code, k1_name))
-
 
             kernel_hash[code] = the_kernel
 
@@ -77,10 +79,6 @@ def kwarg_filter(kwargs, target_function):
 
     :param kwargs: kwargs from outer function
     :param target_function: function filtered kwargs will be given to
-                            if target accepts kwargs kwarg_filter is an identity function
-    :param outer_function: include if out function feeds key words directly to target as defaults
-                           defaults is None
-    :param remove_kws: if there are keywords in kwargs that should not be fed for any other reason
     :return: dictionary of keyword arguments
     """
     t_args = inspect.getfullargspec(target_function)
@@ -96,38 +94,3 @@ def kwarg_filter(kwargs, target_function):
 
     return new_kwargs
 
-#this was unneeded and a bit overkill
-# def kwarg_filter(kwargs, target_function, outer_function=None, remove_kws=None):
-#     """
-#     filters kwargs of outside function to make sure they work in target function.
-#     Note: this function may have unexpected results if outer and target functions have the same
-#     keyword arguments assigned to different uses.
-#
-#     :param kwargs: kwargs from outer function
-#     :param target_function: function filtered kwargs will be given to
-#                             if target accepts kwargs kwarg_filter is an identity function
-#     :param outer_function: include if out function feeds key words directly to target as defaults
-#                            defaults is None
-#     :param remove_kws: if there are keywords in kwargs that should not be fed for any other reason
-#     :return: dictionary of keyword arguments
-#     """
-#     t_args = inspect.getfullargspec(target_function)
-#
-#     if t_args.varkw:
-#         return kwargs
-#
-#     if outer_function is not None:
-#         o_args = set(inspect.getfullargspec(outer_function).args)
-#         t_args = set(t_args) - o_args
-#     else:
-#         t_args = t_args.args
-#
-#     new_kwargs = {}
-#     if not isinstance(remove_kws, (tuple, list)):
-#         remove_kws = [remove_kws]
-#
-#     for k, v in kwargs.items():
-#         if k in t_args and k not in remove_kws:
-#             new_kwargs[k]=v
-# #
-#     return new_kwargs
