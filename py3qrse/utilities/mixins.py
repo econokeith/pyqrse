@@ -110,4 +110,3 @@ class PickleMixin:
         """
         with open(path_to_pickle, 'wb') as file:
             pickle.dump(self, file)
-
