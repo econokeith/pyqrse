@@ -1,8 +1,6 @@
 import datetime
 import inspect
 
-
-
 ### utilities and convenience tools
 
 def date_to_datetime(d):
