@@ -1,3 +1,4 @@
+__author__='Keith Blackwell'
 import autograd.numpy as np
 from autograd import elementwise_grad as egrad
 from autograd import grad, jacobian
@@ -59,9 +60,24 @@ class QRSEModel(HistoryMixin, PickleMixin):
 
         self.notes = {'kernel': self.kernel.name,
                       'about_data' : about_data}
+        """
+        A 'notes' dictionary for the model
+        Conveniently track things to remember about results. Especially
+        useful pickling the object
+        """
 
         self.name = self.kernel.name
+        """
+        name of the model
+        by default name is set of the abbreviated kernel name (i.e. S-QRSE)
+        """
+
         self.long_name = self.kernel.long_name
+        """
+        longer name of the model
+        by default name is set of the full name of kernel name
+        (i.e. Symmetric-QRSE)
+        """
 
         self.i_ticks = i_ticks
         self.i_stds = i_stds
@@ -106,15 +122,29 @@ class QRSEModel(HistoryMixin, PickleMixin):
         # plotting, sampling, fitting is 'outsourced' to other objects
 
         self.plotter = QRSEPlotter(self)
+        """controls plotting for QRSEModel
+
+        see py3qrse.utilitities.plottools.QRSEPlotter
+        """
         self.sampler = QRSESampler(self)
+        """controls mcmc sampling for QRSEModel
+        see py3qrse.fittools.sampling.QRSESampler
+        """
         self.fitter = QRSEFitter(self)
+        """controls model fitting for QRSEModel
+
+        allows fitting via Kullbeck-Leibler Distance Minimization and
+        maximum likelihood estimation
+        see py3qrse.fittools.optimizer.QRSEFitter"""
 
         ## Inverse Hessian Functionality Using autograd
 
         self._min_sum_jac = 1e-3
         self._hess_fun = None
         self._jac_fun = None
-        self.hess_inv = np.eye(self.params.shape[0])*.01 # defaults to shrunk identity matrix
+
+        # defaults to shrunk identity matrix
+        self.hess_inv = np.eye(self.params.shape[0])*.01
 
         ## this is just to track some the kernel number
         if self.kernel.code is not None:
@@ -139,35 +169,53 @@ class QRSEModel(HistoryMixin, PickleMixin):
         ps = ("{: .4f},"*self.params.shape[0]).format(*self.params).strip()
         ps = "("+ps[:-2]+")"
 
-        out ="{name}(n={number}, params={ps}, ndata={ndata})".format(name=self.kernel.name,
-                                                                     number=self._k_number,
-                                                                     ps=ps,
-                                                                     ndata=ndata)
-        return out
+        out ="{name}(n={number}, params={ps}, ndata={ndata})"
 
-    # -------- functions and attributes related to using the model object -------
+        return out.format(name=self.kernel.name,
+                          number=self._k_number,
+                          ps=ps,
+                          ndata=ndata)
 
-    def setup_from_params(self, parameters, start=2, imax=100, minmax=(2e-07, 4.5e-05), find_mode=True, stds=None):
+
+##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##
+##                                                                            ##
+##-##-##-## FUNCTIONS AND ATTRIBUTES RELATED TO USING THE MODEL OBJECT  ##-##-##
+##                                                                            ##
+##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##
+
+
+
+    def setup_from_params(self, parameters, start=2, imax=100,
+                          minmax=(2e-07, 4.5e-05),
+                          find_mode=True, stds=None):
 
         """
-        Will attempt to set model wide variables appropriate to model given parameters. does a binary search
-        over the kernel values to find the points whose value is between the minmax bounds.
+        Will attempt to set model wide variables appropriate to model
+        given parameters. does a binary search over the kernel values
+        to find the points whose value is between the minmax bounds.
 
-        This function will not guarantee results when the starting point is not the mode of
-        the kernel or if the functions is not monotonically decreasing away from the mode.
+        This function will not guarantee results when the starting point
+        is not the mode of the kernel or if the functions is not
+        monotonically decreasing away from the mode.
 
-        This function is only necessary when working without data since bounds of integration
-        can be inferred from the data.
+        This function is only necessary when working without data since
+        bounds of integration can be inferred from the data.
 
-        :param parameters: parameter values to initialize the model - (tuple, list, np.ndarray)
-        :param start: int - uses that index from params | float - starts on that value | else - 0.
-        :param imax: maximum number of steps before quitting search
-        :param minmax: min, max values of kernel, by default searches for the range (2e-07, 4.5e-05)
-        :param find_mode: searches for and begins from mode (default True)
-        :return: None
+        Args:
+            parameters(tuple, list, or np.array): parameter values to
+                initialize the model
+            start: int - uses that index from params , float - starts on
+                that value | else - 0.
+            imax(int): maximum number of steps before quitting search
+            minmax(tuple): min, max values of kernel, by default searches
+                for the range (2e-07, 4.5e-05)
+            find_mode(bool): If True, searches for and begins from mode
+                (default True)
+
         """
         assert isinstance(parameters, (tuple, list, np.ndarray))
         assert len(parameters)==len(self.kernel.pnames)
+
         support_fun = lambda x: self.kernel.kernel(x, parameters)
 
         if isinstance(start, int):
@@ -180,33 +228,48 @@ class QRSEModel(HistoryMixin, PickleMixin):
         if find_mode is True:
             mode_fun = lambda x: -support_fun(x)
             mode = sp.optimize.minimize(mode_fun, start_value).x[0]
+
         else:
             mode = start_value
 
-        self.i_min, self.i_max = mathstats.find_support_bounds(support_fun, start=mode, which='both',
-                                                               minmax=minmax, imax=imax)
+        self.i_min, self.i_max = \
+            mathstats.find_support_bounds(support_fun,
+                                          start=mode,
+                                          which='both',
+                                          minmax=minmax,
+                                          imax=imax)
 
-        self._integration_ticks = np.linspace(self.i_min, self.i_max, self.i_ticks)
-        self._int_tick_delta = self._integration_ticks[1] - self._integration_ticks[0]
+        self._integration_ticks = \
+            np.linspace(self.i_min, self.i_max, self.i_ticks)
+
+        self._int_tick_delta = \
+            self._integration_ticks[1] - self._integration_ticks[0]
+
         self._log_int_tick_delta = np.log(self._int_tick_delta)
 
         self.params0 = copy.copy(np.asarray(parameters))
         self.params = parameters
 
     def update_p0(self, data, weights=None, i_std=7):
+
         self.params0 = self.kernel.set_params0(data, weights)
         mean, std = mathstats.mean_std_fun(data, weights)
         self.i_min = mean-std*i_std
         self.i_max = mean+std*i_std
-        self._integration_ticks = np.linspace(self.i_min, self.i_max, self.i_ticks)
-        self._int_tick_delta = self._integration_ticks[1] - self._integration_ticks[0]
+
+        self._integration_ticks = \
+            np.linspace(self.i_min, self.i_max, self.i_ticks)
+
+        self._int_tick_delta = \
+            self._integration_ticks[1] - self._integration_ticks[0]
+
         self._log_int_tick_delta = np.log(self._int_tick_delta)
 
     def add_data(self, data, index_col=0, header=None, squeeze=True,
                  silent=False, save_abs_path=False, norm_data=False, **kwargs):
         """
-        Primary means of adding data to model. It will set integration defaults according to the
-        shape of the data.
+        Primary means of adding data to model. It will set integration
+        defaults according to the shape of the data.
 
         :param data: either pandas.Series, np.ndarray, or "path/to/data"
         :param index_col: pandas.read_csv keyword argument
@@ -228,8 +291,13 @@ class QRSEModel(HistoryMixin, PickleMixin):
                 print('importing : ', abs_path)
 
             filtered_kwargs = helpers.kwarg_filter(kwargs, pandas.read_csv)
-            self.data = pandas.read_csv(data, index_col=index_col, header=header,
-                                        squeeze=squeeze, **filtered_kwargs).values
+
+            self.data = pandas.read_csv(data,
+                                        index_col=index_col,
+                                        header=header,
+                                        squeeze=squeeze,
+                                        **filtered_kwargs
+                                        ).values
 
             if save_abs_path is True:
                 self.notes['data_path'] = abs_path
@@ -248,7 +316,8 @@ class QRSEModel(HistoryMixin, PickleMixin):
 
         self.data = self.data[np.isfinite(self.data)]
 
-        #normalize the data and save the pre-normalization results / set mark that it happened.
+        #normalize the data and save the pre-normalization results /
+        # set mark that it happened.
         if norm_data is True:
             self.data_normed = True
             _dmean = self.data.mean()
@@ -264,9 +333,14 @@ class QRSEModel(HistoryMixin, PickleMixin):
         self.i_min = self.dmean-self.dstd* self.i_stds
         self.i_max = self.dmean+self.dstd* self.i_stds
 
-        #if in_init is False: removed but staying for placeholder in case something breaks
-        self._integration_ticks = np.linspace(self.i_min, self.i_max, self.i_ticks)
-        self._int_tick_delta = self._integration_ticks[1] - self._integration_ticks[0]
+        #if in_init is False: removed but staying for placeholder
+        # in case something breaks
+        self._integration_ticks = \
+            np.linspace(self.i_min, self.i_max, self.i_ticks)
+
+        self._int_tick_delta = \
+            self._integration_ticks[1] - self._integration_ticks[0]
+
         self._log_int_tick_delta = np.log(self._int_tick_delta)
 
         self.params0 = self.kernel.set_params0(self.data)
@@ -304,7 +378,15 @@ class QRSEModel(HistoryMixin, PickleMixin):
         self._params = np.copy(new_params)
         self.z = self.partition(new_params, use_sp=use_sp)
 
-    #--------- properties that get/set kernel attributes and methods that call kernel.methods-----------------------
+    ##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##
+    ##                                                                ##
+    ##           PROPERTIES THAT GET/SET KERNEL ATTRIBUTES            ##
+    ##                                                                ##
+    ##                              AND                               ##
+    ##                                                                ##
+    ##                METHODS THAT CALL KERNEL.METHODS                ##
+    ##                                                                ##
+    ##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##
 
     @property
     def actions(self):
@@ -384,6 +466,22 @@ class QRSEModel(HistoryMixin, PickleMixin):
 
         return out
 
+    @property
+    def fn_params(self):
+        """
+        FULL PARAMETER NAMES LATEX
+
+        if the model uses xi, add one to n_params
+
+        :return: full number of of parameters
+        """
+        n = self.n_params
+
+        if self.kernel.use_xi:
+            n+=1
+
+        return n
+
     def kernel(self, x):
         """
         :param x: float or np.ndarray
@@ -412,7 +510,11 @@ class QRSEModel(HistoryMixin, PickleMixin):
         """
         return self.kernel.entropy(x, self.params)
 
-    #----------- STATS FUNCTIONALITY ----------------------------------------------
+    ##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##
+    ##                                                                ##
+    ##                      STATS FUNCTIONS                           ##
+    ##                                                                ##
+    ##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##
 
     def mode(self, use_sp=True):
         """
@@ -596,41 +698,64 @@ class QRSEModel(HistoryMixin, PickleMixin):
 
     def log_prior(self, params):
         """
-        The log_prior function used in the negative log likelihood functionality (fitting, sampling)
-        By default it returns 0.
+        The log_prior function used in the negative log likelihood functionality
+        (fitting, sampling)
+
+        By default log_prior returns 0, which is equivalent to a prior-less model
 
         log_prior can be overridden for an individual QRSEModel instance as follows:
 
         1. Instantiate the instance of the QRSEModel:
-            example:
 
-            qrse1 = QRSEModel('AT', data=data, ...) or qrse1 = QRSE('SF', data=data, ...)
+        ::
 
-        2. Define a new function for the prior:
+
+            qrse1 = QRSEModel('AT', data=data)
+
+            # or
+
+            qrse1 = QRSE('SF', data=data)
+
+        2. Define a new function for the prior: ::
 
             def new_log_prior(self, params):
 
-                squared_loss = (params - [hyper_parameter_0, hyper_parameter_1, hyper_parameter_2, ...])**2
-                return -squared_loss.sum()
+                # self must be included as the first arg in the function
+                # params will be a 1d np.array the same length as n_params
 
-            - prior hyper_parameters must be hardcoded into the function
-            - the input variable, 'self',  must be included first regardless of whether or not
-                it's used in the function
-            - params must be a 1d numpy.array of the appropriate length
-            - the output is subtracted from the negative log likelihood, which is minimized. Thus,
-                the penalty for moving away from the prior should be negative, which will increase the nll
 
-        3. Redefine the instance method to be the new function:
+                # prior hyper parameters should be hardcoded into function
+
+                hyper_parameters = [hyper_parameter_0,
+                                    hyper_parameter_1,
+                                    hyper_parameter_2]
+
+                # output of prior function should be negative to
+                # penalize likelihood function
+
+                negative_squared_loss = -(params - hyper_parameters)**2
+                return negative_squared_loss.sum()
+
+
+        3. Redefine the 'instance' method to be the new function: ::
 
             qrse1.log_prior = new_log_prior
 
-            - this must be done on the instance level. QRSEModel.log_prior = new_log_prior or
-                QRSE.log_prior = new_log_prior will change the function on the class level
-                which will affect ALL instances of QRSEModel already and yet to be instantiated
+        It is generally advised to change 'log_prior'. Attempts to change
+        *log_prior* at the 'class' level i.e: ::
 
-        :param params:
+            QRSEModel.log_prior = new_log_prior
+
+        or ::
+
+            QRSE.log_prior = new_log_prior
+
+        will change log_prior for ALL instances of the QRSEModel class.
+
+        :param params: np.array
         :return: float
         """
+
         return 0.
 
     ## Inverse Hessian Functionality Using autograd
@@ -720,6 +845,7 @@ class QRSEModel(HistoryMixin, PickleMixin):
         """
         log_actions = self.logits(self._integration_ticks)
         pdfs_values = self.pdf(self._integration_ticks)
+
         return (log_actions*pdfs_values*self._int_tick_delta).sum(axis=1)
 
     def joint_entropy(self):
@@ -727,7 +853,9 @@ class QRSEModel(HistoryMixin, PickleMixin):
 
         :return:
         """
-        integrand = lambda x: -self.pdf(x)*(self.kernel.potential(x, self.params) - self.z)
+        integrand = lambda x:\
+            -self.pdf(x)*(self.kernel.potential(x, self.params) - self.z)
+
         return sp.integrate.quad(integrand, self.i_min, self.i_max)[0]
 
     def marg_entropy(self):
@@ -735,7 +863,9 @@ class QRSEModel(HistoryMixin, PickleMixin):
 
         :return:
         """
-        integrand = lambda x: -self.pdf(x)*(self.kernel.log_kernel(x, self.params) - self.z)
+        integrand = lambda x:\
+            -self.pdf(x)*(self.kernel.log_kernel(x, self.params) - self.z)
+
         return sp.integrate.quad(integrand, self.i_min, self.i_max)[0]
 
     def cond_entropy(self):
@@ -746,32 +876,58 @@ class QRSEModel(HistoryMixin, PickleMixin):
         integrand = lambda x: self.pdf(x)*(self.kernel.entropy(x, self.params))
         return sp.integrate.quad(integrand, self.i_min, self.i_max)[0]
 
-    # ------------------ MODEL SELECTION CRITERIA ----------------------------------------------
+    # ------------------ MODEL SELECTION CRITERIA ------------------------------
 
-    def aic(self):
+    def aic(self, count_xi=True):
         """
-        :return: aic of model given data
+        Akaike information criterion
+
+        args:
+            count_xi(bool): default is True. Count xi in the parameter count
+                if kernel uses xi
+
+        :return: aic of model given data and parameter values
         """
+        if self.kernel.use_xi is True:
+            k = self.fn_params
+        else:
+            k = self.n_params
+
+
         if self.data is not None:
-            return 2*self.params.shape[0]+2*self.nll()
+            return 2*k+2*self.nll()
         else:
             return 0.
 
-    def aicc(self):
+    def aicc(self, count_xi=True):
         """
         :return: aicc of model given data
         """
-        k = self.params.shape[0]
+        if self.kernel.use_xi is True:
+            k = self.fn_params
+        else:
+            k = self.n_params
+
         n = self.data.shape[0]
         return self.aic() + (2*k**2+2*k)/(n-k-1)
 
-    def bic(self):
+    def bic(self, count_xi=True):
         """
         :return: aicc of model given data
         """
-        return self.params.shape[0]*np.log(self.data.shape[0])+2*self.nll()
+        if self.kernel.use_xi is True:
+            k = self.fn_params
+        else:
+            k = self.n_params
 
-    #--------- Shortcut Functionality For Sampling, Plotting, Fitting -------------------------
+        return k*np.log(self.data.shape[0])+2*self.nll()
+
+
+##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##
+
+##-##-##-## Shortcut Functionality For Sampling, Plotting, Fitting #-##-##-##-##
+
+##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##
 
     #plotting
     @helpers.docthief(QRSEPlotter.plot)
@@ -802,7 +958,11 @@ class QRSEModel(HistoryMixin, PickleMixin):
 # todo: move available_kernels somewhere else
 
 def available_kernels():
-    print("{: ^6}   {: ^10}   {: ^20}   {: ^20}".format("code",  "n_actions", "class", "long_name"))
+    print("{: ^6}   {: ^10}   {: ^20}   {: ^20}".format(
+        "code",  "n_actions", "class", "long_name"))
+
     print("-"*60)
+
     for c, k in kernel_hash.items():
-        print("{: ^6} | {: ^10} | {: ^16} | {: ^16}".format(c, k().n_actions, k.__name__, k().long_name))
+        print("{: ^6} | {: ^10} | {: ^16} | {: ^16}".format(
+            c, k().n_actions, k.__name__, k().long_name))

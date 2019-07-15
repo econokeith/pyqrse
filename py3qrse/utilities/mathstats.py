@@ -1,3 +1,4 @@
+__author__='Keith Blackwell'
 from autograd import numpy as np
 import scipy as sp
 from tabulate import tabulate
@@ -180,7 +181,9 @@ def m_summary(model):
     print("marginal action probabilities")
     print(tabulate([ model.marg_actions().round(2)]))
 
-def find_support_bounds(fun,start=0, which='right', minmax=(2e-9, 4.5e-5), imax=100, silent=True):
+def find_support_bounds(fun,start=0, which='right',
+                        minmax=(2e-9, 4.5e-5),
+                        imax=100, silent=True):
     """
     find support for function that is monotonically decreasing in the tails
     """

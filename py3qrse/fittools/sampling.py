@@ -1,4 +1,4 @@
-
+__author__='Keith Blackwell'
 import autograd.numpy as np
 from autograd import elementwise_grad as egrad
 from autograd import jacobian
@@ -51,7 +51,9 @@ class QRSESampler:
     @property
     def chain(self):
         if self.chain_format in ('df', 'DF', 'pandas', 'pd'):
-            return pandas.DataFrame(self._chain, columns=['ll']+self.qrse_model.pnames)
+
+            return pandas.DataFrame(self._chain,
+                                    columns=['ll']+self.qrse_model.pnames)
         else:
             return self._chain.T
 
@@ -145,7 +147,8 @@ class QRSESampler:
 
         return new_params
 
-    def _joint_sample(self, params=None, is_burn=False, ptype="corr", s=1, update_hess=False):
+    def _joint_sample(self, params=None, is_burn=False,
+                      ptype="corr", s=1, update_hess=False):
 
         # select params
         if params is None:
@@ -276,7 +279,8 @@ class QRSESampler:
             sns.distplot(self._chain[:, i])
             plt.title(names[i-1])
 
-    def plotdiff(self, parameter1, parameter2, kind='hist', use_latex=True, figsize=None, **kwargs):
+    def plotdiff(self, parameter1, parameter2, kind='hist',
+                 use_latex=True, figsize=None, **kwargs):
         """
         Quickly view the difference between the chains of two parameters
 

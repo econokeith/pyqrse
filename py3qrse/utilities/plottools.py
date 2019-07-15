@@ -1,3 +1,4 @@
+__author__='Keith Blackwell'
 import copy
 import autograd.numpy as np
 import matplotlib.pyplot as plt

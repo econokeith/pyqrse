@@ -1,3 +1,4 @@
+__author__='Keith Blackwell'
 import autograd.numpy as np
 import seaborn as sns; sns.set()
 from py3qrse.utilities.mathstats import mean_std_fun
@@ -18,8 +19,8 @@ class AAQRSEKernelLSE(ternary.QRSEKernelBaseTernary):
     _pnames_latex_base =[r'$T_{{{a0}}}$', r'$T_{{{a2}}}$', r'$\mu_{{{a0}}}$', r'$\mu_{{{a2}}}$', r'$\beta$']
     _in_testing = True
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self):
+        super().__init__()
 
         self.name = "AA-QRSE-LSE"
         self.long_name = "Asymmetric-Action QRSE (LOG-SUM-EXP)"
@@ -82,8 +83,8 @@ class AAC2QRSEKernel(ternary.AAQRSEKernel):
 
     _code = None #"AA2-OLD"
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self):
+        super().__init__()
 
         self.name = "AA-QRSE-C2"
         self.long_name = "Asymmetric-Action-C2 QRSE"

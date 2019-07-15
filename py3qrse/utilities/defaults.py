@@ -1,3 +1,4 @@
+__author__='Keith Blackwell'
 import sys, os
 import configparser
 import copy

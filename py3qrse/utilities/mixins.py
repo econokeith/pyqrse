@@ -1,3 +1,4 @@
+__author__='Keith Blackwell'
 import autograd.numpy as np
 import seaborn as sns; sns.set()
 import pickle
@@ -54,23 +55,27 @@ class PickleMixin:
     @classmethod
     def from_pickle(cls, path_to_pickle, trust_check=False, **kwargs):
         """
-        !!!DO NOT RUN THIS FUNCTION UNLESS YOU TRUST THE SOURCE WITH ABSOLUTE CERTAINTY!!!
+        !!!DO NOT RUN THIS FUNCTION UNLESS YOU TRUST THE SOURCE WITH
+        ABSOLUTE CERTAINTY!!!
 
-        Pickling is extremely convenient from a workflow perspective, as you can save the results of
-        inquiries and instantly load them back into your python environment.
+        Pickling is extremely convenient from a workflow perspective,
+        as you can save the results of inquiries and instantly load
+        them back into your python environment.
 
-        However, there are no safety checks on the code that will be run. That means:
+        However, there are no safety checks on the code that will be
+        run. That means:
 
         -If you don't trust the source, don't unpickle it.
         -Python will run all code in the pickle malicious or not!
 
-        :param path_to_pickle: individual or list of paths to saved pickled QRSE objects
+        :param path_to_pickle: individual or list of paths to saved
+                               pickled QRSE objects
         :param args:
         :param kwargs:
         :param trust_check:
 
-                prompts the user to verify that they trust the source of the file to be unpickled
-                default value is True
+                prompts the user to verify that they trust the source
+                of the file to be unpickled default value is True
 
         :return:
         """

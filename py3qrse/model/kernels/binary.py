@@ -1,3 +1,4 @@
+__author__='Keith Blackwell'
 import autograd.numpy as np
 import seaborn as sns; sns.set()
 from py3qrse.utilities.mathstats import mean_std_fun
@@ -13,8 +14,8 @@ class SQRSEKernel(QRSEKernelBaseBinary):
     _pnames_base = 't b m'.split()
     _pnames_latex_base =[r'$T$', r'$\beta$', r'$\mu$']
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__()
 
         self.name = "S-QRSE"
         self.long_name = "Symmetric QRSE"
@@ -53,11 +54,12 @@ class SQRSEKernelNoH(SQRSEKernel):
 
     _code = "SNH"
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, use_entropy=False, **kwargs)
+    def __init__(self):
+        super().__init__()
 
         self.name = "S-QRSE-NO-H"
         self.long_name = "Symmetric QRSE (NO Entropy Term)"
+        self.use_entropy = 0
 
     def entropy(self, x, params):
         return 0.
@@ -69,11 +71,12 @@ class SFQRSEKernel(SQRSEKernel):
     _pnames_base = 't b m g'.split()
     _pnames_latex_base =[r'$T$', r'$\beta$', r'$\mu$', r'$\gamma$']
 
-    def __init__(self, use_xi=True, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self):
+        super().__init__()
 
         self.name = "SF-QRSE"
         self.long_name = "Scharfenaker and Foley QRSE"
+        self.use_xi = True
 
     def potential(self, x , params):
         t, b, m, g = params
@@ -96,8 +99,8 @@ class SFCQRSEKernel(SFQRSEKernel):
     _pnames_base = 't b m g'.split()
     _pnames_latex_base =[r'$T$', r'$\beta$', r'$\mu$', r'$\gamma$']
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self):
+        super().__init__()
 
         self.name = "SF-QRSE-C"
         self.long_name = "Scharfenaker and Foley QRSE (Centered)"
@@ -119,7 +122,7 @@ class SFCQRSEKernel(SFQRSEKernel):
     def potential(self, x , params):
         t, b, m, g = params
         x_xi = x - self.xi
-        return (-b*np.tanh((x_xi-m)/(2.*t))*(x_xi)-g)*(x_xi)
+        return (-b*np.tanh((x_xi-m)/(2.*t))-g)*(x_xi)
 
     def set_params0(self, data=None, weights=None):
         if data is not None:
@@ -137,8 +140,8 @@ class ABQRSEKernel(SFQRSEKernel):
     _pnames_base = ['t', 'b_{a0}', 'm', 'b_{a1}']
     _pnames_latex_base = [r'$T$', r'$\beta_{{{a0}}}$', r'$\mu$', r'$\beta_{{{a1}}}$']
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self):
+        super().__init__()
 
         self.name = "AB-QRSE"
         self.long_name = "Asymmetric-Beta QRSE"
@@ -160,8 +163,8 @@ class ABCQRSEKernel(ABQRSEKernel):
 
     _code = "ABC"
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self):
+        super().__init__()
 
         self.name = "AB-QRSE-C"
         self.long_name = "Asymmetric-Beta QRSE (Centered)"

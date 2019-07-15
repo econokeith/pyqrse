@@ -1,3 +1,4 @@
+__author__='Keith Blackwell'
 import autograd.numpy as np
 import seaborn as sns; sns.set()
 from py3qrse.utilities.mathstats import mean_std_fun
@@ -8,16 +9,16 @@ __all__ = ['AAQRSEKernel', "ATQRSEKernel", 'AAXQRSEKernel']
 
 
 class AAQRSEKernel(QRSEKernelBaseTernary):
-    """
-
-    """
 
     _code = "AA"
     _pnames_base = ['t_{a0}', 't_{a2}', 'm_{a0}', 'm_{a2}', 'b']
-    _pnames_latex_base =[r'$T_{{{a0}}}$', r'$T_{{{a2}}}$', r'$\mu_{{{a0}}}$', r'$\mu_{{{a2}}}$', r'$\beta$']
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+    _pnames_latex_base =[r'$T_{{{a0}}}$', r'$T_{{{a2}}}$',
+                         r'$\mu_{{{a0}}}$', r'$\mu_{{{a2}}}$',
+                         r'$\beta$']
+
+    def __init__(self):
+        super().__init__()
 
         self.name = "AA-QRSE"
         self.long_name = "Asymmetric-Action QRSE"
@@ -35,6 +36,12 @@ class AAQRSEKernel(QRSEKernelBaseTernary):
 
     def logits(self, x, params):
 
+        """
+
+        :param x:
+        :param params:
+        :return:
+        """
         e_b, e_h, e_s, _, _ = self.make_evs(x, params)
         part = e_b + e_s + e_h
         return e_b/part, e_h/part, e_s/part
@@ -113,8 +120,8 @@ class AAXQRSEKernel(AAQRSEKernel):
 
     _code = "AAX"
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self):
+        super().__init__()
 
         self.name = "AA(xi)-QRSE"
         self.long_name = "Asymmetric-Action(xi) QRSE"
@@ -139,11 +146,11 @@ class ATQRSEKernel(AAQRSEKernel):
     _pnames_base = ['t_{a0}', 't_{a2}', 'm', 'b']
     _pnames_latex_base =[r'$T_{{{a0}}}$', r'$T_{{{a2}}}$', r'$\mu$', r'$\beta$']
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self):
+        super().__init__()
 
         self.name = "AT-QRSE"
-        self.long_name = "Asymmetric-T QRSE"
+        self.long_name = "Asymmetric-Temperature QRSE"
 
     def logits(self, x, params):
 

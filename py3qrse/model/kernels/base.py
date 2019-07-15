@@ -1,3 +1,4 @@
+__author__='Keith Blackwell'
 import autograd.numpy as np
 import seaborn as sns; sns.set()
 import py3qrse.utilities.defaults
@@ -12,7 +13,6 @@ class QRSEKernelBase:
     _pnames_latex_base =[r'$T$', r'$\beta$', r'$\mu$'] #base name to update with new labels for latex
     _generic_actions = ['a0', 'a1'] #generic names of actions for .format(a0=buy, a1=sell, etc)
     _n_actions = 2 #2 or 3
-    in_testing = False
 
     _ktype = 'binary' #binary or ternary
 
@@ -24,13 +24,11 @@ class QRSEKernelBase:
     def getktype(cls):
         return cls._ktype
 
-    def __init__(self,  use_xi=False, use_entropy=True,):
+    def __init__(self):
 
-        assert isinstance(use_entropy, bool)
-        self.use_entropy = int(use_entropy)
 
-        assert isinstance(use_xi, bool)
-        self.use_xi = use_xi
+        self.use_entropy = 0
+        self.use_xi = False
 
         self.xi = 0.
         self._std = 1.
@@ -42,7 +40,10 @@ class QRSEKernelBase:
         ## on charts change with changes in actions
         ## only occurs for newly instantiated kernels
         ## full path is used to always call the default
-        self._actions = copy.deepcopy(py3qrse.utilities.defaults.LABEL_SETTINGS['ACTION_LABELS'][self._ktype])
+        self._actions = copy.deepcopy(
+            py3qrse.utilities.defaults.\
+                LABEL_SETTINGS['ACTION_LABELS'][self._ktype]
+        )
 
         self.pnames = []
         self.pnames_latex= []
@@ -55,10 +56,15 @@ class QRSEKernelBase:
 
     @actions.setter
     def actions(self, new_actions):
+
         self._actions = new_actions
         action_dict = dict(zip(self._generic_actions, self._actions))
-        self.pnames = [pname.format(**action_dict) for pname in self._pnames_base]
-        self.pnames_latex = [pname.format(**action_dict) for pname in self._pnames_latex_base]
+
+        self.pnames = \
+            [pname.format(**action_dict) for pname in self._pnames_base]
+
+        self.pnames_latex = \
+            [pname.format(**action_dict) for pname in self._pnames_latex_base]
 
     @property
     def code(self):
@@ -69,6 +75,9 @@ class QRSEKernelBase:
         return self._n_actions
 
     def logits(self, x, params):
+        """
+        Find the logit values for ::class
+        """
         pass
 
     def entropy(self, x, params):
@@ -95,8 +104,8 @@ class QRSEKernelBase:
 
 class QRSEKernelBaseBinary(QRSEKernelBase):
     #here for use with issubclass()
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__()
 
 
 class QRSEKernelBaseTernary(QRSEKernelBase):
@@ -105,5 +114,5 @@ class QRSEKernelBaseTernary(QRSEKernelBase):
     _generic_actions = ['a0', 'a1', 'a2']
     _ktype = 'ternary'
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__()

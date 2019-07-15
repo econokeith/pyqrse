@@ -1,3 +1,4 @@
+__author__='Keith Blackwell'
 import numpy as np
 # import Quandl as qd
 import matplotlib.pyplot as plt
