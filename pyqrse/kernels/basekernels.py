@@ -20,7 +20,7 @@ class QRSEKernelBase:
         xi (float): the mean of the data. By default it is set to 0.
         pnames (list(str)): list of the parameter names including appropriate
             label specific subscripts
-        pnames_fancy (list(str)): list of the parameter names for Latex
+        pnames_latex (list(str)): list of the parameter names for Latex
             including appropriate label specific subscripts
 
     """

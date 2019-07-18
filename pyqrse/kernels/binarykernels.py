@@ -5,14 +5,23 @@ This is the binary kernel docstring!
 yep
 """
 __author__='Keith Blackwell'
-import autograd.numpy as np
+import warnings
+
+try:
+    import autograd.numpy as np
+except:
+    import numpy as np
+    raise warnings.warn("Unable to load Autograd")
+
 import seaborn as sns; sns.set()
 from pyqrse.utilities.mathstats import mean_std_fun
 
 from .basekernels import QRSEKernelBaseBinary
 
-__all__ = ['SQRSEKernel', 'SQRSEKernelNoH', 'SQRSEKernelNoH','SFQRSEKernel',
-           'SFCQRSEKernel', 'ABXQRSEKernel', 'ABCQRSEKernel']
+__all__ = ['SQRSEKernel', 'SQRSEKernelNoH',
+           'SFQRSEKernel','SFCQRSEKernel',
+           'ABXQRSEKernel', 'ABXQRSEKernelNH','ABXCQRSEKernel',
+           'ABQRSEKernel']
 
 class SQRSEKernel(QRSEKernelBaseBinary):
 
@@ -73,7 +82,7 @@ class SQRSEKernelNoH(SQRSEKernel):
         super().__init__()
 
         self.name = "S-QRSE-NO-H"
-        self.long_name = "Symmetric QRSE (NO Entropy Term)"
+        self.long_name = "Symmetric QRSE (No Entropy)"
         self.use_entropy = 0
 
     def entropy(self, x, params):
@@ -155,7 +164,7 @@ class SFCQRSEKernel(SFQRSEKernel):
 
 class ABXQRSEKernel(SFQRSEKernel):
 
-    _code = "AB"
+    _code = "ABX"
     _pnames_base = ['t', 'b_{a0}', 'm', 'b_{a1}']
 
     _pnames_latex_base = [r'$T$',
@@ -166,8 +175,8 @@ class ABXQRSEKernel(SFQRSEKernel):
     def __init__(self):
         super().__init__()
 
-        self.name = "AB-QRSE"
-        self.long_name = "Asymmetric-Beta QRSE"
+        self.name = "AB-QRSE (xi)"
+        self.long_name = "Asymmetric-Beta (xi) QRSE"
         self.use_xi=True
 
     def potential(self, x , params):
@@ -195,8 +204,8 @@ class ABXQRSEKernelNH(SFQRSEKernel):
     def __init__(self):
         super().__init__()
 
-        self.name = "AB-QRSE-NH"
-        self.long_name = "Asymmetric-Beta QRSE (No Entropy)"
+        self.name = "ABX-QRSE-NH"
+        self.long_name = "Asymmetric-Beta QRSE (Xi, No Entropy)"
         self.use_xi = True
 
     def potential(self, x , params):
@@ -217,13 +226,13 @@ class ABXQRSEKernelNH(SFQRSEKernel):
 
 class ABXCQRSEKernel(ABXQRSEKernel):
 
-    _code = None
+    _code = "ABXC"
 
     def __init__(self):
         super().__init__()
 
-        self.name = "AB-QRSE-C"
-        self.long_name = "Asymmetric-Beta QRSE (Centered)"
+        self.name = "ABX-QRSE-C"
+        self.long_name = "Asymmetric-Beta QRSE (Xi, Centered)"
 
     def logits(self, x, params):
         t, _, m, _ = params
@@ -270,6 +279,7 @@ class ABQRSEKernel(ABXQRSEKernel):
 
         self.name = "AB-QRSE"
         self.long_name = "Asymmetric-Beta QRSE"
+        self.use_xi = False
 
     def potential(self, x , params):
         t, bb, m, bs = params
@@ -282,5 +292,3 @@ class ABQRSEKernel(ABXQRSEKernel):
             mean, std =  self._mean, self._std
         self.xi = mean
         return np.array([std, 1./std, mean, 1./std])
-
-c

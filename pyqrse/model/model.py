@@ -607,6 +607,7 @@ class QRSEModel(HistoryMixin, PickleMixin):
         :return: pdf value at x or an np.array([...]) of pdf values
         """
         if params is None:
+
             the_params = self.params
             z = self.z
         else:

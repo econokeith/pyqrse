@@ -121,7 +121,7 @@ def rejection_sample(target, proposal, m, n, jmax=10):
         m (float) : value to mulitply proposal distribution in order
             to turn it into an envelope
         n (int) : number of samples
-        jmax = maximum number of proposals before quitting. it's measured
+        jmax (int) : maximum number of proposals before quitting. it's measured
             as proposal_max = jmax*n. Default is 10, which means that
             there will be maximum of 10n proposals.
 
@@ -295,11 +295,14 @@ def inv_cdf_sampler(target, n=1, bounds=(-10, 10, 1000)):
             if n is a positive int, rvs returns an np.array of length n
             if n is None, rvs returns a scalar sample from the distribution
 
-        bounds (tuple or list) : [-10, 10, 10000] / (-10, 10, 10000)
+        bounds (tuple or list) : (lower bound, upper bound, number of ticks)
+
+            [-10, 10, 10000] / (-10, 10, 10000)
             create 10000 ticks between -10 and 10
 
 
-    :return: float or np.array([float])
+    Return:
+        float or np.array([float]) of samples
     """
     ll = np.linspace(*bounds)
 

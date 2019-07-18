@@ -5,8 +5,19 @@ from pyqrse.utilities.mathstats import mean_std_fun
 
 from .basekernels import QRSEKernelBaseTernary
 
-__all__ = ['AAQRSEKernel', "ATQRSEKernel", 'AAXQRSEKernel']
+__all__ = ['AAQRSEKernel',
+           "ATQRSEKernel",
+           'AAXQRSEKernel',
+           'AXQRSEKernel',
+           'AQRSEKernel']
 
+##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##
+##                                                                ##
+##                 ASYMMETRIC ACTION QRSE KERNEL                  ##
+##                                                                ##
+##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##
+
+# TODO: Get the log-sum-exp stuff working for these model
 
 class AAQRSEKernel(QRSEKernelBaseTernary):
 
@@ -84,6 +95,11 @@ class AAQRSEKernel(QRSEKernelBaseTernary):
         e_h = 1.
         return e_b, e_h, e_s, vb, vs
 
+##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##
+##                                                                ##
+##             ASYMMETRIC ACTION QRSE KERNEL WITH XI              ##
+##                                                                ##
+##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##
 
 class AAXQRSEKernel(AAQRSEKernel):
     """
@@ -109,8 +125,15 @@ class AAXQRSEKernel(AAQRSEKernel):
         self.xi = mean
         return np.array([std, std, mean+.1*std, mean-.1*std, 1/std])
 
-## ATQRSEKernel intentionally isn't set up for the new left/right offset formula
 
+##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##
+##                                                                ##
+##               ASYMMETRIC TEMPERATURE QRSE KERNEL               ##
+##                                                                ##
+##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##
+
+# ATQRSEKernel intentionally isn't set up
+# for the new left/right offset formula
 class ATQRSEKernel(AAQRSEKernel):
 
     _code = "AT"
@@ -184,6 +207,11 @@ class ATQRSEKernel(AAQRSEKernel):
         self.xi = mean
         return np.array([std, std, mean, 1/std])
 
+##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##
+##                                                                ##
+##               ASYMMETRIC ALL QRSE KERNEL WITH XI               ##
+##                                                                ##
+##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##
 
 class AXQRSEKernel(AAQRSEKernel):
 
@@ -236,6 +264,11 @@ class AXQRSEKernel(AAQRSEKernel):
     def _x_offset_right(self, x, params):
         return x - self.xi
 
+##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##
+##                                                                ##
+##                  ASYMMETRIC ALL QRSE KERNEL                    ##
+##                                                                ##
+##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##
 
 class AQRSEKernel(AXQRSEKernel):
 
