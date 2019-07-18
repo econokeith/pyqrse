@@ -1,20 +1,35 @@
+
+"""
+This is the binary kernel docstring!
+
+yep
+"""
 __author__='Keith Blackwell'
 import autograd.numpy as np
 import seaborn as sns; sns.set()
-from py3qrse.utilities.mathstats import mean_std_fun
+from pyqrse.utilities.mathstats import mean_std_fun
 
-from .base import QRSEKernelBaseBinary
+from .basekernels import QRSEKernelBaseBinary
 
 __all__ = ['SQRSEKernel', 'SQRSEKernelNoH', 'SQRSEKernelNoH','SFQRSEKernel',
-           'SFCQRSEKernel', 'ABQRSEKernel', 'ABCQRSEKernel']
+           'SFCQRSEKernel', 'ABXQRSEKernel', 'ABCQRSEKernel']
 
 class SQRSEKernel(QRSEKernelBaseBinary):
 
     _code = "S"
     _pnames_base = 't b m'.split()
-    _pnames_latex_base =[r'$T$', r'$\beta$', r'$\mu$']
+
+    _pnames_latex_base =[r'$T$',
+                         r'$\beta$',
+                         r'$\mu$']
 
     def __init__(self):
+        """
+        Symmetric QRSE Model (S-QRSE)
+
+
+        it's sweet
+        """
         super().__init__()
 
         self.name = "S-QRSE"
@@ -97,7 +112,11 @@ class SFCQRSEKernel(SFQRSEKernel):
 
     _code = "SFC"
     _pnames_base = 't b m g'.split()
-    _pnames_latex_base =[r'$T$', r'$\beta$', r'$\mu$', r'$\gamma$']
+
+    _pnames_latex_base =[r'$T$',
+                         r'$\beta$',
+                         r'$\mu$',
+                         r'$\gamma$']
 
     def __init__(self):
         super().__init__()
@@ -134,17 +153,22 @@ class SFCQRSEKernel(SFQRSEKernel):
         return np.array([std, 1./std, 0., 0.])
 
 
-class ABQRSEKernel(SFQRSEKernel):
+class ABXQRSEKernel(SFQRSEKernel):
 
     _code = "AB"
     _pnames_base = ['t', 'b_{a0}', 'm', 'b_{a1}']
-    _pnames_latex_base = [r'$T$', r'$\beta_{{{a0}}}$', r'$\mu$', r'$\beta_{{{a1}}}$']
+
+    _pnames_latex_base = [r'$T$',
+                          r'$\beta_{{{a0}}}$',
+                          r'$\mu$',
+                          r'$\beta_{{{a1}}}$']
 
     def __init__(self):
         super().__init__()
 
         self.name = "AB-QRSE"
         self.long_name = "Asymmetric-Beta QRSE"
+        self.use_xi=True
 
     def potential(self, x , params):
         t, bb, m, bs = params
@@ -158,10 +182,42 @@ class ABQRSEKernel(SFQRSEKernel):
         self.xi = mean
         return np.array([std, 1./std, mean, 1./std])
 
+class ABXQRSEKernelNH(SFQRSEKernel):
 
-class ABCQRSEKernel(ABQRSEKernel):
+    _code = "ABXNH"
+    _pnames_base = ['t', 'b_{a0}', 'm', 'b_{a1}']
 
-    _code = "ABC"
+    _pnames_latex_base = [r'$T$',
+                          r'$\beta_{{{a0}}}$',
+                          r'$\mu$',
+                          r'$\beta_{{{a1}}}$']
+
+    def __init__(self):
+        super().__init__()
+
+        self.name = "AB-QRSE-NH"
+        self.long_name = "Asymmetric-Beta QRSE (No Entropy)"
+        self.use_xi = True
+
+    def potential(self, x , params):
+        t, bb, m, bs = params
+        return -((bs+bb)/2.*np.tanh((x-m)/(2.*t))+(bs-bb)/2.)*(x-self.xi)
+
+    def entropy(self, x, params):
+        return 0.
+
+    def set_params0(self, data=None, weights=None):
+        if data is not None:
+            mean, std = mean_std_fun(data, weights)
+        else:
+            mean, std =  self._mean, self._std
+        self.xi = mean
+        return np.array([std, 1./std, mean, 1./std])
+
+
+class ABXCQRSEKernel(ABXQRSEKernel):
+
+    _code = None
 
     def __init__(self):
         super().__init__()
@@ -197,3 +253,34 @@ class ABCQRSEKernel(ABQRSEKernel):
             mean, std =  self._mean, self._std
         self.xi = mean
         return np.array([std, 1./std, 0., 1./std])
+
+
+class ABQRSEKernel(ABXQRSEKernel):
+
+    _code = "AB"
+    _pnames_base = ['t', 'b_{a0}', 'm', 'b_{a1}']
+
+    _pnames_latex_base = [r'$T$',
+                          r'$\beta_{{{a0}}}$',
+                          r'$\mu$',
+                          r'$\beta_{{{a1}}}$']
+
+    def __init__(self):
+        super().__init__()
+
+        self.name = "AB-QRSE"
+        self.long_name = "Asymmetric-Beta QRSE"
+
+    def potential(self, x , params):
+        t, bb, m, bs = params
+        return -((bs+bb)/2.*np.tanh((x-m)/(2.*t))+(bs-bb)/2.)*(x-m)
+
+    def set_params0(self, data=None, weights=None):
+        if data is not None:
+            mean, std = mean_std_fun(data, weights)
+        else:
+            mean, std =  self._mean, self._std
+        self.xi = mean
+        return np.array([std, 1./std, mean, 1./std])
+
+c

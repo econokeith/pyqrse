@@ -3,8 +3,6 @@ from autograd import numpy as np
 import scipy as sp
 from tabulate import tabulate
 
-__author__ = 'keithblackwell1'
-
 
 def is_pos_def(x):
     return np.all(np.linalg.eigvals(x) > 0)
@@ -76,7 +74,9 @@ def marg_entropy(model):
             the_models.append(marg_entropy(m))
         return the_models
 
-    integrand = lambda x: -model.pdf(x)*(model.kernel.log_kernel(x, model.params) - model.z)
+    integrand = lambda x: \
+        -model.pdf(x)*(model.kernel.log_kernel(x, model.params) - model.z)
+
     return sp.integrate.quad(integrand, model.i_min, model.i_max)[0]
 
 
@@ -93,12 +93,41 @@ def cond_entropy(model):
 
 
 def asymmetric_laplace(x, l, k, m):
+    """
+    PDF for the Asymmetric Laplace Distribution
+
+    Args:
+        x (float or np.array(float) : input value
+        l (float) : p1
+        k (float) : p2
+        m (float) : location parameter
+
+    Returns:
+        float or np.array(float)
+    """
     s = np.sign(x-m)
     z = l/(k+1/k)
-    return np.exp(-(x-m)*l*s*k**s)
+    return np.exp(-(x-m)*l*s*k**s)*z
 
 
 def rejection_sample(target, proposal, m, n, jmax=10):
+    """
+    Rejection Sampler
+
+    Args:
+        target (function) : pdf of target distribution
+        proposal (object) : distribution to sample from. It must have
+            .rvs() and .pdf(x) methods
+        m (float) : value to mulitply proposal distribution in order
+            to turn it into an envelope
+        n (int) : number of samples
+        jmax = maximum number of proposals before quitting. it's measured
+            as proposal_max = jmax*n. Default is 10, which means that
+            there will be maximum of 10n proposals.
+
+    Returns:
+        np.array(float) of the samples from the target distribution
+    """
     sample = np.empty(n)
     i=0
     j=0
@@ -193,8 +222,11 @@ def find_support_bounds(fun,start=0, which='right',
 
     elif which is 'both':
 
-        left = find_support_bounds(fun, which='left', start=start, minmax=minmax, imax=imax)
-        right = find_support_bounds(fun, which='right', start=start, minmax=minmax, imax=imax)
+        left = find_support_bounds(fun, which='left', start=start,
+                                   minmax=minmax, imax=imax)
+
+        right = find_support_bounds(fun, which='right', start=start,
+                                    minmax=minmax, imax=imax)
 
         return left, right
 
@@ -250,3 +282,28 @@ def find_support_bounds(fun,start=0, which='right',
         return -rb_1
     else:
         return rb_1
+
+def inv_cdf_sampler(target, n=1, bounds=(-10, 10, 1000)):
+    """
+    random variable sampler using the interpolated inverse cdf method
+
+    Args:
+
+        n (int) : number of samples.
+
+            must be either a positive integer or None.
+            if n is a positive int, rvs returns an np.array of length n
+            if n is None, rvs returns a scalar sample from the distribution
+
+        bounds (tuple or list) : [-10, 10, 10000] / (-10, 10, 10000)
+            create 10000 ticks between -10 and 10
+
+
+    :return: float or np.array([float])
+    """
+    ll = np.linspace(*bounds)
+
+    cdf_data = np.cumsum(target(ll))*(ll[1]-ll[0])
+    cdf_data /=cdf_data[-1]
+    cdf_inv = sp.interpolate.interp1d(cdf_data, ll)
+    return cdf_inv(np.random.uniform(size=n))

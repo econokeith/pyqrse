@@ -8,7 +8,7 @@ import scipy as sp
 import seaborn as sns; sns.set()
 from tqdm import tqdm
 
-import py3qrse.utilities.helpers as helpers
+import pyqrse.utilities.helpers as helpers
 
 __all__ = ["QRSESampler",]
 
@@ -45,11 +45,17 @@ class QRSESampler:
 
     @property
     def a_rates(self):
+        """
+        acceptance rates for the sampler
+        """
         if self._chain is not None:
             return self.n_accepted / self._chain.shape[0]
 
     @property
     def chain(self):
+        """
+
+        """
         if self.chain_format in ('df', 'DF', 'pandas', 'pd'):
 
             return pandas.DataFrame(self._chain,
@@ -150,18 +156,19 @@ class QRSESampler:
     def _joint_sample(self, params=None, is_burn=False,
                       ptype="corr", s=1, update_hess=False):
 
+        qrse = self.qrse_model
         # select params
         if params is None:
             params0 = self.params
         else:
             params0 = params
-            self.last_log_p = self.qrse_model.log_prob(params=params)
+            self.last_log_p = qrse.log_prob(params=params)
 
         #sample from proposal: either use correlated samples or not
         params1 = self.propose_new(params, ptype, s=1.)
 
         ll0 = self.last_log_p
-        ll1 = self.qrse_model.log_prob(params=params1)
+        ll1 = qrse.log_prob(params=params1)
 
         #accept or reject
         if np.isfinite(ll1) and (ll1-ll0 >= np.log(np.random.rand())):
@@ -170,7 +177,7 @@ class QRSESampler:
 
             #update hessian if we do?
             if update_hess is True:
-                self.qrse_model.hess_inv = self.qrse_model.hess_inv_fun(self.params)
+                qrse.hess_inv = qrse.hess_inv_fun(self.params)
 
             if is_burn is False:
                     self.n_accepted[0]+= 1
@@ -188,10 +195,11 @@ class QRSESampler:
 
         return self.params
 
-    def mcmc(self, N=1000, burn=0, single=False, ptype="corr", s=1., update_hess=False,
+    def mcmc(self, N=1000, burn=0, single=False, ptype="corr",
+             s=1., update_hess=False,
              new=False, use_tqdm=True):
         """
-        mcmc(self, N=1000, burn=0, single=False, ptype="corr", s=1., update_hess=False, new=False)
+
         :param N:
         :param burn:
         :param single:
@@ -250,7 +258,7 @@ class QRSESampler:
         :return: np.ndarray
         """
         qrse_model = self.qrse_model
-        chains = pandas.DataFrame(self._chain, columns=['ll'] + qrse_model.pnames)
+        chains = pandas.DataFrame(self._chain, columns=['ll']+qrse_model.pnames)
         return (chains[parameter1]-chains[parameter2]).values
 
     def plot(self, per_row=2, figsize=(12, 4), use_latex=True):
@@ -292,17 +300,17 @@ class QRSESampler:
         :param kwargs: additional arguments for sns.distplot() and plt.plot()
         :return:
         """
-        qrse_model = self.qrse_model
-        chains = pandas.DataFrame(self._chain, columns=['ll'] + qrse_model.pnames)
+        qrse = self.qrse_model
+        chains = pandas.DataFrame(self._chain, columns=['ll']+qrse.pnames)
 
         c1 = chains[parameter1]
         c2 = chains[parameter2]
 
         if use_latex is True:
-            i1 = qrse_model.pnames.index(parameter1)
-            i2 = qrse_model.pnames.index(parameter2)
-            parameter1 = qrse_model.pnames_latex[i1]
-            parameter2 = qrse_model.pnames_latex[i2]
+            i1 = qrse.pnames.index(parameter1)
+            i2 = qrse.pnames.index(parameter2)
+            parameter1 = qrse.pnames_latex[i1]
+            parameter2 = qrse.pnames_latex[i2]
 
         if figsize is not None:
             plt.figure(figsize=figsize)
@@ -312,4 +320,6 @@ class QRSESampler:
         else:
             plt.plot(c1-c2, **kwargs)
 
-        plt.title('{} distribution of ({} - {})'.format(qrse_model.name, parameter1, parameter2))
+        plt.title('{} distribution of ({} - {})'.format(qrse.name,
+                                                        parameter1,
+                                                        parameter2))

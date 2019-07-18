@@ -4,7 +4,7 @@ import autograd.numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 sns.set()
-import py3qrse.utilities.defaults
+import pyqrse.utilities.defaults
 
 class QRSEPlotter:
     """
@@ -17,11 +17,13 @@ class QRSEPlotter:
         # assert isinstance(qrse_object, qrse.QRSE)
         self.qrse_object = qrse_object
 
+        label_dict =  pyqrse.utilities.defaults.LABEL_SETTINGS
+
         if colors is None and qrse_object.kernel.n_actions == 3:
-            self._colors = copy.deepcopy(py3qrse.utilities.defaults.LABEL_SETTINGS['COLORS']['ternary'])
+            self._colors = copy.deepcopy(label_dict['COLORS']['ternary'])
 
         elif colors is None and qrse_object.kernel.n_actions == 2:
-            self._colors = copy.deepcopy(py3qrse.utilities.defaults.LABEL_SETTINGS['COLORS']['binary'])
+            self._colors = copy.deepcopy(label_dict['COLORS']['binary'])
 
         else:
             self._colors=[]
@@ -36,7 +38,9 @@ class QRSEPlotter:
     def set_colors(self, colors=None, output=False):
 
         if colors is not None:
+
             assert isinstance(colors, (tuple, list, np.ndarray))
+
             assert len(colors) > self.qrse_object.kernel.n_actions
 
             if output is False:
@@ -50,8 +54,11 @@ class QRSEPlotter:
         if color_order is not None:
 
             assert isinstance(color_order, (tuple, list, np.ndarray))
-            assert len(color_order) > self.qrse_object.kernel.n_actions
-            assert all(isinstance(n, int) and 0<=n<len(self._colors) for n in color_order)
+
+            assert len(color_order) > self.qrse_object.n_actions
+
+            assert all(isinstance(n, int) and
+                       0<=n<len(self._colors) for n in color_order)
 
             if output is False:
                 self._colors = [self._colors[i] for i in color_order]
@@ -92,13 +99,19 @@ class QRSEPlotter:
         qrse_object = self.qrse_object
 
         if bounds is not None:
+
             i_min, i_max = bounds
+
         elif qrse_object.data is not None:
-            i_min, i_max = qrse_object.data.min()-qrse_object.dstd, qrse_object.data.max()+qrse_object.dstd
+
+            i_max = qrse_object.data.min()-qrse_object.dstd
+            i_min = qrse_object.data.max()+qrse_object.dstd
+
         else:
+
             i_min, i_max = qrse_object.i_min, qrse_object.i_max
 
-        plot_title = qrse_object.kernel.long_name if title is None else title
+        plot_title = qrse_object.long_name if title is None else title
 
         xs = np.linspace(i_min, i_max, ticks)
 
@@ -116,20 +129,41 @@ class QRSEPlotter:
             pdf = qrse_object.pdf(xs, params)*pi
 
             if showdata is True and qrse_object.data is not None:
+
                 if seaborn is False:
-                    plt.hist(qrse_object.data, bins, normed=True, color=dcolor, label="data");
+
+                    plt.hist(qrse_object.data,
+                             bins,
+                             normed=True,
+                             color=dcolor,
+                             label="data");
+
                 else:
-                    sns.distplot(qrse_object.data, kde=False, hist=True, label="data", norm_hist=True, bins=bins)
+                    sns.distplot(qrse_object.data,
+                                 kde=False,
+                                 hist=True,
+                                 label="data",
+                                 norm_hist=True,
+                                 bins=bins)
 
             plt.plot(xs, pdf, label="p(x)", color=colors[0], lw=lw)
 
             for i, logit in enumerate(logits):
-                plt.plot(xs, logit*pdf,label="p({}, x)".format(qrse_object.kernel.actions[i]),
-                         color=colors[i+1], lw=lw)
+
+                plt.plot(xs, logit*pdf,
+                         label="p({}, x)".format(qrse_object.actions[i]),
+                         color=colors[i+1],
+                         lw=lw)
 
         else:
+
             for i, logit in enumerate(logits):
-                plt.plot(xs, logit, label="p({} | x)".format(qrse_object.kernel.actions[i]),  color=colors[i+1], lw=lw)
+
+                plt.plot(xs, logit,
+                         label="p({} | x)".format(qrse_object.actions[i]),
+                         color=colors[i+1],
+                         lw=lw)
+
             plt.ylim((-.03 , 1.03))
 
         if show_legend is True:

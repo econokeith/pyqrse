@@ -3,12 +3,12 @@ import copy
 
 import autograd.numpy as np
 import scipy as sp
-import py3qrse.utilities.mathstats as mathstats
+import pyqrse.utilities.mathstats as mathstats
 
 from autograd import elementwise_grad as egrad
 from autograd import grad, jacobian
 
-from py3qrse.utilities.mixins import HistoryMixin
+from pyqrse.utilities.mixins import HistoryMixin
 
 __all__ = ['QRSEFitter']
 
@@ -64,11 +64,12 @@ class QRSEFitter(HistoryMixin):
         else:
             the_params = params
 
-        kernel_values = the_model.kernel.log_kernel(the_model._integration_ticks, the_params)
+        kernel_values = the_model.kernel.log_kernel(the_model._integration_ticks,
+                                                    the_params)
         weights = self._target_weights
         log_z = the_model.log_partition(the_params)
 
-        return -kernel_values.dot(weights) + log_z - the_model.log_prior(the_params)
+        return -(kernel_values*weights).sum() + log_z - the_model.log_prior(the_params)
 
     def klmin(self, target=None, save=True, use_jac=True, **kwargs):
         """
@@ -110,9 +111,6 @@ class QRSEFitter(HistoryMixin):
             weights=None, hist=False,
             check=False, silent=True, use_hess=False, smart_p0=True, use_sp=True,**kwargs):
         """
-        fit(self, data=None, params0=None, summary=False, save=True, use_jac=True,
-            weights=None, hist=False,
-            check=False, silent=True, use_hess=False, smart_p0=True, use_sp=True,**kwargs):
 
         :param data:
         :param params0:
@@ -183,6 +181,9 @@ class QRSEFitter(HistoryMixin):
                 jac = egrad(nll_fun) if use_jac is True else None
                 hess = jacobian(jac) if use_hess is True else None
 
+                self.fjac = jac
+                self.fhess = hess
+
                 res2 = sp.optimize.minimize(nll_fun, the_params0, jac=jac, hess=hess, **copy_kwargs)
 
                 if res2.fun < res.fun:
@@ -196,6 +197,10 @@ class QRSEFitter(HistoryMixin):
 
             jac = egrad(nll_fun) if use_jac is True else None
             hess = jacobian(jac) if use_hess is True else None
+
+            self.fjac = jac
+            self.fhess = hess
+
             res = sp.optimize.minimize(nll_fun, the_params0, jac=jac, hess=hess, method=the_method, **copy_kwargs)
 
             if check is True and res.success is False:

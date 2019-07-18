@@ -29,7 +29,7 @@ ATQRSEKernel           Asymmetric-Temperature QRSE
 """
 
 __author__='Keith Blackwell'
-from .base import *
-from .binary import *
-from .ternary import *
+from .basekernels import *
+from .binarykernels import *
+from .ternarykernels import *
 

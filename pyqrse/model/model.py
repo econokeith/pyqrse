@@ -1,19 +1,17 @@
 __author__='Keith Blackwell'
+import os
+import copy
+import collections
+
 import autograd.numpy as np
 from autograd import elementwise_grad as egrad
 from autograd import grad, jacobian
-
 import scipy as sp
-
-import os
-import copy
 import pandas
-import collections
 
-import py3qrse.model.kernels as kernels
-import py3qrse.utilities.helpers as helpers
-import py3qrse.utilities.mathstats as mathstats
-
+import pyqrse.kernels as kernels
+import pyqrse.utilities.helpers as helpers
+import pyqrse.utilities.mathstats as mathstats
 from ..utilities.plottools import QRSEPlotter
 from ..utilities.mixins import PickleMixin, HistoryMixin
 from ..fittools import QRSESampler, QRSEFitter
@@ -48,8 +46,11 @@ class QRSEModel(HistoryMixin, PickleMixin):
             print("QRSE Kernel Not Found: Default to SQRSEKernel")
             self.kernel = kernels.SQRSEKernel()
 
-        elif issubclass(kernel, kernels.QRSEKernelBase):
+        elif isinstance(kernel, kernels.QRSEKernelBase):
             self.kernel = kernel
+
+        elif issubclass(kernel, kernels.QRSEKernelBase):
+            self.kernel = kernel()
 
         else:
             print("QRSE Kernel Not Found: Default to SQRSEKernel")
@@ -88,28 +89,41 @@ class QRSEModel(HistoryMixin, PickleMixin):
         self.data = None
 
         self.data_normed = False
-        self.data_suff_stats = np.array([0., 1.]) # unnormalized mean and standard deviation
+        self.data_suff_stats = np.array([0., 1.]) # unnormalized mean
+                                                  # and standard deviation
+                                                  #
 
-        ## sets up integration bounds, etc for when there is data/no data and params/no params
+
+        ## sets up integration bounds, etc for when
+        ## there is data/no data and params/no params
 
         if data is None and params is None:
 
             self.i_min = i_bounds[0]
             self.i_max = i_bounds[1]
-            self._integration_ticks = np.linspace(self.i_min, self.i_max, self.i_ticks)
-            self._int_tick_delta = self._integration_ticks[1] - self._integration_ticks[0]
+
+            self._integration_ticks = np.linspace(self.i_min,
+                                                  self.i_max,
+                                                  self.i_ticks)
+
+            self._int_tick_delta =  \
+                self._integration_ticks[1] - self._integration_ticks[0]
+
             self._log_int_tick_delta = np.log(self._int_tick_delta)
+
             self.params0 = self.kernel.set_params0(self.data)
 
         elif data is not None:
 
-            self.add_data(data, **kwargs)
+            self.add_data(data, norm_data=norm_data, **kwargs)
 
         else:
 
             assert len(params)==len(self.kernel._pnames_base)
-            filtered_kwargs = helpers.kwarg_filter(kwargs, QRSEModel.setup_from_params)
-            self.setup_from_params(params, **filtered_kwargs)
+
+            fkwargs = helpers.kwarg_filter(kwargs, QRSEModel.setup_from_params)
+
+            self.setup_from_params(params, **fkwargs)
 
         self._params = np.copy(self.params0)
         self.z = self.partition()
@@ -124,18 +138,18 @@ class QRSEModel(HistoryMixin, PickleMixin):
         self.plotter = QRSEPlotter(self)
         """controls plotting for QRSEModel
 
-        see py3qrse.utilitities.plottools.QRSEPlotter
+        see pyqrse.utilitities.plottools.QRSEPlotter
         """
         self.sampler = QRSESampler(self)
         """controls mcmc sampling for QRSEModel
-        see py3qrse.fittools.sampling.QRSESampler
+        see pyqrse.fittools.sampling.QRSESampler
         """
         self.fitter = QRSEFitter(self)
         """controls model fitting for QRSEModel
 
         allows fitting via Kullbeck-Leibler Distance Minimization and
         maximum likelihood estimation
-        see py3qrse.fittools.optimizer.QRSEFitter"""
+        see pyqrse.fittools.optimizer.QRSEFitter"""
 
         ## Inverse Hessian Functionality Using autograd
 
@@ -160,7 +174,7 @@ class QRSEModel(HistoryMixin, PickleMixin):
     def __repr__(self):
 
         name = self.kernel.name
-        return "py3qrse.QRSEModel(kernel={}({}))".format(name, self._k_number)
+        return "pyqrse.QRSEModel(kernel={}({}))".format(name, self._k_number)
 
     def __str__(self):
 
@@ -202,10 +216,10 @@ class QRSEModel(HistoryMixin, PickleMixin):
         bounds of integration can be inferred from the data.
 
         Args:
-            parameters(tuple, list, or np.array): parameter values to
+            parameters (tuple, list, or np.array): parameter values to
                 initialize the model
-            start: int - uses that index from params , float - starts on
-                that value | else - 0.
+            start (int) - uses that index from params | (float) - starts on
+                that value | (else) - 0.
             imax(int): maximum number of steps before quitting search
             minmax(tuple): min, max values of kernel, by default searches
                 for the range (2e-07, 4.5e-05)
@@ -239,13 +253,7 @@ class QRSEModel(HistoryMixin, PickleMixin):
                                           minmax=minmax,
                                           imax=imax)
 
-        self._integration_ticks = \
-            np.linspace(self.i_min, self.i_max, self.i_ticks)
-
-        self._int_tick_delta = \
-            self._integration_ticks[1] - self._integration_ticks[0]
-
-        self._log_int_tick_delta = np.log(self._int_tick_delta)
+        self._itick_setup()
 
         self.params0 = copy.copy(np.asarray(parameters))
         self.params = parameters
@@ -257,8 +265,13 @@ class QRSEModel(HistoryMixin, PickleMixin):
         self.i_min = mean-std*i_std
         self.i_max = mean+std*i_std
 
-        self._integration_ticks = \
-            np.linspace(self.i_min, self.i_max, self.i_ticks)
+        self._itick_setup()
+
+    def _itick_setup(self):
+
+        self._integration_ticks = np.linspace(self.i_min,
+                                              self.i_max,
+                                              self.i_ticks)
 
         self._int_tick_delta = \
             self._integration_ticks[1] - self._integration_ticks[0]
@@ -283,6 +296,7 @@ class QRSEModel(HistoryMixin, PickleMixin):
         :return:
         """
         assert isinstance(data, (str, np.ndarray, pandas.core.series.Series))
+
         if isinstance(data, str):
             assert os.path.exists(data)
 
@@ -316,7 +330,7 @@ class QRSEModel(HistoryMixin, PickleMixin):
 
         self.data = self.data[np.isfinite(self.data)]
 
-        #normalize the data and save the pre-normalization results /
+        # normalize the data and save the pre-normalization results /
         # set mark that it happened.
         if norm_data is True:
             self.data_normed = True
@@ -333,7 +347,7 @@ class QRSEModel(HistoryMixin, PickleMixin):
         self.i_min = self.dmean-self.dstd* self.i_stds
         self.i_max = self.dmean+self.dstd* self.i_stds
 
-        #if in_init is False: removed but staying for placeholder
+        # if in_init is False: removed but staying for placeholder
         # in case something breaks
         self._integration_ticks = \
             np.linspace(self.i_min, self.i_max, self.i_ticks)
@@ -388,6 +402,7 @@ class QRSEModel(HistoryMixin, PickleMixin):
     ##                                                                ##
     ##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##
 
+    # @helpers.docthief(kernels.QRSEKernelBase.actions)
     @property
     def actions(self):
         return self.kernel.actions
@@ -399,6 +414,7 @@ class QRSEModel(HistoryMixin, PickleMixin):
     @property
     def pnames(self):
         return self.kernel.pnames
+
 
     @property
     def pnames_latex(self):
@@ -427,7 +443,8 @@ class QRSEModel(HistoryMixin, PickleMixin):
 
         Appends xi to params if the kernel uses xi
 
-        :returns: params.append(xi)
+        Returns:
+            np.array(float) - params.append(xi)
         """
         if self.kernel.use_xi:
             return np.append(self.params, self.kernel.xi)
@@ -437,11 +454,12 @@ class QRSEModel(HistoryMixin, PickleMixin):
     @property
     def fpnames(self):
         """
-        FULL PARAMETER NAMES
+        Full list of parameter names including xi
 
         Appends xi to pnames if the kernel uses xi
 
-        :return: pnames.append(xi)
+        Returns:
+            np.array(float) - pnames.append(xi)
         """
         out = copy.copy(self.pnames)
 
@@ -469,7 +487,7 @@ class QRSEModel(HistoryMixin, PickleMixin):
     @property
     def fn_params(self):
         """
-        FULL PARAMETER NAMES LATEX
+        Number of parameters in the model including xi
 
         if the model uses xi, add one to n_params
 
@@ -481,6 +499,9 @@ class QRSEModel(HistoryMixin, PickleMixin):
             n+=1
 
         return n
+
+    def code(self):
+        return self.kernel.code
 
     def kernel(self, x):
         """
@@ -512,7 +533,7 @@ class QRSEModel(HistoryMixin, PickleMixin):
 
     ##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##
     ##                                                                ##
-    ##                      STATS FUNCTIONS                           ##
+    ##                    STATS FUNCTIONALITY                         ##
     ##                                                                ##
     ##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##
 
@@ -533,23 +554,28 @@ class QRSEModel(HistoryMixin, PickleMixin):
 
         return mode
 
-    def mean(self, use_sp=False):
+    def mean(self, use_sp=True):
         """
         :use_sp: if False (default) will find optimum over grid of ticks
                  if True will use scipy integrate/maximize
         :return: estimated mean of the distribution
         """
         if use_sp is True:
+
             integrand = lambda x: self.pdf(x)*x
-            mean = sp.integrate.quad(integrand, self.i_min, self.i_max)[0]
+
+            mean = sp.integrate.quad(integrand,
+                                     self.i_min,
+                                     self.i_max)[0]
 
         else:
             ticks = self._integration_ticks
-            mean = ticks.dot(self.pdf(ticks))
+            pdf = self.pdf(ticks)
+            mean = ticks.dot(pdf)/pdf.sum()
 
         return mean
 
-    def std(self, use_sp=False):
+    def std(self, use_sp=True):
         """
         :use_sp: if False (default) will find optimum over grid of ticks
                  if True will use scipy integrate/maximize
@@ -559,10 +585,17 @@ class QRSEModel(HistoryMixin, PickleMixin):
         if use_sp is True:
 
             integrand = lambda x: self.pdf(x)*(x-mean)**2
-            std = np.sqrt(sp.integrate.quad(integrand, self.i_min, self.i_max)[0])
+
+            std = np.sqrt(sp.integrate.quad(integrand,
+                                            self.i_min,
+                                            self.i_max)[0])
         else:
             ticks = self._integration_ticks
-            std = np.sqrt(ticks.dot(self.pdf(ticks)**2))
+            pdf = self.pdf(ticks)
+            pdf_sum = pdf.sum()
+            mean = ticks.dot(pdf)/pdf_sum
+
+            std = np.sqrt(pdf.dot((ticks-mean)**2)/pdf_sum)
 
         return std
 
@@ -610,7 +643,8 @@ class QRSEModel(HistoryMixin, PickleMixin):
         else:
             ll = self._integration_ticks
 
-        cdf_data = np.cumsum(self.pdf(ll))*(ll[1]-ll[0])
+        cdf_data = np.cumsum(self.pdf(ll))
+        cdf_data /=cdf_data[-1]
         cdf_inv = sp.interpolate.interp1d(cdf_data, ll)
         return cdf_inv(np.random.uniform(size=n))
 
@@ -761,22 +795,68 @@ class QRSEModel(HistoryMixin, PickleMixin):
     ## Inverse Hessian Functionality Using autograd
     ## It's somewhat awkwardly organzied to make it play nice with pickling
 
-    ## TODO - double check all of this hessian/jacobian stuff
 
-    def jac_fun(self, x):
+
+    def jac_fun(self, params=None):
+        """
+        Value of the jacobian of the negative log likelihood
+
+        Args:
+            params (np.array(float)) : model parameters
+
+        Returns:
+            np.array(float) value of jacobian at params
+        """
+
+
         if self._jac_fun is None:
-            self._jac_fun = egrad(self.log_prob)
-        return self._jac_fun(x)
+            jac_lam = lambda p: self.nll(params=p)
+            self._jac_fun = egrad(jac_lam)
 
-    def hess_fun(self, x):
+        _params = self.params if params is None else params
+
+        return self._jac_fun(_params)
+
+    def hess_fun(self, params):
+        """
+        Value of the Hessian of the negative log likelihood
+
+        Args:
+            params (np.array(float)) : model parameters
+
+        Returns:
+            np.array(float)(2d) value of Hessian at params
+        """
         if self._hess_fun is None:
             self._hess_fun = jacobian(self.jac_fun)
-        return self._hess_fun(x)
 
-    def hess_inv_fun(self, x):
-        return -sp.linalg.inv(self.hess_fun(x))
+        _params = self.params if params is None else params
+        return self._hess_fun(_params)
+
+    def hess_inv_fun(self, params=None):
+        """
+        Inverse Hessian of the negative log likelihood
+
+        Args:
+            params (np.array(float)) : model parameters
+
+        Returns:
+            np.array(float)(2d) value of Inverse Hessian at params
+        """
+        _params = self.params if params is None else params
+        return sp.linalg.inv(self.hess_fun(_params))
 
     def set_hess_inv(self, from_res=False):
+        """
+        Set model inverse Hessian
+
+        primarily used to find the inverse Hessian for Sampling
+
+        Args:
+            from_res (bool) : If False, (default) will find use Autograd
+                to the Hessian. If True, will use the estimated value
+                from the .fit() optimization routine
+        """
         if from_res is True and self.res is not None:
             self.hess_inv = self.res.hess_inv
         else:
@@ -784,19 +864,6 @@ class QRSEModel(HistoryMixin, PickleMixin):
 
         print("hess is pos def? :", mathstats.is_pos_def(self.hess_inv))
 
-    def find_hess_inv(self, params=None):
-
-        the_params = self.params if params is None else params
-
-        self._log_p = lambda x : -self.nll(x)
-        self.jac_fun = grad(self._log_p)
-        self.hess_fun = jacobian(self.jac_fun)
-        self.hess_inv_fun = lambda x: -sp.linalg.inv(self.hess_fun(x))
-        self.hess_inv = self.hess_inv_fun(the_params)
-
-        if mathstats.is_pos_def(self.hess_inv) is False:
-            print('Inverse Hessian Is Not Positive Definite')
-        return self.hess_inv
 
     ## QRSE Specific Functionality ------------------------------------
 
@@ -814,10 +881,14 @@ class QRSEModel(HistoryMixin, PickleMixin):
         """
         :return: x s.t. p(buy | x) = p(sell | x)
         """
+        if self.n_actions == 3 and actions == (0,1):
+            _actions = (0, 2)
+        else:
+            _actions = actions
 
         def indif_fun(x):
             p_actions = self.logits(x)
-            return p_actions[actions[0]] - p_actions[actions[1]]
+            return p_actions[_actions[0]] - p_actions[_actions[1]]
 
         return sp.optimize.brentq(indif_fun, self.i_min, self.i_max)
 
