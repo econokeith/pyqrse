@@ -1,0 +1,630 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pyqrse.utilities package &mdash; pyqrse 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> pyqrse
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">pyqrse.utilities package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-pyqrse.utilities.defaults">pyqrse.utilities.defaults module</a></li>
+<li><a class="reference internal" href="#module-pyqrse.utilities.helpers">pyqrse.utilities.helpers module</a></li>
+<li><a class="reference internal" href="#module-pyqrse.utilities.mathstats">pyqrse.utilities.mathstats module</a></li>
+<li><a class="reference internal" href="#module-pyqrse.utilities.mixins">pyqrse.utilities.mixins module</a></li>
+<li><a class="reference internal" href="#module-pyqrse.utilities.plottools">pyqrse.utilities.plottools module</a></li>
+<li><a class="reference internal" href="#module-pyqrse.utilities">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pyqrse</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>pyqrse.utilities package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/source/pyqrse.utilities.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="pyqrse-utilities-package">
+<h1>pyqrse.utilities package<a class="headerlink" href="#pyqrse-utilities-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-pyqrse.utilities.defaults">
+<span id="pyqrse-utilities-defaults-module"></span><h2>pyqrse.utilities.defaults module<a class="headerlink" href="#module-pyqrse.utilities.defaults" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="pyqrse.utilities.defaults.reset_label_settings">
+<code class="sig-prename descclassname">pyqrse.utilities.defaults.</code><code class="sig-name descname">reset_label_settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.utilities.defaults.reset_label_settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>reset labels/color/etc settings to default loaded from DEFAULTS.ini</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyqrse.utilities.defaults.view_label_settings">
+<code class="sig-prename descclassname">pyqrse.utilities.defaults.</code><code class="sig-name descname">view_label_settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.utilities.defaults.view_label_settings" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-pyqrse.utilities.helpers">
+<span id="pyqrse-utilities-helpers-module"></span><h2>pyqrse.utilities.helpers module<a class="headerlink" href="#module-pyqrse.utilities.helpers" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="pyqrse.utilities.helpers.date_to_datetime">
+<code class="sig-prename descclassname">pyqrse.utilities.helpers.</code><code class="sig-name descname">date_to_datetime</code><span class="sig-paren">(</span><em class="sig-param">d</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.utilities.helpers.date_to_datetime" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyqrse.utilities.helpers.datetime_to_date">
+<code class="sig-prename descclassname">pyqrse.utilities.helpers.</code><code class="sig-name descname">datetime_to_date</code><span class="sig-paren">(</span><em class="sig-param">d</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.utilities.helpers.datetime_to_date" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyqrse.utilities.helpers.split_strip_parser">
+<code class="sig-prename descclassname">pyqrse.utilities.helpers.</code><code class="sig-name descname">split_strip_parser</code><span class="sig-paren">(</span><em class="sig-param">parser</em>, <em class="sig-param">key1</em>, <em class="sig-param">key2</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.utilities.helpers.split_strip_parser" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyqrse.utilities.helpers.kernel_hierarchy_to_hash_bfs">
+<code class="sig-prename descclassname">pyqrse.utilities.helpers.</code><code class="sig-name descname">kernel_hierarchy_to_hash_bfs</code><span class="sig-paren">(</span><em class="sig-param">kernel</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.utilities.helpers.kernel_hierarchy_to_hash_bfs" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>returns all subclasses of a kernel function as a hash</dt><dd><p>key = kernel’s code , value = non-instantiated kernel object
+example: kernel_hash[‘S’] = SQRSEKernel</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>kernel</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyqrse.utilities.helpers.docthief">
+<code class="sig-prename descclassname">pyqrse.utilities.helpers.</code><code class="sig-name descname">docthief</code><span class="sig-paren">(</span><em class="sig-param">mark_function</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.utilities.helpers.docthief" title="Permalink to this definition">¶</a></dt>
+<dd><p>decorator function that allows the thief to return the mark_function’s
+docstring</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>mark_function</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>function whose docstring is the same as the mark_function</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyqrse.utilities.helpers.kwarg_filter">
+<code class="sig-prename descclassname">pyqrse.utilities.helpers.</code><code class="sig-name descname">kwarg_filter</code><span class="sig-paren">(</span><em class="sig-param">kwargs</em>, <em class="sig-param">target_function</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.utilities.helpers.kwarg_filter" title="Permalink to this definition">¶</a></dt>
+<dd><p>filters kwargs of outside function to make sure they work in
+target function. Note: this function may have unexpected results
+if outer and target functions have the same keyword arguments
+assigned to different uses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>kwargs</strong> – kwargs from outer function</p></li>
+<li><p><strong>target_function</strong> – function filtered kwargs will be given to</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>dictionary of keyword arguments</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyqrse.utilities.helpers.matrix_print">
+<code class="sig-prename descclassname">pyqrse.utilities.helpers.</code><code class="sig-name descname">matrix_print</code><span class="sig-paren">(</span><em class="sig-param">mat_to_print</em>, <em class="sig-param">rb=None</em>, <em class="sig-param">cb='|'</em>, <em class="sig-param">f=2</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.utilities.helpers.matrix_print" title="Permalink to this definition">¶</a></dt>
+<dd><p>prints matrix or np.arrays prettier</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rb</strong> (<em>str</em>) – Single character to string for rows in between the
+rows of the matrix. If None (default), no breaks between rows</p></li>
+<li><p><strong>cb</strong> (<em>str</em>) – Single character to demarcate column breaks. Defaults is “|”</p></li>
+<li><p><strong>f</strong> (<em>int</em>) – the number of decimals to show in floats.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyqrse.utilities.helpers.mprint">
+<code class="sig-prename descclassname">pyqrse.utilities.helpers.</code><code class="sig-name descname">mprint</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.utilities.helpers.mprint" title="Permalink to this definition">¶</a></dt>
+<dd><p>prints matrix or np.arrays prettier</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rb</strong> (<em>str</em>) – Single character to string for rows in between the
+rows of the matrix. If None (default), no breaks between rows</p></li>
+<li><p><strong>cb</strong> (<em>str</em>) – Single character to demarcate column breaks. Defaults is “|”</p></li>
+<li><p><strong>f</strong> (<em>int</em>) – the number of decimals to show in floats.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyqrse.utilities.mathstats">
+<span id="pyqrse-utilities-mathstats-module"></span><h2>pyqrse.utilities.mathstats module<a class="headerlink" href="#module-pyqrse.utilities.mathstats" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="pyqrse.utilities.mathstats.is_pos_def">
+<code class="sig-prename descclassname">pyqrse.utilities.mathstats.</code><code class="sig-name descname">is_pos_def</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.utilities.mathstats.is_pos_def" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyqrse.utilities.mathstats.hess_adjust">
+<code class="sig-prename descclassname">pyqrse.utilities.mathstats.</code><code class="sig-name descname">hess_adjust</code><span class="sig-paren">(</span><em class="sig-param">hess</em>, <em class="sig-param">param</em>, <em class="sig-param">std</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.utilities.mathstats.hess_adjust" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyqrse.utilities.mathstats.marg_actions">
+<code class="sig-prename descclassname">pyqrse.utilities.mathstats.</code><code class="sig-name descname">marg_actions</code><span class="sig-paren">(</span><em class="sig-param">model</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.utilities.mathstats.marg_actions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyqrse.utilities.mathstats.find_marg_like">
+<code class="sig-prename descclassname">pyqrse.utilities.mathstats.</code><code class="sig-name descname">find_marg_like</code><span class="sig-paren">(</span><em class="sig-param">log_marginals</em>, <em class="sig-param">n=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.utilities.mathstats.find_marg_like" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyqrse.utilities.mathstats.model_p">
+<code class="sig-prename descclassname">pyqrse.utilities.mathstats.</code><code class="sig-name descname">model_p</code><span class="sig-paren">(</span><em class="sig-param">log_marginals</em>, <em class="sig-param">n=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.utilities.mathstats.model_p" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyqrse.utilities.mathstats.log_marginal">
+<code class="sig-prename descclassname">pyqrse.utilities.mathstats.</code><code class="sig-name descname">log_marginal</code><span class="sig-paren">(</span><em class="sig-param">sampler</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.utilities.mathstats.log_marginal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyqrse.utilities.mathstats.joint_entropy">
+<code class="sig-prename descclassname">pyqrse.utilities.mathstats.</code><code class="sig-name descname">joint_entropy</code><span class="sig-paren">(</span><em class="sig-param">model</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.utilities.mathstats.joint_entropy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyqrse.utilities.mathstats.marg_entropy">
+<code class="sig-prename descclassname">pyqrse.utilities.mathstats.</code><code class="sig-name descname">marg_entropy</code><span class="sig-paren">(</span><em class="sig-param">model</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.utilities.mathstats.marg_entropy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyqrse.utilities.mathstats.cond_entropy">
+<code class="sig-prename descclassname">pyqrse.utilities.mathstats.</code><code class="sig-name descname">cond_entropy</code><span class="sig-paren">(</span><em class="sig-param">model</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.utilities.mathstats.cond_entropy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyqrse.utilities.mathstats.asymmetric_laplace">
+<code class="sig-prename descclassname">pyqrse.utilities.mathstats.</code><code class="sig-name descname">asymmetric_laplace</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">l</em>, <em class="sig-param">k</em>, <em class="sig-param">m</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.utilities.mathstats.asymmetric_laplace" title="Permalink to this definition">¶</a></dt>
+<dd><p>PDF for the Asymmetric Laplace Distribution</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>float or np.array(float</em>) – input value</p></li>
+<li><p><strong>l</strong> (<em>float</em>) – p1</p></li>
+<li><p><strong>k</strong> (<em>float</em>) – p2</p></li>
+<li><p><strong>m</strong> (<em>float</em>) – location parameter</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>float or np.array(float)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyqrse.utilities.mathstats.rejection_sample">
+<code class="sig-prename descclassname">pyqrse.utilities.mathstats.</code><code class="sig-name descname">rejection_sample</code><span class="sig-paren">(</span><em class="sig-param">target</em>, <em class="sig-param">proposal</em>, <em class="sig-param">m</em>, <em class="sig-param">n</em>, <em class="sig-param">jmax=10</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.utilities.mathstats.rejection_sample" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rejection Sampler</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong> (<em>function</em>) – pdf of target distribution</p></li>
+<li><p><strong>proposal</strong> (<em>object</em>) – distribution to sample from. It must have
+.rvs() and .pdf(x) methods</p></li>
+<li><p><strong>m</strong> (<em>float</em>) – value to mulitply proposal distribution in order
+to turn it into an envelope</p></li>
+<li><p><strong>n</strong> (<em>int</em>) – number of samples</p></li>
+<li><p><strong>jmax</strong> (<em>int</em>) – maximum number of proposals before quitting. it’s measured
+as proposal_max = jmax*n. Default is 10, which means that
+there will be maximum of 10n proposals.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>np.array(float) of the samples from the target distribution</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyqrse.utilities.mathstats.ab_prior_make">
+<code class="sig-prename descclassname">pyqrse.utilities.mathstats.</code><code class="sig-name descname">ab_prior_make</code><span class="sig-paren">(</span><em class="sig-param">value=0</em>, <em class="sig-param">lam=1.0</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.utilities.mathstats.ab_prior_make" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns a log prior function for the ab_model on the buy/sell indifference point
+:param value:
+:param lam:
+:return:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyqrse.utilities.mathstats.qrse_weak_prior">
+<code class="sig-prename descclassname">pyqrse.utilities.mathstats.</code><code class="sig-name descname">qrse_weak_prior</code><span class="sig-paren">(</span><em class="sig-param">params0</em>, <em class="sig-param">weights=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.utilities.mathstats.qrse_weak_prior" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns a function for weak Gaussian prior on all parameters.
+mainly used for stability in multiple equilibria setting</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>params0</strong> – </p></li>
+<li><p><strong>weights</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyqrse.utilities.mathstats.mean_std_fun">
+<code class="sig-prename descclassname">pyqrse.utilities.mathstats.</code><code class="sig-name descname">mean_std_fun</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">weights=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.utilities.mathstats.mean_std_fun" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyqrse.utilities.mathstats.al_prior">
+<code class="sig-prename descclassname">pyqrse.utilities.mathstats.</code><code class="sig-name descname">al_prior</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.utilities.mathstats.al_prior" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyqrse.utilities.mathstats.m_summary">
+<code class="sig-prename descclassname">pyqrse.utilities.mathstats.</code><code class="sig-name descname">m_summary</code><span class="sig-paren">(</span><em class="sig-param">model</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.utilities.mathstats.m_summary" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyqrse.utilities.mathstats.find_support_bounds">
+<code class="sig-prename descclassname">pyqrse.utilities.mathstats.</code><code class="sig-name descname">find_support_bounds</code><span class="sig-paren">(</span><em class="sig-param">fun</em>, <em class="sig-param">start=0</em>, <em class="sig-param">which='right'</em>, <em class="sig-param">minmax=(2e-09</em>, <em class="sig-param">4.5e-05)</em>, <em class="sig-param">imax=100</em>, <em class="sig-param">silent=True</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.utilities.mathstats.find_support_bounds" title="Permalink to this definition">¶</a></dt>
+<dd><p>find support for function that is monotonically decreasing in the tails</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyqrse.utilities.mathstats.inv_cdf_sampler">
+<code class="sig-prename descclassname">pyqrse.utilities.mathstats.</code><code class="sig-name descname">inv_cdf_sampler</code><span class="sig-paren">(</span><em class="sig-param">target</em>, <em class="sig-param">n=1</em>, <em class="sig-param">bounds=(-10</em>, <em class="sig-param">10</em>, <em class="sig-param">1000)</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.utilities.mathstats.inv_cdf_sampler" title="Permalink to this definition">¶</a></dt>
+<dd><p>random variable sampler using the interpolated inverse cdf method</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul>
+<li><p><strong>n</strong> (<em>int</em>) – number of samples.</p>
+<p>must be either a positive integer or None.
+if n is a positive int, rvs returns an np.array of length n
+if n is None, rvs returns a scalar sample from the distribution</p>
+</li>
+<li><p><strong>bounds</strong> (<em>tuple or list</em>) – (lower bound, upper bound, number of ticks)</p>
+<p>[-10, 10, 10000] / (-10, 10, 10000)
+create 10000 ticks between -10 and 10</p>
+</li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>float or np.array([float]) of samples</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyqrse.utilities.mixins">
+<span id="pyqrse-utilities-mixins-module"></span><h2>pyqrse.utilities.mixins module<a class="headerlink" href="#module-pyqrse.utilities.mixins" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyqrse.utilities.mixins.HistoryMixin">
+<em class="property">class </em><code class="sig-prename descclassname">pyqrse.utilities.mixins.</code><code class="sig-name descname">HistoryMixin</code><a class="headerlink" href="#pyqrse.utilities.mixins.HistoryMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="pyqrse.utilities.mixins.HistoryMixin.save_history">
+<code class="sig-name descname">save_history</code><span class="sig-paren">(</span><em class="sig-param">new_hist=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.utilities.mixins.HistoryMixin.save_history" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyqrse.utilities.mixins.HistoryMixin.history">
+<code class="sig-name descname">history</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.utilities.mixins.HistoryMixin.history" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyqrse.utilities.mixins.HistoryMixin.reset_history">
+<code class="sig-name descname">reset_history</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.utilities.mixins.HistoryMixin.reset_history" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyqrse.utilities.mixins.PickleMixin">
+<em class="property">class </em><code class="sig-prename descclassname">pyqrse.utilities.mixins.</code><code class="sig-name descname">PickleMixin</code><a class="headerlink" href="#pyqrse.utilities.mixins.PickleMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="pyqrse.utilities.mixins.PickleMixin.from_pickle">
+<em class="property">classmethod </em><code class="sig-name descname">from_pickle</code><span class="sig-paren">(</span><em class="sig-param">path_to_pickle</em>, <em class="sig-param">trust_check=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.utilities.mixins.PickleMixin.from_pickle" title="Permalink to this definition">¶</a></dt>
+<dd><p>!!!DO NOT RUN THIS FUNCTION UNLESS YOU TRUST THE SOURCE WITH
+ABSOLUTE CERTAINTY!!!</p>
+<p>Pickling is extremely convenient from a workflow perspective,
+as you can save the results of inquiries and instantly load
+them back into your python environment.</p>
+<p>However, there are no safety checks on the code that will be
+run. That means:</p>
+<p>-If you don’t trust the source, don’t unpickle it.</p>
+<p>-Python will run all code in the pickle malicious or not!</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path_to_pickle</strong> – individual or list of paths to saved
+pickled QRSE objects</p></li>
+<li><p><strong>args</strong> – </p></li>
+<li><p><strong>kwargs</strong> – </p></li>
+<li><p><strong>trust_check</strong> – prompts the user to verify that they trust the source
+of the file to be unpickled default value is True</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyqrse.utilities.mixins.PickleMixin.to_pickle">
+<code class="sig-name descname">to_pickle</code><span class="sig-paren">(</span><em class="sig-param">path_to_pickle</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.utilities.mixins.PickleMixin.to_pickle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses the python pickle module to serialize the object (pickle it).
+Pickling allows it to be saved and reloaded later.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path_to_pickle</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyqrse.utilities.plottools">
+<span id="pyqrse-utilities-plottools-module"></span><h2>pyqrse.utilities.plottools module<a class="headerlink" href="#module-pyqrse.utilities.plottools" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyqrse.utilities.plottools.QRSEPlotter">
+<em class="property">class </em><code class="sig-prename descclassname">pyqrse.utilities.plottools.</code><code class="sig-name descname">QRSEPlotter</code><span class="sig-paren">(</span><em class="sig-param">qrse_object</em>, <em class="sig-param">colors=None</em>, <em class="sig-param">color_order=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.utilities.plottools.QRSEPlotter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>THIS IS SWEET AT MAKING CHARTS</p>
+<dl class="method">
+<dt id="pyqrse.utilities.plottools.QRSEPlotter.colors">
+<em class="property">property </em><code class="sig-name descname">colors</code><a class="headerlink" href="#pyqrse.utilities.plottools.QRSEPlotter.colors" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyqrse.utilities.plottools.QRSEPlotter.set_colors">
+<code class="sig-name descname">set_colors</code><span class="sig-paren">(</span><em class="sig-param">colors=None</em>, <em class="sig-param">output=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.utilities.plottools.QRSEPlotter.set_colors" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyqrse.utilities.plottools.QRSEPlotter.set_color_order">
+<code class="sig-name descname">set_color_order</code><span class="sig-paren">(</span><em class="sig-param">color_order=None</em>, <em class="sig-param">output=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.utilities.plottools.QRSEPlotter.set_color_order" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyqrse.utilities.plottools.QRSEPlotter.plot">
+<code class="sig-name descname">plot</code><span class="sig-paren">(</span><em class="sig-param">which=0</em>, <em class="sig-param">params=None</em>, <em class="sig-param">bounds=None</em>, <em class="sig-param">ticks=1000</em>, <em class="sig-param">showdata=True</em>, <em class="sig-param">bins=20</em>, <em class="sig-param">title=None</em>, <em class="sig-param">dcolor='w'</em>, <em class="sig-param">seaborn=True</em>, <em class="sig-param">lw=2</em>, <em class="sig-param">pi=1.0</em>, <em class="sig-param">colors=None</em>, <em class="sig-param">color_order=None</em>, <em class="sig-param">show_legend=True</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.utilities.plottools.QRSEPlotter.plot" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>plot(self, which=0, params=None, bounds=None,</dt><dd><p>ticks=1000, showdata=True,
+bins=20, title=None, dcolor=’w’,
+seaborn=True, lw=2, pi=1.,
+colors=None, color_order=None, show_legend=True):</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>which</strong> – </p></li>
+<li><p><strong>params</strong> – </p></li>
+<li><p><strong>bounds</strong> – </p></li>
+<li><p><strong>ticks</strong> – </p></li>
+<li><p><strong>showdata</strong> – </p></li>
+<li><p><strong>bins</strong> – </p></li>
+<li><p><strong>title</strong> – </p></li>
+<li><p><strong>dcolor</strong> – </p></li>
+<li><p><strong>seaborn</strong> – </p></li>
+<li><p><strong>lw</strong> – </p></li>
+<li><p><strong>pi</strong> – </p></li>
+<li><p><strong>colors</strong> – </p></li>
+<li><p><strong>color_order</strong> – </p></li>
+<li><p><strong>show_legend</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyqrse.utilities.plottools.QRSEPlotter.plotboth">
+<code class="sig-name descname">plotboth</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.utilities.plottools.QRSEPlotter.plotboth" title="Permalink to this definition">¶</a></dt>
+<dd><p>plot marginal distribution side by side with
+:param args:
+:param kwargs:
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyqrse.utilities">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pyqrse.utilities" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Keith Blackwell
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

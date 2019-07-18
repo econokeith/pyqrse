@@ -1,0 +1,423 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pyqrse.fittools package &mdash; pyqrse 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> pyqrse
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">pyqrse.fittools package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-pyqrse.fittools.optimizer">pyqrse.fittools.optimizer module</a></li>
+<li><a class="reference internal" href="#module-pyqrse.fittools.sampling">pyqrse.fittools.sampling module</a></li>
+<li><a class="reference internal" href="#module-pyqrse.fittools">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pyqrse</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>pyqrse.fittools package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/source/pyqrse.fittools.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="pyqrse-fittools-package">
+<h1>pyqrse.fittools package<a class="headerlink" href="#pyqrse-fittools-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-pyqrse.fittools.optimizer">
+<span id="pyqrse-fittools-optimizer-module"></span><h2>pyqrse.fittools.optimizer module<a class="headerlink" href="#module-pyqrse.fittools.optimizer" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyqrse.fittools.optimizer.QRSEFitter">
+<em class="property">class </em><code class="sig-prename descclassname">pyqrse.fittools.optimizer.</code><code class="sig-name descname">QRSEFitter</code><span class="sig-paren">(</span><em class="sig-param">the_model</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.fittools.optimizer.QRSEFitter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pyqrse.utilities.html#pyqrse.utilities.mixins.HistoryMixin" title="pyqrse.utilities.mixins.HistoryMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyqrse.utilities.mixins.HistoryMixin</span></code></a></p>
+<dl class="method">
+<dt id="pyqrse.fittools.optimizer.QRSEFitter.update_model">
+<code class="sig-name descname">update_model</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.fittools.optimizer.QRSEFitter.update_model" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyqrse.fittools.optimizer.QRSEFitter.set_kl_target">
+<code class="sig-name descname">set_kl_target</code><span class="sig-paren">(</span><em class="sig-param">target</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.fittools.optimizer.QRSEFitter.set_kl_target" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>target</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyqrse.fittools.optimizer.QRSEFitter.kld">
+<code class="sig-name descname">kld</code><span class="sig-paren">(</span><em class="sig-param">params=None</em>, <em class="sig-param">target=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.fittools.optimizer.QRSEFitter.kld" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>params</strong> – </p></li>
+<li><p><strong>target</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyqrse.fittools.optimizer.QRSEFitter.klmin">
+<code class="sig-name descname">klmin</code><span class="sig-paren">(</span><em class="sig-param">target=None</em>, <em class="sig-param">save=True</em>, <em class="sig-param">use_jac=True</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.fittools.optimizer.QRSEFitter.klmin" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong> – </p></li>
+<li><p><strong>save</strong> – </p></li>
+<li><p><strong>use_jac</strong> – </p></li>
+<li><p><strong>kwargs</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyqrse.fittools.optimizer.QRSEFitter.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">data=None</em>, <em class="sig-param">params0=None</em>, <em class="sig-param">summary=False</em>, <em class="sig-param">save=True</em>, <em class="sig-param">use_jac=True</em>, <em class="sig-param">weights=None</em>, <em class="sig-param">hist=False</em>, <em class="sig-param">check=False</em>, <em class="sig-param">silent=True</em>, <em class="sig-param">use_hess=False</em>, <em class="sig-param">smart_p0=True</em>, <em class="sig-param">use_sp=True</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.fittools.optimizer.QRSEFitter.fit" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – </p></li>
+<li><p><strong>params0</strong> – </p></li>
+<li><p><strong>summary</strong> – </p></li>
+<li><p><strong>save</strong> – </p></li>
+<li><p><strong>use_jac</strong> – </p></li>
+<li><p><strong>weights</strong> – </p></li>
+<li><p><strong>hist</strong> – </p></li>
+<li><p><strong>check</strong> – </p></li>
+<li><p><strong>silent</strong> – </p></li>
+<li><p><strong>use_hess</strong> – </p></li>
+<li><p><strong>smart_p0</strong> – </p></li>
+<li><p><strong>use_sp</strong> – </p></li>
+<li><p><strong>kwargs</strong> – see <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.minimize.html">https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.minimize.html</a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyqrse.fittools.sampling">
+<span id="pyqrse-fittools-sampling-module"></span><h2>pyqrse.fittools.sampling module<a class="headerlink" href="#module-pyqrse.fittools.sampling" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyqrse.fittools.sampling.QRSESampler">
+<em class="property">class </em><code class="sig-prename descclassname">pyqrse.fittools.sampling.</code><code class="sig-name descname">QRSESampler</code><span class="sig-paren">(</span><em class="sig-param">qrse_model</em>, <em class="sig-param">chain_format='df'</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.fittools.sampling.QRSESampler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>sampler doc_string</p>
+<dl class="method">
+<dt id="pyqrse.fittools.sampling.QRSESampler.a_rates">
+<em class="property">property </em><code class="sig-name descname">a_rates</code><a class="headerlink" href="#pyqrse.fittools.sampling.QRSESampler.a_rates" title="Permalink to this definition">¶</a></dt>
+<dd><p>acceptance rates for the sampler</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyqrse.fittools.sampling.QRSESampler.chain">
+<em class="property">property </em><code class="sig-name descname">chain</code><a class="headerlink" href="#pyqrse.fittools.sampling.QRSESampler.chain" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyqrse.fittools.sampling.QRSESampler.marg_like">
+<em class="property">property </em><code class="sig-name descname">marg_like</code><a class="headerlink" href="#pyqrse.fittools.sampling.QRSESampler.marg_like" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyqrse.fittools.sampling.QRSESampler.n_errors">
+<em class="property">property </em><code class="sig-name descname">n_errors</code><a class="headerlink" href="#pyqrse.fittools.sampling.QRSESampler.n_errors" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyqrse.fittools.sampling.QRSESampler.max_params">
+<em class="property">property </em><code class="sig-name descname">max_params</code><a class="headerlink" href="#pyqrse.fittools.sampling.QRSESampler.max_params" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyqrse.fittools.sampling.QRSESampler.max_like">
+<code class="sig-name descname">max_like</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.fittools.sampling.QRSESampler.max_like" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyqrse.fittools.sampling.QRSESampler.init">
+<code class="sig-name descname">init</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.fittools.sampling.QRSESampler.init" title="Permalink to this definition">¶</a></dt>
+<dd><p>updates sampler with recent activity of the QRSEModel()
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyqrse.fittools.sampling.QRSESampler.set_params">
+<code class="sig-name descname">set_params</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.fittools.sampling.QRSESampler.set_params" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyqrse.fittools.sampling.QRSESampler.propose_new">
+<code class="sig-name descname">propose_new</code><span class="sig-paren">(</span><em class="sig-param">params=None</em>, <em class="sig-param">ptype='corr'</em>, <em class="sig-param">s=1.0</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.fittools.sampling.QRSESampler.propose_new" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyqrse.fittools.sampling.QRSESampler.next">
+<code class="sig-name descname">next</code><span class="sig-paren">(</span><em class="sig-param">sample_fun='joint'</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.fittools.sampling.QRSESampler.next" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyqrse.fittools.sampling.QRSESampler.mcmc">
+<code class="sig-name descname">mcmc</code><span class="sig-paren">(</span><em class="sig-param">N=1000</em>, <em class="sig-param">burn=0</em>, <em class="sig-param">single=False</em>, <em class="sig-param">ptype='corr'</em>, <em class="sig-param">s=1.0</em>, <em class="sig-param">update_hess=False</em>, <em class="sig-param">new=False</em>, <em class="sig-param">use_tqdm=True</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.fittools.sampling.QRSESampler.mcmc" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>N</strong> – </p></li>
+<li><p><strong>burn</strong> – </p></li>
+<li><p><strong>single</strong> – </p></li>
+<li><p><strong>ptype</strong> – </p></li>
+<li><p><strong>s</strong> – </p></li>
+<li><p><strong>update_hess</strong> – </p></li>
+<li><p><strong>new</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyqrse.fittools.sampling.QRSESampler.getdiff">
+<code class="sig-name descname">getdiff</code><span class="sig-paren">(</span><em class="sig-param">parameter1</em>, <em class="sig-param">parameter2</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.fittools.sampling.QRSESampler.getdiff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the difference between the chains of two parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parameter1</strong> – string name for p1 (i.e. ‘t_buy’)</p></li>
+<li><p><strong>parameter2</strong> – string name for p2 (i.e. ‘t_sell’)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyqrse.fittools.sampling.QRSESampler.plot">
+<code class="sig-name descname">plot</code><span class="sig-paren">(</span><em class="sig-param">per_row=2</em>, <em class="sig-param">figsize=(12</em>, <em class="sig-param">4)</em>, <em class="sig-param">use_latex=True</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.fittools.sampling.QRSESampler.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>plot(self, per_row=2, figsize=(12, 4)):
+:param per_row:
+:param figsize:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyqrse.fittools.sampling.QRSESampler.plotdiff">
+<code class="sig-name descname">plotdiff</code><span class="sig-paren">(</span><em class="sig-param">parameter1</em>, <em class="sig-param">parameter2</em>, <em class="sig-param">kind='hist'</em>, <em class="sig-param">use_latex=True</em>, <em class="sig-param">figsize=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.fittools.sampling.QRSESampler.plotdiff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Quickly view the difference between the chains of two parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parameter1</strong> – string name for p1 (i.e. ‘t_buy’)</p></li>
+<li><p><strong>parameter2</strong> – string name for p2 (i.e. ‘t_sell’)</p></li>
+<li><p><strong>kind</strong> – ‘hist’ for histogram or ‘line’ for time-series</p></li>
+<li><p><strong>use_latex</strong> – use latex version of parameter names. default is True</p></li>
+<li><p><strong>figsize</strong> – invokes plt.figure(figsize=figsize).</p></li>
+<li><p><strong>kwargs</strong> – additional arguments for sns.distplot() and plt.plot()</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyqrse.fittools">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pyqrse.fittools" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Keith Blackwell
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

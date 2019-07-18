@@ -45,6 +45,7 @@ class QRSEKernelBase:
 
         Returns:
             string code
+
         """
         return cls._code
 
@@ -52,6 +53,7 @@ class QRSEKernelBase:
     def getktype(cls):
         """
         QRSEModel Kernel Type
+
         Returns:
             string kernel type. Either 'binary' or 'ternary'
         """
@@ -131,15 +133,16 @@ class QRSEKernelBase:
         For instance:
 
             binary_logits = p(a0|x), p(a1|x)
+
             ternary_logits = p(p0|x), p(a1|x), p(a2|x)
 
         Args:
             x (float or np.array([float]): value of data being tested
+
             params (np.array([float])): array of parameter values
 
         Returns:
-            tuple of floats or tuple of np.array([float]) corresponding to
-                each actions.
+            tuple(float) or tuple(np.array([float]))
         """
         pass
 
@@ -200,6 +203,17 @@ class QRSEKernelBase:
         return np.exp(self.log_kernel(x, params))
 
     def set_params0(self, data=None, weights=None):
+        """
+        Initial parameter value set based on data
+
+        Args:
+            data:
+            weights:
+
+        Returns:
+            np.array([float])
+
+        """
         return np.array([0.])
 
     def indifference(self, params):
