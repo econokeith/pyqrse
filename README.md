@@ -2,7 +2,7 @@
 
 Python 3 package for estimating Quantal Response Statistical Equilibrium Models
 
-**Note: pyqrse is the early alpha stage of development and subject to change. This site is here a basic markup on the intended structure**
+**Note: pyqrse is the early alpha stage of development and subject to change. This site is here as a basic markup on the intended structure**
 
 
 ## Documentation
