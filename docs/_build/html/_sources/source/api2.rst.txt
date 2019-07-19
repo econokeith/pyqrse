@@ -1,0 +1,27 @@
+The pyqrse API reference
+========================
+
+.. automodule:: pyqrse
+   :members:
+
+The "model” module
+------------------
+
+.. automodule:: pyqrse.model
+   :members:
+   :undoc-members:
+
+The “fittools” module
+---------------------
+
+.. automodule:: pyqrse.fittools
+   :members:
+   :undoc-members:
+
+Module contents
+---------------
+
+.. automodule:: pyqrse.fittools
+   :members:
+   :undoc-members:
+   :show-inheritance:

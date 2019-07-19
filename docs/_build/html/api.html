@@ -1,0 +1,1247 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>The pyqrse API reference &mdash; pyqrse 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Kernels" href="kernels.html" />
+    <link rel="prev" title="Welcome to pyqrse’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> pyqrse
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">The pyqrse API reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#qrsemodel">QRSEModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#qrsesampler">QRSESampler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#qrsefitter">QRSEFitter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#qrseplotter">QRSEPlotter</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="kernels.html">Kernels</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pyqrse</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>The pyqrse API reference</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/api.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="the-pyqrse-api-reference">
+<h1>The pyqrse API reference<a class="headerlink" href="#the-pyqrse-api-reference" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="qrsemodel">
+<h2>QRSEModel<a class="headerlink" href="#qrsemodel" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt>
+<em class="property">class </em><code class="sig-prename descclassname">pyqrse.model.model.</code><code class="sig-name descname">QRSEModel</code><span class="sig-paren">(</span><em class="sig-param">kernel='S'</em>, <em class="sig-param">data=None</em>, <em class="sig-param">params=None</em>, <em class="sig-param">i_ticks=1000</em>, <em class="sig-param">i_stds=10</em>, <em class="sig-param">i_bounds=(-10</em>, <em class="sig-param">10)</em>, <em class="sig-param">about_data=''</em>, <em class="sig-param">norm_data=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span></dt>
+<dd><p>THIS IS QRSE - Under Construction</p>
+<dl class="attribute">
+<dt>
+<code class="sig-name descname">notes</code><em class="property"> = None</em></dt>
+<dd><p>A ‘notes’ dictionary for the model
+Conveniently track things to remember about results. Especially
+useful pickling the object</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="sig-name descname">name</code><em class="property"> = None</em></dt>
+<dd><p>name of the model
+by default name is set of the abbreviated kernel name (i.e. S-QRSE)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="sig-name descname">long_name</code><em class="property"> = None</em></dt>
+<dd><p>longer name of the model
+by default name is set of the full name of kernel name
+(i.e. Symmetric-QRSE)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="sig-name descname">plotter</code><em class="property"> = None</em></dt>
+<dd><p>controls plotting for QRSEModel</p>
+<p>see pyqrse.utilitities.plottools.QRSEPlotter</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="sig-name descname">sampler</code><em class="property"> = None</em></dt>
+<dd><p>controls mcmc sampling for QRSEModel
+see pyqrse.fittools.sampling.QRSESampler</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="sig-name descname">fitter</code><em class="property"> = None</em></dt>
+<dd><p>controls model fitting for QRSEModel</p>
+<p>allows fitting via Kullbeck-Leibler Distance Minimization and
+maximum likelihood estimation
+see pyqrse.fittools.optimizer.QRSEFitter</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">setup_from_params</code><span class="sig-paren">(</span><em class="sig-param">parameters</em>, <em class="sig-param">start=2</em>, <em class="sig-param">imax=100</em>, <em class="sig-param">minmax=(2e-07</em>, <em class="sig-param">4.5e-05)</em>, <em class="sig-param">find_mode=True</em>, <em class="sig-param">stds=None</em><span class="sig-paren">)</span></dt>
+<dd><p>Will attempt to set model wide variables appropriate to model
+given parameters. does a binary search over the kernel values
+to find the points whose value is between the minmax bounds.</p>
+<p>This function will not guarantee results when the starting point
+is not the mode of the kernel or if the functions is not
+monotonically decreasing away from the mode.</p>
+<p>This function is only necessary when working without data since
+bounds of integration can be inferred from the data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parameters</strong> (<em>tuple, list, or np.array</em>) – parameter values to
+initialize the model</p></li>
+<li><p><strong>start</strong> (<em>int) - uses that index from params | (float</em>) – that value | (else) - 0.</p></li>
+<li><p><strong>imax</strong> (<em>int</em>) – maximum number of steps before quitting search</p></li>
+<li><p><strong>minmax</strong> (<em>tuple</em>) – min, max values of kernel, by default searches
+for the range (2e-07, 4.5e-05)</p></li>
+<li><p><strong>find_mode</strong> (<em>bool</em>) – If True, searches for and begins from mode
+(default True)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">update_p0</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">weights=None</em>, <em class="sig-param">i_std=7</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">add_data</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">index_col=0</em>, <em class="sig-param">header=None</em>, <em class="sig-param">squeeze=True</em>, <em class="sig-param">silent=False</em>, <em class="sig-param">save_abs_path=False</em>, <em class="sig-param">norm_data=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span></dt>
+<dd><p>Primary means of adding data to model. It will set integration
+defaults according to the shape of the data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – either pandas.Series, np.ndarray, or “path/to/data”</p></li>
+<li><p><strong>index_col</strong> – pandas.read_csv keyword argument</p></li>
+<li><p><strong>header</strong> – pandas.read_csv keyword argument</p></li>
+<li><p><strong>squeeze</strong> – pandas.read_csv keyword argument</p></li>
+<li><p><strong>silent</strong> – no printing while running. default is False</p></li>
+<li><p><strong>save_abs_path</strong> – if True will save absolute instead of relative path to the data
+useful if saving object to different location</p></li>
+<li><p><strong>norm_data</strong> – True or False to normalize data</p></li>
+<li><p><strong>kwargs</strong> – keyword arguments for pandas.read_csv</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">property </em><code class="sig-name descname">i_bounds</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">property </em><code class="sig-name descname">params</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">property </em><code class="sig-name descname">n_params</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">set_params</code><span class="sig-paren">(</span><em class="sig-param">new_params</em>, <em class="sig-param">use_sp=True</em><span class="sig-paren">)</span></dt>
+<dd><p>updates params and allows choice if self.partition uses sp or ticks</p>
+<p>An alternative to using the self.params.setter that allows for choice of
+integration method</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>new_params</strong> (<em>tuple, list, or np.ndarray</em>) – new parameter values. Must
+be same length as <em>params</em> and should not include <em>xi</em></p></li>
+<li><p><strong>use_sp</strong> (<em>bool</em>) – If True (default), solve partition function using
+scipy.integrate.quad. If False, will use ticks. When set to
+False, is equivalent to using self.params = new_params</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">property </em><code class="sig-name descname">actions</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">property </em><code class="sig-name descname">pnames</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">property </em><code class="sig-name descname">pnames_latex</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">property </em><code class="sig-name descname">xi</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">property </em><code class="sig-name descname">use_xi</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">property </em><code class="sig-name descname">n_actions</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">property </em><code class="sig-name descname">fparams</code></dt>
+<dd><p>FULL PARAMETERS</p>
+<p>Appends xi to params if the kernel uses xi</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>np.array(float) - params.append(xi)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">property </em><code class="sig-name descname">fpnames</code></dt>
+<dd><p>Full list of parameter names including xi</p>
+<p>Appends xi to pnames if the kernel uses xi</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>np.array(float) - pnames.append(xi)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">property </em><code class="sig-name descname">fpnames_latex</code></dt>
+<dd><p>FULL PARAMETER NAMES LATEX</p>
+<p>Appends xi to pnames_latex if the kernel uses xi</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>pnames_latex.append(xi)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">property </em><code class="sig-name descname">fn_params</code></dt>
+<dd><p>Number of parameters in the model including xi</p>
+<p>if the model uses xi, add one to n_params</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>full number of of parameters</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">code</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">kernel</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> – float or np.ndarray</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>exp(potential + entropy of the action distribution)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">log_kernel</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> – float or np.ndarray</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>potential + entropy of the action distribution</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">potential</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> – float or np.ndarray</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>value of the potential of kernel</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">action_entropy</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> – float or np.ndarray</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>entropy of action distribution</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">mode</code><span class="sig-paren">(</span><em class="sig-param">use_sp=True</em><span class="sig-paren">)</span></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Use_sp</dt>
+<dd class="field-odd"><p>if False will find optimum over grid of ticks
+if True (default) will use scipy integrate/maximize</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>estimated mode of the distribution</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">mean</code><span class="sig-paren">(</span><em class="sig-param">use_sp=True</em><span class="sig-paren">)</span></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Use_sp</dt>
+<dd class="field-odd"><p>if False (default) will find optimum over grid of ticks
+if True will use scipy integrate/maximize</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>estimated mean of the distribution</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">std</code><span class="sig-paren">(</span><em class="sig-param">use_sp=True</em><span class="sig-paren">)</span></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Use_sp</dt>
+<dd class="field-odd"><p>if False (default) will find optimum over grid of ticks
+if True will use scipy integrate/maximize</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>estimated standard deviation of the distribution</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">pdf</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">params=None</em><span class="sig-paren">)</span></dt>
+<dd><p>Probability Density Function
+:param x: input value or np.array of values
+:param params: by default self.params otherwise use values as input
+:return: pdf value at x or an np.array([…]) of pdf values</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">rvs</code><span class="sig-paren">(</span><em class="sig-param">n=1</em>, <em class="sig-param">bounds=None</em><span class="sig-paren">)</span></dt>
+<dd><p>random variable sampler using the interpolated inverse cdf method</p>
+<p>rvs works as follows:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Creates a grid approximation of pdf based on bounds.</p></li>
+<li><p>Estimates the cdf using this grid.</p></li>
+<li><p>Interpolates the inverse cdf using sp.interpolate</p></li>
+<li><p>Samples from uniform(0,1) distribution</p></li>
+<li><p>Enters uniform samples into inverse cdf function</p></li>
+</ol>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n</strong> (<em>int</em>) – number of samples. must be either a positive integer.
+default is 1, which return a single sample. If n &gt; 1, returns
+an n length np.array of samples</p></li>
+<li><p><strong>bounds</strong> (<em>list or tuple or None</em>) – [-10, 10, 10000] / (-10, 10, 10000)
+create 10000 ticks between -10 and 10 as an estimate of the
+pdf of the Model. If None (default), will will use
+predetermined ticks based on bounds of integration
+bounds is preset to None and generally won’t need to
+be adjusted</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>float or np.array([float])</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">log_partition</code><span class="sig-paren">(</span><em class="sig-param">params=None</em><span class="sig-paren">)</span></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>params</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the value of the log_partition function</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">partition</code><span class="sig-paren">(</span><em class="sig-param">params=None</em>, <em class="sig-param">use_sp=False</em><span class="sig-paren">)</span></dt>
+<dd><p>:rtype : object
+:param params:
+:param use_sp:
+:return: the value of the partition function</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">nll</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">data=None</em>, <em class="sig-param">params=None</em>, <em class="sig-param">weights=None</em>, <em class="sig-param">use_sp=False</em><span class="sig-paren">)</span></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – </p></li>
+<li><p><strong>params</strong> – </p></li>
+<li><p><strong>weights</strong> – </p></li>
+<li><p><strong>use_sp</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">log_prob</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span></dt>
+<dd><blockquote>
+<div><p>log probability = -1 * ( negative log likelihood )</p>
+<ul class="simple">
+<li><p>nll(self, data=None, params=None, weights=None, use_sp=False)</p></li>
+</ul>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – </p></li>
+<li><p><strong>params</strong> – </p></li>
+<li><p><strong>weights</strong> – </p></li>
+<li><p><strong>use_sp</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">evidence</code><span class="sig-paren">(</span><em class="sig-param">data=None</em><span class="sig-paren">)</span></dt>
+<dd><p>applies pdf to self.data
+:param data:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">log_prior</code><span class="sig-paren">(</span><em class="sig-param">params</em><span class="sig-paren">)</span></dt>
+<dd><p>The log_prior function used in the negative log likelihood functionality
+(fitting, sampling)</p>
+<p>By default log_prior returns 0, which is equivalent to a prior-less model</p>
+<p>log_prior can be overridden for an individual QRSEModel instance as follows:</p>
+<ol class="arabic simple">
+<li><p>Instantiate the instance of the QRSEModel:</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">qrse1</span> <span class="o">=</span> <span class="n">QRSEModel</span><span class="p">(</span><span class="s1">&#39;AT&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+
+<span class="c1"># or</span>
+
+<span class="n">qrse1</span> <span class="o">=</span> <span class="n">QRSE</span><span class="p">(</span><span class="s1">&#39;SF&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+<ol class="arabic" start="2">
+<li><p>Define a new function for the prior:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">new_log_prior</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+
+    <span class="c1"># self must be included as the first arg in the function</span>
+    <span class="c1"># params will be a 1d np.array the same length as n_params</span>
+
+
+    <span class="c1"># prior hyper parameters should be hardcoded into function</span>
+
+    <span class="n">hyper_parameters</span> <span class="o">=</span> <span class="p">[</span><span class="n">hyper_parameter_0</span><span class="p">,</span>
+                        <span class="n">hyper_parameter_1</span><span class="p">,</span>
+                        <span class="n">hyper_parameter_2</span><span class="p">]</span>
+
+    <span class="c1"># output of prior function should be negative to</span>
+    <span class="c1"># penalize likelihood function</span>
+
+    <span class="n">negative_squared_loss</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">params</span> <span class="o">-</span> <span class="n">hyper_parameters</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+    <span class="k">return</span> <span class="n">negative_squared_loss</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</pre></div>
+</div>
+</li>
+<li><p>Redefine the ‘instance’ method to be the new function:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">qrse1</span><span class="o">.</span><span class="n">log_prior</span> <span class="o">=</span> <span class="n">new_log_prior</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p>It is generally advised to change ‘log_prior’. Attempts to change
+<em>log_prior</em> at the ‘class’ level i.e:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">QRSEModel</span><span class="o">.</span><span class="n">log_prior</span> <span class="o">=</span> <span class="n">new_log_prior</span>
+</pre></div>
+</div>
+<p>or</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">QRSE</span><span class="o">.</span><span class="n">log_prior</span> <span class="o">=</span> <span class="n">new_log_prior</span>
+</pre></div>
+</div>
+<p>will change log_prior for ALL instances of the QRSEModel class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>params</strong> – np.array</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">jac_fun</code><span class="sig-paren">(</span><em class="sig-param">params=None</em><span class="sig-paren">)</span></dt>
+<dd><p>Value of the jacobian of the negative log likelihood</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>params</strong> (<em>np.array(float)</em>) – model parameters</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>np.array(float) value of jacobian at params</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">hess_fun</code><span class="sig-paren">(</span><em class="sig-param">params</em><span class="sig-paren">)</span></dt>
+<dd><p>Value of the Hessian of the negative log likelihood</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>params</strong> (<em>np.array(float)</em>) – model parameters</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>np.array(float)(2d) value of Hessian at params</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">hess_inv_fun</code><span class="sig-paren">(</span><em class="sig-param">params=None</em><span class="sig-paren">)</span></dt>
+<dd><p>Inverse Hessian of the negative log likelihood</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>params</strong> (<em>np.array(float)</em>) – model parameters</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>np.array(float)(2d) value of Inverse Hessian at params</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">set_hess_inv</code><span class="sig-paren">(</span><em class="sig-param">from_res=False</em><span class="sig-paren">)</span></dt>
+<dd><p>Set model inverse Hessian</p>
+<p>primarily used to find the inverse Hessian for Sampling</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>from_res</strong> (<em>bool</em>) – If False, (default) will find use Autograd
+to the Hessian. If True, will use the estimated value
+from the .fit() optimization routine</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">logits</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">params=None</em><span class="sig-paren">)</span></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – </p></li>
+<li><p><strong>params</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">indifference</code><span class="sig-paren">(</span><em class="sig-param">actions=(0</em>, <em class="sig-param">1)</em><span class="sig-paren">)</span></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>x s.t. p(buy | x) = p(sell | x)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">entropy</code><span class="sig-paren">(</span><em class="sig-param">etype='joint'</em><span class="sig-paren">)</span></dt>
+<dd><p>Entropy of the QRSEModel</p>
+<p>Will return joint, conditional, or total entropy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>etype</strong> (<em>str or list(str)</em>) – ‘joint’, ‘cond’, ‘total’. If entered as
+as a list, will return an array of entropy values</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>float or np.array of floats</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">marg_actions</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Marginal Distribution of the actions</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">joint_entropy</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">marg_entropy</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">cond_entropy</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">aic</code><span class="sig-paren">(</span><em class="sig-param">count_xi=True</em><span class="sig-paren">)</span></dt>
+<dd><p>Akaike information criterion</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>count_xi</strong> (<em>bool</em>) – default is True. Count xi in the parameter count
+if kernel uses xi</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>aic of model given data and parameter values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">aicc</code><span class="sig-paren">(</span><em class="sig-param">count_xi=True</em><span class="sig-paren">)</span></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>aicc of model given data</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">bic</code><span class="sig-paren">(</span><em class="sig-param">count_xi=True</em><span class="sig-paren">)</span></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>aicc of model given data</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">plot</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span></dt>
+<dd><dl class="simple">
+<dt>plot(self, which=0, params=None, bounds=None,</dt><dd><p>ticks=1000, showdata=True,
+bins=20, title=None, dcolor=’w’,
+seaborn=True, lw=2, pi=1.,
+colors=None, color_order=None, show_legend=True):</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>which</strong> – </p></li>
+<li><p><strong>params</strong> – </p></li>
+<li><p><strong>bounds</strong> – </p></li>
+<li><p><strong>ticks</strong> – </p></li>
+<li><p><strong>showdata</strong> – </p></li>
+<li><p><strong>bins</strong> – </p></li>
+<li><p><strong>title</strong> – </p></li>
+<li><p><strong>dcolor</strong> – </p></li>
+<li><p><strong>seaborn</strong> – </p></li>
+<li><p><strong>lw</strong> – </p></li>
+<li><p><strong>pi</strong> – </p></li>
+<li><p><strong>colors</strong> – </p></li>
+<li><p><strong>color_order</strong> – </p></li>
+<li><p><strong>show_legend</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">plotboth</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span></dt>
+<dd><p>plot marginal distribution side by side with
+:param args:
+:param kwargs:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – </p></li>
+<li><p><strong>params0</strong> – </p></li>
+<li><p><strong>summary</strong> – </p></li>
+<li><p><strong>save</strong> – </p></li>
+<li><p><strong>use_jac</strong> – </p></li>
+<li><p><strong>weights</strong> – </p></li>
+<li><p><strong>hist</strong> – </p></li>
+<li><p><strong>check</strong> – </p></li>
+<li><p><strong>silent</strong> – </p></li>
+<li><p><strong>use_hess</strong> – </p></li>
+<li><p><strong>smart_p0</strong> – </p></li>
+<li><p><strong>use_sp</strong> – </p></li>
+<li><p><strong>kwargs</strong> – see <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.minimize.html">https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.minimize.html</a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">property </em><code class="sig-name descname">res</code></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="qrsesampler">
+<h2>QRSESampler<a class="headerlink" href="#qrsesampler" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt>
+<em class="property">class </em><code class="sig-prename descclassname">pyqrse.fittools.sampling.</code><code class="sig-name descname">QRSESampler</code><span class="sig-paren">(</span><em class="sig-param">qrse_model</em>, <em class="sig-param">chain_format='df'</em><span class="sig-paren">)</span></dt>
+<dd><p>sampler doc_string</p>
+<dl class="method">
+<dt>
+<em class="property">property </em><code class="sig-name descname">a_rates</code></dt>
+<dd><p>acceptance rates for the sampler</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">property </em><code class="sig-name descname">chain</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">property </em><code class="sig-name descname">marg_like</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">property </em><code class="sig-name descname">n_errors</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">property </em><code class="sig-name descname">max_params</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">max_like</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">init</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span></dt>
+<dd><p>updates sampler with recent activity of the QRSEModel()
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">set_params</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">propose_new</code><span class="sig-paren">(</span><em class="sig-param">params=None</em>, <em class="sig-param">ptype='corr'</em>, <em class="sig-param">s=1.0</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">next</code><span class="sig-paren">(</span><em class="sig-param">sample_fun='joint'</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">mcmc</code><span class="sig-paren">(</span><em class="sig-param">N=1000</em>, <em class="sig-param">burn=0</em>, <em class="sig-param">single=False</em>, <em class="sig-param">ptype='corr'</em>, <em class="sig-param">s=1.0</em>, <em class="sig-param">update_hess=False</em>, <em class="sig-param">new=False</em>, <em class="sig-param">use_tqdm=True</em><span class="sig-paren">)</span></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>N</strong> – </p></li>
+<li><p><strong>burn</strong> – </p></li>
+<li><p><strong>single</strong> – </p></li>
+<li><p><strong>ptype</strong> – </p></li>
+<li><p><strong>s</strong> – </p></li>
+<li><p><strong>update_hess</strong> – </p></li>
+<li><p><strong>new</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">getdiff</code><span class="sig-paren">(</span><em class="sig-param">parameter1</em>, <em class="sig-param">parameter2</em><span class="sig-paren">)</span></dt>
+<dd><p>Get the difference between the chains of two parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parameter1</strong> – string name for p1 (i.e. ‘t_buy’)</p></li>
+<li><p><strong>parameter2</strong> – string name for p2 (i.e. ‘t_sell’)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">plot</code><span class="sig-paren">(</span><em class="sig-param">per_row=2</em>, <em class="sig-param">figsize=(12</em>, <em class="sig-param">4)</em>, <em class="sig-param">use_latex=True</em><span class="sig-paren">)</span></dt>
+<dd><p>plot(self, per_row=2, figsize=(12, 4)):
+:param per_row:
+:param figsize:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">plotdiff</code><span class="sig-paren">(</span><em class="sig-param">parameter1</em>, <em class="sig-param">parameter2</em>, <em class="sig-param">kind='hist'</em>, <em class="sig-param">use_latex=True</em>, <em class="sig-param">figsize=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span></dt>
+<dd><p>Quickly view the difference between the chains of two parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parameter1</strong> – string name for p1 (i.e. ‘t_buy’)</p></li>
+<li><p><strong>parameter2</strong> – string name for p2 (i.e. ‘t_sell’)</p></li>
+<li><p><strong>kind</strong> – ‘hist’ for histogram or ‘line’ for time-series</p></li>
+<li><p><strong>use_latex</strong> – use latex version of parameter names. default is True</p></li>
+<li><p><strong>figsize</strong> – invokes plt.figure(figsize=figsize).</p></li>
+<li><p><strong>kwargs</strong> – additional arguments for sns.distplot() and plt.plot()</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="qrsefitter">
+<h2>QRSEFitter<a class="headerlink" href="#qrsefitter" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt>
+<em class="property">class </em><code class="sig-prename descclassname">pyqrse.fittools.optimizer.</code><code class="sig-name descname">QRSEFitter</code><span class="sig-paren">(</span><em class="sig-param">the_model</em><span class="sig-paren">)</span></dt>
+<dd><dl class="method">
+<dt>
+<code class="sig-name descname">update_model</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">set_kl_target</code><span class="sig-paren">(</span><em class="sig-param">target</em><span class="sig-paren">)</span></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>target</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">kld</code><span class="sig-paren">(</span><em class="sig-param">params=None</em>, <em class="sig-param">target=None</em><span class="sig-paren">)</span></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>params</strong> – </p></li>
+<li><p><strong>target</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">klmin</code><span class="sig-paren">(</span><em class="sig-param">target=None</em>, <em class="sig-param">save=True</em>, <em class="sig-param">use_jac=True</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong> – </p></li>
+<li><p><strong>save</strong> – </p></li>
+<li><p><strong>use_jac</strong> – </p></li>
+<li><p><strong>kwargs</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">data=None</em>, <em class="sig-param">params0=None</em>, <em class="sig-param">summary=False</em>, <em class="sig-param">save=True</em>, <em class="sig-param">use_jac=True</em>, <em class="sig-param">weights=None</em>, <em class="sig-param">hist=False</em>, <em class="sig-param">check=False</em>, <em class="sig-param">silent=True</em>, <em class="sig-param">use_hess=False</em>, <em class="sig-param">smart_p0=True</em>, <em class="sig-param">use_sp=True</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – </p></li>
+<li><p><strong>params0</strong> – </p></li>
+<li><p><strong>summary</strong> – </p></li>
+<li><p><strong>save</strong> – </p></li>
+<li><p><strong>use_jac</strong> – </p></li>
+<li><p><strong>weights</strong> – </p></li>
+<li><p><strong>hist</strong> – </p></li>
+<li><p><strong>check</strong> – </p></li>
+<li><p><strong>silent</strong> – </p></li>
+<li><p><strong>use_hess</strong> – </p></li>
+<li><p><strong>smart_p0</strong> – </p></li>
+<li><p><strong>use_sp</strong> – </p></li>
+<li><p><strong>kwargs</strong> – see <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.minimize.html">https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.minimize.html</a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="qrseplotter">
+<h2>QRSEPlotter<a class="headerlink" href="#qrseplotter" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt>
+<em class="property">class </em><code class="sig-prename descclassname">pyqrse.utilities.plottools.</code><code class="sig-name descname">QRSEPlotter</code><span class="sig-paren">(</span><em class="sig-param">qrse_object</em>, <em class="sig-param">colors=None</em>, <em class="sig-param">color_order=None</em><span class="sig-paren">)</span></dt>
+<dd><p>THIS IS SWEET AT MAKING CHARTS</p>
+<dl class="method">
+<dt>
+<em class="property">property </em><code class="sig-name descname">colors</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">set_colors</code><span class="sig-paren">(</span><em class="sig-param">colors=None</em>, <em class="sig-param">output=False</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">set_color_order</code><span class="sig-paren">(</span><em class="sig-param">color_order=None</em>, <em class="sig-param">output=False</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">plot</code><span class="sig-paren">(</span><em class="sig-param">which=0</em>, <em class="sig-param">params=None</em>, <em class="sig-param">bounds=None</em>, <em class="sig-param">ticks=1000</em>, <em class="sig-param">showdata=True</em>, <em class="sig-param">bins=20</em>, <em class="sig-param">title=None</em>, <em class="sig-param">dcolor='w'</em>, <em class="sig-param">seaborn=True</em>, <em class="sig-param">lw=2</em>, <em class="sig-param">pi=1.0</em>, <em class="sig-param">colors=None</em>, <em class="sig-param">color_order=None</em>, <em class="sig-param">show_legend=True</em><span class="sig-paren">)</span></dt>
+<dd><dl class="simple">
+<dt>plot(self, which=0, params=None, bounds=None,</dt><dd><p>ticks=1000, showdata=True,
+bins=20, title=None, dcolor=’w’,
+seaborn=True, lw=2, pi=1.,
+colors=None, color_order=None, show_legend=True):</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>which</strong> – </p></li>
+<li><p><strong>params</strong> – </p></li>
+<li><p><strong>bounds</strong> – </p></li>
+<li><p><strong>ticks</strong> – </p></li>
+<li><p><strong>showdata</strong> – </p></li>
+<li><p><strong>bins</strong> – </p></li>
+<li><p><strong>title</strong> – </p></li>
+<li><p><strong>dcolor</strong> – </p></li>
+<li><p><strong>seaborn</strong> – </p></li>
+<li><p><strong>lw</strong> – </p></li>
+<li><p><strong>pi</strong> – </p></li>
+<li><p><strong>colors</strong> – </p></li>
+<li><p><strong>color_order</strong> – </p></li>
+<li><p><strong>show_legend</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">plotboth</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span></dt>
+<dd><p>plot marginal distribution side by side with
+:param args:
+:param kwargs:
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="kernels.html" class="btn btn-neutral float-right" title="Kernels" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to pyqrse’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Keith Blackwell
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

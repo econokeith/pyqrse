@@ -1,0 +1,6 @@
+Search For Stuff
+================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`

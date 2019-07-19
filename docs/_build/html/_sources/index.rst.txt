@@ -6,10 +6,14 @@
 Welcome to pyqrse's documentation!
 ==================================
 
+Pardon our appearance! This site is currently under construction!
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
+   api
+   kernels
 
 
 Indices and tables

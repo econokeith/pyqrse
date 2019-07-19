@@ -283,10 +283,20 @@ useful if saving object to different location</p></li>
 <dl class="method">
 <dt id="pyqrse.model.model.QRSEModel.set_params">
 <code class="sig-name descname">set_params</code><span class="sig-paren">(</span><em class="sig-param">new_params</em>, <em class="sig-param">use_sp=True</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.model.model.QRSEModel.set_params" title="Permalink to this definition">¶</a></dt>
-<dd><p>updates params and allows choice if self.partition uses sp or ticks
-:param new_params: tuple, list, or np.ndarray of new parameters
-:param use_sp: True or False
-:return: N/A</p>
+<dd><p>updates params and allows choice if self.partition uses sp or ticks</p>
+<p>An alternative to using the self.params.setter that allows for choice of
+integration method</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>new_params</strong> (<em>tuple, list, or np.ndarray</em>) – new parameter values. Must
+be same length as <em>params</em> and should not include <em>xi</em></p></li>
+<li><p><strong>use_sp</strong> (<em>bool</em>) – If True (default), solve partition function using
+scipy.integrate.quad. If False, will use ticks. When set to
+False, is equivalent to using self.params = new_params</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
