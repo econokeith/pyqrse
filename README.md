@@ -7,8 +7,7 @@ See
 
 [Basic Example](https://github.com/econokeith/pyqrse/blob/master/example/pyqrse_sample.ipynb)
 
-
-and 
+and
 
 [QRSE on Skewed Data](https://github.com/econokeith/pyqrse/blob/master/example/pyqrse_sample_skewed_data.ipynb)
 

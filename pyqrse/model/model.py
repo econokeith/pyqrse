@@ -22,12 +22,14 @@ kernel_hash = helpers.kernel_hierarchy_to_hash_bfs(kernels.QRSEKernelBase)
 
 class QRSEModel(HistoryMixin, PickleMixin):
     """
-    THIS IS QRSE
+    THIS IS QRSE - Under Construction
     """
     _kernel_counter = collections.defaultdict(int)
 
-    def __init__(self, kernel='S', data=None, params=None, i_ticks=1000,
-                 i_stds=10, i_bounds=(-10, 10), about_data="",
+    def __init__(self, kernel='S', data=None,
+                 params=None, i_ticks=1000,
+                 i_stds=10, i_bounds=(-10, 10),
+                 about_data="",
                  norm_data=False, **kwargs):
         """
 
@@ -616,26 +618,33 @@ class QRSEModel(HistoryMixin, PickleMixin):
 
         return np.exp(self.kernel.log_kernel(x, the_params))/z
 
-    def rvs(self, n=None, bounds=None):
+    def rvs(self, n=1, bounds=None):
         """
         random variable sampler using the interpolated inverse cdf method
 
-        :param n: number of samples.
+        rvs works as follows:
 
-                must be either a positive integer or None.
-                if n is a positive int, rvs returns an np.array of length n
-                if n is None, rvs returns a scalar sample from the distribution
+            1. Creates a grid approximation of pdf based on bounds.
+            2. Estimates the cdf using this grid.
+            3. Interpolates the inverse cdf using sp.interpolate
+            4. Samples from uniform(0,1) distribution
+            5. Enters uniform samples into inverse cdf function
 
-        :param bounds: support of distribution
+        Args:
+            n (int) : number of samples. must be either a positive integer.
+                default is 1, which return a single sample. If n > 1, returns
+                an n length np.array of samples
 
-                can take 3 forms:
-                list or tuple: i.e. [-10, 10, 10000] / (-10, 10, 10000)
-                            create 10000 ticks between -10 and 10
-                np.array([.....]): will use ticks supplied by user
-                None : will use predetermined ticks based on bounds of integration
-                bounds is preset to None and generally won't need to be adjusted
+            bounds (list or tuple or None) : [-10, 10, 10000] / (-10, 10, 10000)
+                create 10000 ticks between -10 and 10 as an estimate of the
+                pdf of the Model. If None (default), will will use
+                predetermined ticks based on bounds of integration
+                bounds is preset to None and generally won't need to
+                be adjusted
 
-        :return: float or np.array([float])
+        Returns:
+            float or np.array([float])
+
         """
         if isinstance(bounds, (tuple, list)) and len(bounds) == 3:
             ll = np.linspace(*bounds)
@@ -895,10 +904,18 @@ class QRSEModel(HistoryMixin, PickleMixin):
 
     def entropy(self, etype='joint'):
         """
+        Entropy of the QRSEModel
 
-        :param etype: 'joint', 'cond', 'total'
-        :return: will also accept etype in list form:
-        etype = ['joint', 'cond', 'total'] -> returns a tuple of all 3
+        Will return joint, conditional, or total entropy.
+
+        Args:
+
+            etype (str or list(str)) : 'joint', 'cond', 'total'. If entered as
+                as a list, will return an array of entropy values
+
+        Returns:
+            float or np.array of floats
+
         """
 
         if isinstance(etype, (list, tuple)):
