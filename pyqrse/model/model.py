@@ -675,7 +675,9 @@ class QRSEModel(HistoryMixin, PickleMixin):
         logs = self.kernel.log_kernel(self._integration_ticks, the_params)
         max_logs = np.max(logs)
 
-        return max_logs + np.log(np.sum(np.exp(logs-max_logs))) + self._log_int_tick_delta
+        lse = np.log(np.sum(np.exp(logs-max_logs)))
+
+        return max_logs + lse  + self._log_int_tick_delta
 
     def partition(self, params=None, use_sp=False):
         """
@@ -739,6 +741,7 @@ class QRSEModel(HistoryMixin, PickleMixin):
         """
         return -self.nll( *args, **kwargs)
 
+
     def evidence(self, data=None):
         """
         applies pdf to self.data
@@ -748,19 +751,18 @@ class QRSEModel(HistoryMixin, PickleMixin):
         the_data = self.data if data is None else data
         return self.pdf(the_data)
 
+
     def log_prior(self, params):
         """
-        The log_prior function used in the negative log likelihood functionality
-        (fitting, sampling)
+        The log of the prior parameter distribution.
 
-        By default log_prior returns 0, which is equivalent to a prior-less model
+        Used in for fitting the model to data. By default log_prior returns 0,
+        which is equivalent having no prior.
 
-        log_prior can be overridden for an individual QRSEModel instance as follows:
+        Can be overridden for an individual QRSEModel
+        instance as follows:
 
-        1. Instantiate the instance of the QRSEModel:
-
-        ::
-
+        1. Instantiate the instance of the QRSEModel: ::
 
             qrse1 = QRSEModel('AT', data=data)
 
@@ -770,9 +772,9 @@ class QRSEModel(HistoryMixin, PickleMixin):
 
         2. Define a new function for the prior: ::
 
-            def new_log_prior(self, params):
+            def new_log_prior(params):
 
-                # self must be included as the first arg in the function
+                # self is not included like in normal methods
                 # params will be a 1d np.array the same length as n_params
 
 
@@ -793,8 +795,8 @@ class QRSEModel(HistoryMixin, PickleMixin):
 
             qrse1.log_prior = new_log_prior
 
-        It is generally advised to change 'log_prior'. Attempts to change
-        *log_prior* at the 'class' level i.e: ::
+        It is generally advised to change **log_prior** at the instance level.
+        Changing it at the 'class' level i.e: ::
 
             QRSEModel.log_prior = new_log_prior
 
@@ -802,13 +804,37 @@ class QRSEModel(HistoryMixin, PickleMixin):
 
             QRSE.log_prior = new_log_prior
 
-        will change log_prior for ALL instances of the QRSEModel class.
+        will change **log_prior** for ALL instances of the QRSEModel class.
 
-        :param params: np.array
-        :return: float
+        Also, see
+
+        Args:
+            params (np.array) : parameter values to evaluate
+
+        Returns:
+            float
         """
 
         return 0.
+
+
+    def set_log_prior(self, new_log_prior):
+        """
+        sets new log prior function so that it can access 'self'
+
+        Alternative setter for :meth:`pyqse.QRSEModel.log_prior`. If accessing
+        'self' isn't necessary. Follow the instructions for that method.
+
+        Args:
+            new_log_prior (function): new prior function
+                must of the form: ::
+
+                    def new_log_prior(self, params):
+                        # insert prior calculations
+                        return value_of_log_prior
+
+        """
+        self.log_prior = new_log_prior.__get__(self, type(self))
 
     ## Inverse Hessian Functionality Using autograd
     ## It's somewhat awkwardly organzied to make it play nice with pickling
