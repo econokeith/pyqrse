@@ -8,6 +8,8 @@ Welcome to pyqrse's documentation!
 
 Pardon our appearance! This site is currently under construction!
 
+**pyqrse** is available `here <https://github.com/econokeith/pyqrse>`_.
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
