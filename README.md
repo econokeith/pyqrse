@@ -5,10 +5,11 @@ Docs under construction.
 
 See 
 
-https://github.com/econokeith/pyqrse/blob/master/example/pyqrse_sample.ipynb
+[Basic Example](blob/master/example/pyqrse_sample.ipynb)
+
 
 and 
 
-https://github.com/econokeith/pyqrse/blob/master/example/pyqrse_sample_skewed_data.ipynb
+[QRSE on Skewed Data](blob/master/example/pyqrse_sample_skewed_data.ipynb)
 
-for examples. 
+for examples.
