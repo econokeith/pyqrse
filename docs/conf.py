@@ -49,7 +49,8 @@ autodoc_default_options = {
     # 'exclude-members': '__weakref__'
 }
 
-autodoc_mock_imports = ["pandas", "scipy", "seaborn", "numpy", "autograd", "tabulate", "matplotlib", "tqdm"]
+autodoc_mock_imports = ["pandas", "scipy", "seaborn", "numpy",
+                        "autograd", "tabulate", "matplotlib", "tqdm"]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

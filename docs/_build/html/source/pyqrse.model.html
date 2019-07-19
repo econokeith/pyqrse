@@ -161,7 +161,7 @@
 <dt id="pyqrse.model.model.QRSEModel">
 <em class="property">class </em><code class="sig-prename descclassname">pyqrse.model.model.</code><code class="sig-name descname">QRSEModel</code><span class="sig-paren">(</span><em class="sig-param">kernel='S'</em>, <em class="sig-param">data=None</em>, <em class="sig-param">params=None</em>, <em class="sig-param">i_ticks=1000</em>, <em class="sig-param">i_stds=10</em>, <em class="sig-param">i_bounds=(-10</em>, <em class="sig-param">10)</em>, <em class="sig-param">about_data=''</em>, <em class="sig-param">norm_data=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.model.model.QRSEModel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="pyqrse.utilities.html#pyqrse.utilities.mixins.HistoryMixin" title="pyqrse.utilities.mixins.HistoryMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyqrse.utilities.mixins.HistoryMixin</span></code></a>, <a class="reference internal" href="pyqrse.utilities.html#pyqrse.utilities.mixins.PickleMixin" title="pyqrse.utilities.mixins.PickleMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyqrse.utilities.mixins.PickleMixin</span></code></a></p>
-<p>THIS IS QRSE</p>
+<p>THIS IS QRSE - Under Construction</p>
 <dl class="attribute">
 <dt id="pyqrse.model.model.QRSEModel.notes">
 <code class="sig-name descname">notes</code><em class="property"> = None</em><a class="headerlink" href="#pyqrse.model.model.QRSEModel.notes" title="Permalink to this definition">¶</a></dt>
@@ -477,26 +477,30 @@ if True will use scipy integrate/maximize</p>
 
 <dl class="method">
 <dt id="pyqrse.model.model.QRSEModel.rvs">
-<code class="sig-name descname">rvs</code><span class="sig-paren">(</span><em class="sig-param">n=None</em>, <em class="sig-param">bounds=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.model.model.QRSEModel.rvs" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">rvs</code><span class="sig-paren">(</span><em class="sig-param">n=1</em>, <em class="sig-param">bounds=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.model.model.QRSEModel.rvs" title="Permalink to this definition">¶</a></dt>
 <dd><p>random variable sampler using the interpolated inverse cdf method</p>
+<p>rvs works as follows:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Creates a grid approximation of pdf based on bounds.</p></li>
+<li><p>Estimates the cdf using this grid.</p></li>
+<li><p>Interpolates the inverse cdf using sp.interpolate</p></li>
+<li><p>Samples from uniform(0,1) distribution</p></li>
+<li><p>Enters uniform samples into inverse cdf function</p></li>
+</ol>
+</div></blockquote>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>n</strong> – <p>number of samples.</p>
-<p>must be either a positive integer or None.
-if n is a positive int, rvs returns an np.array of length n
-if n is None, rvs returns a scalar sample from the distribution</p>
-</p></li>
-<li><p><strong>bounds</strong> – <p>support of distribution</p>
-<p>can take 3 forms:
-list or tuple: i.e. [-10, 10, 10000] / (-10, 10, 10000)</p>
-<blockquote>
-<div><p>create 10000 ticks between -10 and 10</p>
-</div></blockquote>
-<p>np.array([…..]): will use ticks supplied by user
-None : will use predetermined ticks based on bounds of integration
-bounds is preset to None and generally won’t need to be adjusted</p>
-</p></li>
+<li><p><strong>n</strong> (<em>int</em>) – number of samples. must be either a positive integer.
+default is 1, which return a single sample. If n &gt; 1, returns
+an n length np.array of samples</p></li>
+<li><p><strong>bounds</strong> (<em>list or tuple or None</em>) – [-10, 10, 10000] / (-10, 10, 10000)
+create 10000 ticks between -10 and 10 as an estimate of the
+pdf of the Model. If None (default), will will use
+predetermined ticks based on bounds of integration
+bounds is preset to None and generally won’t need to
+be adjusted</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -727,15 +731,17 @@ from the .fit() optimization routine</p>
 <dl class="method">
 <dt id="pyqrse.model.model.QRSEModel.entropy">
 <code class="sig-name descname">entropy</code><span class="sig-paren">(</span><em class="sig-param">etype='joint'</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.model.model.QRSEModel.entropy" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
+<dd><p>Entropy of the QRSEModel</p>
+<p>Will return joint, conditional, or total entropy.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>etype</strong> – ‘joint’, ‘cond’, ‘total’</p>
+<dd class="field-odd"><p><strong>etype</strong> (<em>str or list(str)</em>) – ‘joint’, ‘cond’, ‘total’. If entered as
+as a list, will return an array of entropy values</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>will also accept etype in list form:</p>
+<dd class="field-even"><p>float or np.array of floats</p>
 </dd>
 </dl>
-<p>etype = [‘joint’, ‘cond’, ‘total’] -&gt; returns a tuple of all 3</p>
 </dd></dl>
 
 <dl class="method">
