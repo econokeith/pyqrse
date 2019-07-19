@@ -38,15 +38,13 @@ of the important python scientific computing packages.
 1. Download and install the Anaconda Python 3 Installation.
 2. Install Autograd in the command line using the conda installer.
 
+    `$conda install autograd`
 
-    $conda install autograd
+3. Clone the **pyqrse** directory by clicking on the green button on the upper right side of this webpage or by entering into the command line: 
+    `$git clone git@github.com:econokeith/pyqrse.git`
 
-3. Clone the **pyqrse** directory by clicking on the green button on the upper right side of this webpage or by entering into the command line:
-
-
-    $git clone git@github.com:econokeith/pyqrse.git
 
 4. Change the working directory to the location of the folder:
 
-
-    $cd path/to/pyqrse
+    `$cd path/to/pyqrse`
+    
