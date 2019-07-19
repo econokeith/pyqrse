@@ -700,6 +700,50 @@ be adjusted</p></li>
 
 <dl class="method">
 <dt>
+<em class="property">classmethod </em><code class="sig-name descname">from_pickle</code><span class="sig-paren">(</span><em class="sig-param">path_to_pickle</em>, <em class="sig-param">trust_check=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span></dt>
+<dd><p>!!!DO NOT RUN THIS FUNCTION UNLESS YOU TRUST THE SOURCE WITH
+ABSOLUTE CERTAINTY!!!</p>
+<p>Pickling is extremely convenient from a workflow perspective,
+as you can save the results of inquiries and instantly load
+them back into your python environment.</p>
+<p>However, there are no safety checks on the code that will be
+run. That means:</p>
+<p>-If you don’t trust the source, don’t unpickle it.</p>
+<p>-Python will run all code in the pickle malicious or not!</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path_to_pickle</strong> – individual or list of paths to saved
+pickled QRSE objects</p></li>
+<li><p><strong>args</strong> – </p></li>
+<li><p><strong>kwargs</strong> – </p></li>
+<li><p><strong>trust_check</strong> – prompts the user to verify that they trust the source
+of the file to be unpickled default value is True</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">history</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">reset_history</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">save_history</code><span class="sig-paren">(</span><em class="sig-param">new_hist=None</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
 <code class="sig-name descname">set_hess_inv</code><span class="sig-paren">(</span><em class="sig-param">from_res=False</em><span class="sig-paren">)</span></dt>
 <dd><p>Set model inverse Hessian</p>
 <p>primarily used to find the inverse Hessian for Sampling</p>
@@ -708,6 +752,21 @@ be adjusted</p></li>
 <dd class="field-odd"><p><strong>from_res</strong> (<em>bool</em>) – If False, (default) will find use Autograd
 to the Hessian. If True, will use the estimated value
 from the .fit() optimization routine</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">to_pickle</code><span class="sig-paren">(</span><em class="sig-param">path_to_pickle</em><span class="sig-paren">)</span></dt>
+<dd><p>Uses the python pickle module to serialize the object (pickle it).
+Pickling allows it to be saved and reloaded later.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path_to_pickle</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1121,6 +1180,21 @@ colors=None, color_order=None, show_legend=True):</p>
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">history</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">reset_history</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">save_history</code><span class="sig-paren">(</span><em class="sig-param">new_hist=None</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
 
 </dd></dl>
 

@@ -9,6 +9,7 @@ QRSEModel
    :members:
    :undoc-members:
    :noindex:
+   :inherited-members:
 
 QRSESampler
 -----------
@@ -17,6 +18,7 @@ QRSESampler
    :members:
    :undoc-members:
    :noindex:
+   :inherited-members:
 
 QRSEFitter
 ----------
@@ -25,6 +27,7 @@ QRSEFitter
    :members:
    :undoc-members:
    :noindex:
+   :inherited-members:
 
 
 QRSEPlotter
@@ -34,3 +37,4 @@ QRSEPlotter
    :members:
    :undoc-members:
    :noindex:
+   :inherited-members:
