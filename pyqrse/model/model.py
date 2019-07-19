@@ -387,9 +387,17 @@ class QRSEModel(HistoryMixin, PickleMixin):
     def set_params(self, new_params, use_sp=True):
         """
         updates params and allows choice if self.partition uses sp or ticks
-        :param new_params: tuple, list, or np.ndarray of new parameters
-        :param use_sp: True or False
-        :return: N/A
+
+        An alternative to using the self.params.setter that allows for choice of
+        integration method
+
+        Args:
+            new_params (tuple, list, or np.ndarray): new parameter values. Must
+                be same length as *params* and should not include *xi*
+            use_sp (bool) : If True (default), solve partition function using
+                scipy.integrate.quad. If False, will use ticks. When set to
+                False, is equivalent to using self.params = new_params
+
         """
         self._params = np.copy(new_params)
         self.z = self.partition(new_params, use_sp=use_sp)

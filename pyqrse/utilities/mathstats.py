@@ -1,7 +1,7 @@
 __author__='Keith Blackwell'
 from autograd import numpy as np
 import scipy as sp
-from tabulate import tabulate
+# from tabulate import tabulate
 
 
 def is_pos_def(x):
@@ -188,27 +188,27 @@ def al_prior(x):
     else:
         return 0
 
-def m_summary(model):
-    print("success =", model.res.success)
-    print("message =", model.res.message)
-    print("")
-    print(tabulate([['ll', 'aic', 'bic','H(x)', 'H(a|x)', "H(x, a)"],
-                     [-model.res.fun, model.aic, model.bic, model.entropy('marg'), model.entropy('cond'),
-                      model.entropy() ]], floatfmt=".2f", headers="firstrow"))
-    print("")
-    print(tabulate([model.kernel.parameters, model.params.round(2)], floatfmt=".2f"))
-    print("")
-    print("Inverse Hessian: Pos Def =", is_pos_def(model.res.hess_inv))
-    print(tabulate(list(model.res.hess_inv), floatfmt=".2f"))
-
-
-    print("")
-    print(tabulate([['mean', 'xi', 'mode','indiff', 'std'],
-                     [model.mean, model.dmean, model.mode, model.indifference, model.std]],
-                      floatfmt=".2f", headers="firstrow"))
-    print("")
-    print("marginal action probabilities")
-    print(tabulate([ model.marg_actions().round(2)]))
+# def m_summary(model):
+#     print("success =", model.res.success)
+#     print("message =", model.res.message)
+#     print("")
+#     print(tabulate([['ll', 'aic', 'bic','H(x)', 'H(a|x)', "H(x, a)"],
+#                      [-model.res.fun, model.aic, model.bic, model.entropy('marg'), model.entropy('cond'),
+#                       model.entropy() ]], floatfmt=".2f", headers="firstrow"))
+#     print("")
+#     print(tabulate([model.kernel.parameters, model.params.round(2)], floatfmt=".2f"))
+#     print("")
+#     print("Inverse Hessian: Pos Def =", is_pos_def(model.res.hess_inv))
+#     print(tabulate(list(model.res.hess_inv), floatfmt=".2f"))
+#
+#
+#     print("")
+#     print(tabulate([['mean', 'xi', 'mode','indiff', 'std'],
+#                      [model.mean, model.dmean, model.mode, model.indifference, model.std]],
+#                       floatfmt=".2f", headers="firstrow"))
+#     print("")
+#     print("marginal action probabilities")
+#     print(tabulate([ model.marg_actions().round(2)]))
 
 def find_support_bounds(fun,start=0, which='right',
                         minmax=(2e-9, 4.5e-5),
