@@ -193,17 +193,21 @@
 <dl class="function">
 <dt id="pyqrse.utilities.helpers.kernel_hierarchy_to_hash_bfs">
 <code class="sig-prename descclassname">pyqrse.utilities.helpers.</code><code class="sig-name descname">kernel_hierarchy_to_hash_bfs</code><span class="sig-paren">(</span><em class="sig-param">kernel</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.utilities.helpers.kernel_hierarchy_to_hash_bfs" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="simple">
-<dt>returns all subclasses of a kernel function as a hash</dt><dd><p>key = kernel’s code , value = non-instantiated kernel object
-example: kernel_hash[‘S’] = SQRSEKernel</p>
+<dd><p>creates a dictionary of kernels (values) and their string codes (key)</p>
+<p>key = kernel’s code
+value = non-instantiated kernel object</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="go">&gt;&gt;&gt;kernel_hash[&#39;S&#39;]</span>
+<span class="go">pyqrse.kernels.binarykernels.SQRSEKernel</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Arg:</dt><dd><p>kernel (QRSEKernelBase object) :</p>
 </dd>
 </dl>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>kernel</strong> – </p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>dict</p>
 </dd>
 </dl>
 </dd></dl>
@@ -211,14 +215,10 @@ example: kernel_hash[‘S’] = SQRSEKernel</p>
 <dl class="function">
 <dt id="pyqrse.utilities.helpers.docthief">
 <code class="sig-prename descclassname">pyqrse.utilities.helpers.</code><code class="sig-name descname">docthief</code><span class="sig-paren">(</span><em class="sig-param">mark_function</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.utilities.helpers.docthief" title="Permalink to this definition">¶</a></dt>
-<dd><p>decorator function that allows the thief to return the mark_function’s
-docstring</p>
+<dd><p>Gives decorated function the __docstring__ of the mark_function</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>mark_function</strong> – </p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>function whose docstring is the same as the mark_function</p>
+<dd class="field-odd"><p><strong>mark_function</strong> – function to copy __docstring__ from</p>
 </dd>
 </dl>
 </dd></dl>
