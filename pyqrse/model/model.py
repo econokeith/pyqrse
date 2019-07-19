@@ -22,7 +22,63 @@ kernel_hash = helpers.kernel_hierarchy_to_hash_bfs(kernels.QRSEKernelBase)
 
 class QRSEModel(HistoryMixin, PickleMixin):
     """
-    THIS IS QRSE - Under Construction
+    The primary model container for working with QRSE Models
+
+    QRSEModel can be instantiated as either QRSEModel() or as QRSE(). When
+    working in a jupyter notebook, the shorter version is generally preferrable.
+    However, when scripting QRSEModel is preferred.
+
+    When instantiated the QRSEModel attempts to find the appropriate bounds of
+    integration, **self.i_bounds**, by trying the following three methods in
+    order:
+
+        1. Use the sufficient statistics of the data.
+
+        2. Identify the meaningful support of the kernel using the parameter
+        values provided.
+
+        3. If there is no data or parameter provided the model will use defaults
+        from the kernel
+
+    Args:
+        kernel (str, object) : can either be a kernel code or QRSE kernel
+            class object, which includes any subclass of:
+
+                * :class:`pyqrse.kernels.basekernels.QRSEKernelBase`
+
+            The default kernel is the SQRSEKernel. Available kernels can be
+            seen by running: ::
+
+                >>>pyqrse.available_kernels()
+
+
+        data (np.array or str or None) : If 1d np.array, will set **self.data**
+            to that array. If str, will load data as 'path/to/data.cvs. If None,
+            will use params to instantiate the model. When given a string loads
+            data using the pandas.read_csv module. Depending on the format of
+            the data, it may be necessary to use pandas.read_csv_ keywords.
+
+
+        params (np.array or None) : must be an np.array of the appropriate
+            length.
+
+        i_ticks (int): the number of ticks in grid of integration values.
+            default is 1000.
+
+        i_stds (int): the number of data standard deviations to i_bounds to.
+            default is 10.
+
+        about_data (str): saves notes about the data to the **self.notes**
+            dictionary.
+
+        norm_data (book): if True, will normalize data. If data is normalized
+            data sufficient statistics can be accessed at **self.data_suff_stats**
+
+        kwargs : optional keyword arguments for pandas.read_csv_ and
+            :meth:`pyqrse.model.model.QRSEModel.setup_from_params`
+
+    .. _pandas.read_csv: https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html
+
     """
     _kernel_counter = collections.defaultdict(int)
 
@@ -31,16 +87,7 @@ class QRSEModel(HistoryMixin, PickleMixin):
                  i_stds=10, i_bounds=(-10, 10),
                  about_data="",
                  norm_data=False, **kwargs):
-        """
 
-        :param kernel:
-        :param data:
-        :param params:
-        :param i_ticks:
-        :param i_stds:
-        :param i_bounds:
-        :return:
-        """
         if isinstance(kernel, str) and kernel in kernel_hash:
             self.kernel = kernel_hash[kernel]()
 
@@ -364,6 +411,9 @@ class QRSEModel(HistoryMixin, PickleMixin):
 
     @property
     def i_bounds(self):
+        """
+        (min, max) of bounds of integration
+        """
         return self.i_min, self.i_max
 
     @i_bounds.setter
@@ -372,6 +422,9 @@ class QRSEModel(HistoryMixin, PickleMixin):
 
     @property
     def params(self):
+        """
+        np.array of parameter values
+        """
         return self._params
 
     @params.setter
@@ -382,6 +435,9 @@ class QRSEModel(HistoryMixin, PickleMixin):
 
     @property
     def n_params(self):
+        """
+        number of free model parameters. does not include xi.
+        """
         return self._params.shape[0]
 
     def set_params(self, new_params, use_sp=True):
@@ -415,6 +471,9 @@ class QRSEModel(HistoryMixin, PickleMixin):
     # @helpers.docthief(kernels.QRSEKernelBase.actions)
     @property
     def actions(self):
+        """
+        action set
+        """
         return self.kernel.actions
 
     @actions.setter
@@ -423,15 +482,24 @@ class QRSEModel(HistoryMixin, PickleMixin):
 
     @property
     def pnames(self):
+        """
+        parameter names
+        """
         return self.kernel.pnames
 
 
     @property
     def pnames_latex(self):
+        """
+        latex formatted parameter names
+        """
         return self.kernel.pnames_latex
 
     @property
     def xi(self):
+        """
+        mean of the data
+        """
         return self.kernel.xi
 
     @xi.setter
@@ -449,7 +517,7 @@ class QRSEModel(HistoryMixin, PickleMixin):
     @property
     def fparams(self):
         """
-        FULL PARAMETERS
+        full parameter values
 
         Appends xi to params if the kernel uses xi
 
@@ -481,7 +549,7 @@ class QRSEModel(HistoryMixin, PickleMixin):
     @property
     def fpnames_latex(self):
         """
-        FULL PARAMETER NAMES LATEX
+        full latex formatted parameter names
 
         Appends xi to pnames_latex if the kernel uses xi
 
@@ -510,34 +578,68 @@ class QRSEModel(HistoryMixin, PickleMixin):
 
         return n
 
+    @property
     def code(self):
+        """
+        QRSEModel Identification code for the Kernel
+        """
         return self.kernel.code
 
     def kernel(self, x):
         """
-        :param x: float or np.ndarray
-        :return: exp(potential + entropy of the action distribution)
+        value unnormalized kernel function
+
+        kernel = exp(potential + entropy)
+
+        evaluated at self.params
+
+        Args:
+            x (float or np.array([float]): value of data being tested
+        Returns:
+            float or np.array([float])
         """
         return self.kernel.kernel(x, self.params)
 
     def log_kernel(self, x):
         """
-        :param x: float or np.ndarray
-        :return: potential + entropy of the action distribution
+        Log of the unnormalized kernel function
+
+        log_kernel = potential + entropy
+
+        evaluated at self.params
+
+        Args:
+            x (float or np.array([float]): value of data being tested
+        Returns:
+            float or np.array([float])
         """
         return self.kernel.log_kernel(x, self.params)
 
     def potential(self, x):
         """
-        :param x: float or np.ndarray
-        :return: value of the potential of kernel
+        potential function of the kernel
+
+        Args:
+            x (float or np.array([float]): value of data being tested
+
+        Returns:
+            float or np.array([float])
         """
         return self.kernel.potential(x, self.params)
 
     def action_entropy(self, x):
         """
-        :param x: float or np.ndarray
-        :return: entropy of action distribution
+        Entropy of conditional action distribution
+
+        H(p(a|x)) = SUM p(a_i|x) for i=1,2 (binary) (i=1,2,3 for ternary)
+
+        **action entropy** is evaluated using self.params
+
+        Args:
+            x (float or np.array([float]): value of data being tested
+
+        Returns:
+            float or np.array([float])
         """
         return self.kernel.entropy(x, self.params)
 
@@ -548,10 +650,14 @@ class QRSEModel(HistoryMixin, PickleMixin):
     ##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##
 
     def mode(self, use_sp=True):
+
         """
+        Mode of the QRSE distribution
+
         :use_sp: if False will find optimum over grid of ticks
                  if True (default) will use scipy integrate/maximize
         :return: estimated mode of the distribution
+
         """
         if use_sp is True:
             min_fun = lambda x: -self.pdf(x)
@@ -566,9 +672,12 @@ class QRSEModel(HistoryMixin, PickleMixin):
 
     def mean(self, use_sp=True):
         """
+        Mean of the QRSE distribution
+
         :use_sp: if False (default) will find optimum over grid of ticks
                  if True will use scipy integrate/maximize
         :return: estimated mean of the distribution
+
         """
         if use_sp is True:
 
@@ -587,6 +696,8 @@ class QRSEModel(HistoryMixin, PickleMixin):
 
     def std(self, use_sp=True):
         """
+        Standard Deviation of the QRSE distribution
+
         :use_sp: if False (default) will find optimum over grid of ticks
                  if True will use scipy integrate/maximize
         :return: estimated standard deviation of the distribution
@@ -668,8 +779,15 @@ class QRSEModel(HistoryMixin, PickleMixin):
 
     def log_partition(self, params=None):
         """
-        :param params:
-        :return: the value of the log_partition function
+        evaluate the log of the QRSE partition function numerically
+
+        Args:
+            params (np.array) : if params are None, will use self.params,
+                otherwise will evaluate at params.
+
+        Returns:
+            the value of the log partition function (float)
+
         """
         the_params = self.params if params is None else params
         logs = self.kernel.log_kernel(self._integration_ticks, the_params)
@@ -681,10 +799,22 @@ class QRSEModel(HistoryMixin, PickleMixin):
 
     def partition(self, params=None, use_sp=False):
         """
-        :rtype : object
-        :param params:
-        :param use_sp:
-        :return: the value of the partition function
+        evaluate the QRSE partition function numerically
+
+        Args:
+            params (np.array) : if params are None, will use self.params,
+                otherwise will evaluate at params.
+
+            use_sp (bool) : If True, will evaluate using scipy.integrate.quad
+                over the range self.i_bounds. If False (default), will evalaute
+                over a grid values by summing the value of the log_kernel
+                over the grid adjusting for step size and taking exp(log_part).
+                The grid method (False) tends to be quicker and generally the
+                loss of precision numerical integration in negligible.
+
+        Returns:
+            the value of the partition function (float)
+
         """
         if use_sp is False:
             return np.exp(self.log_partition(params))
@@ -754,9 +884,9 @@ class QRSEModel(HistoryMixin, PickleMixin):
 
     def log_prior(self, params):
         """
-        The log of the prior parameter distribution.
+        The log of the prior distribution of parameter values
 
-        Used in for fitting the model to data. By default log_prior returns 0,
+        Used in for fitting the model to data. By default returns 0.,
         which is equivalent having no prior.
 
         Can be overridden for an individual QRSEModel
@@ -788,15 +918,15 @@ class QRSEModel(HistoryMixin, PickleMixin):
                 # penalize likelihood function
 
                 negative_squared_loss = -(params - hyper_parameters)**2
-                return negative_squared_loss.sum()
+                return np.sum(negative_squared_loss)
 
 
-        3. Redefine the 'instance' method to be the new function: ::
+        3. Redefine the `instance` method to be the new function: ::
 
             qrse1.log_prior = new_log_prior
 
-        It is generally advised to change **log_prior** at the instance level.
-        Changing it at the 'class' level i.e: ::
+        It is generally advised to change **log_prior** at the `instance` level.
+        Changing it at the `class` level i.e: ::
 
             QRSEModel.log_prior = new_log_prior
 
@@ -804,9 +934,9 @@ class QRSEModel(HistoryMixin, PickleMixin):
 
             QRSE.log_prior = new_log_prior
 
-        will change **log_prior** for ALL instances of the QRSEModel class.
+        will NOT work as intended.
 
-        Also, see
+        Also, see :meth:`pyqrse.model.model.QRSEModel.set_log_prior`
 
         Args:
             params (np.array) : parameter values to evaluate
@@ -822,16 +952,21 @@ class QRSEModel(HistoryMixin, PickleMixin):
         """
         sets new log prior function so that it can access 'self'
 
-        Alternative setter for :meth:`pyqse.QRSEModel.log_prior`. If accessing
-        'self' isn't necessary. Follow the instructions for that method.
+        Alternative setter for :meth:`pyqrse.model.model.QRSEModel.log_prior`.
+        If accessing 'self' isn't necessary, follow the instructions for that
+        method.
 
         Args:
             new_log_prior (function): new prior function
                 must of the form: ::
 
                     def new_log_prior(self, params):
-                        # insert prior calculations
-                        return value_of_log_prior
+                        # complicated mathematics that
+                        # use params in addition to
+                        # self.attributes and/or self.methods
+                        return float_value_of_log_prior
+
+                - params must be an np.array of the appropriate length
 
         """
         self.log_prior = new_log_prior.__get__(self, type(self))
@@ -940,12 +1075,20 @@ class QRSEModel(HistoryMixin, PickleMixin):
         """
         Entropy of the QRSEModel
 
-        Will return joint, conditional, or total entropy.
+        Will find the joint H(x, a), conditional H(x|a), or marginal entropy
+        H(x). Note that conditional entropy H(x|a) is different from
+        the entropy of the conditional distribution at some value x, H(p(a|x)).
+
+        To find H(p(a|x)) use the **.action_entropy** method:
+
+        - :meth:`pyqrse.model.model.QRSEModel.action_entropy`
+
 
         Args:
 
-            etype (str or list(str)) : 'joint', 'cond', 'total'. If entered as
-                as a list, will return an array of entropy values
+            etype (str or list(str)) : type of entropy returned. The options
+                are 'joint', 'cond', or 'marg'. If entered as as a list, will
+                return an array of entropy values
 
         Returns:
             float or np.array of floats
@@ -956,13 +1099,13 @@ class QRSEModel(HistoryMixin, PickleMixin):
             return [self.entropy(et) for et in etype]
 
         if etype is 'marg':
-            return self.marg_entropy()
+            return self._marg_entropy()
         elif etype is 'cond':
             return self.cond_entropy()
         else:
-            return self.joint_entropy()
+            return self._joint_entropy()
 
-    def marg_actions(self):
+    def _marg_actions(self):
         """
         :return: Marginal Distribution of the actions
         """
@@ -971,7 +1114,7 @@ class QRSEModel(HistoryMixin, PickleMixin):
 
         return (log_actions*pdfs_values*self._int_tick_delta).sum(axis=1)
 
-    def joint_entropy(self):
+    def _joint_entropy(self):
         """
 
         :return:
@@ -981,7 +1124,7 @@ class QRSEModel(HistoryMixin, PickleMixin):
 
         return sp.integrate.quad(integrand, self.i_min, self.i_max)[0]
 
-    def marg_entropy(self):
+    def _marg_entropy(self):
         """
 
         :return:
