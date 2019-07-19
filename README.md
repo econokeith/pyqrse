@@ -2,7 +2,8 @@
 
 Python 3 package for estimating Quantal Response Statistical Equilibrium Models
 
-Note: pyqrse is in early an early alpha version and still under rapid development
+**Note: pyqrse is the early alpha stage of development and subject to change. This site is here a basic markup on the intended structure**
+
 
 ## Documentation
 
@@ -19,8 +20,6 @@ The [example](https://github.com/econokeith/pyqrse/blob/master/example/) folder 
 
 We suggest downloading and using the [Anaconda](https://www.anaconda.com/distribution/) Python 3 Distribution, which includes most
 of the important python scientific computing packages.
-
-Note: pyqrse is the early alpha stage of development and subject to change
 
 **pyqrse** requires the following standard members of the python scientific computing suite that are included in the Anaconda distribution:
 * [numpy](https://docs.scipy.org/doc/numpy/index.html): computational engine for scientific computing in python
