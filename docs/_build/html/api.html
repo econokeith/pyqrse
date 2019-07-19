@@ -161,7 +161,58 @@
 <dl class="class">
 <dt>
 <em class="property">class </em><code class="sig-prename descclassname">pyqrse.model.model.</code><code class="sig-name descname">QRSEModel</code><span class="sig-paren">(</span><em class="sig-param">kernel='S'</em>, <em class="sig-param">data=None</em>, <em class="sig-param">params=None</em>, <em class="sig-param">i_ticks=1000</em>, <em class="sig-param">i_stds=10</em>, <em class="sig-param">i_bounds=(-10</em>, <em class="sig-param">10)</em>, <em class="sig-param">about_data=''</em>, <em class="sig-param">norm_data=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span></dt>
-<dd><p>THIS IS QRSE - Under Construction</p>
+<dd><p>The primary model container for working with QRSE Models</p>
+<p>QRSEModel can be instantiated as either QRSEModel() or as QRSE(). When
+working in a jupyter notebook, the shorter version is generally preferrable.
+However, when scripting QRSEModel is preferred.</p>
+<p>When instantiated the QRSEModel attempts to find the appropriate bounds of
+integration, <strong>self.i_bounds</strong>, by trying the following three methods in
+order:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Use the sufficient statistics of the data.</p></li>
+</ol>
+<p>2. Identify the meaningful support of the kernel using the parameter
+values provided.</p>
+<p>3. If there is no data or parameter provided the model will use defaults
+from the kernel</p>
+</div></blockquote>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul>
+<li><p><strong>kernel</strong> (<em>str, object</em>) – can either be a kernel code or QRSE kernel
+class object, which includes any subclass of:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">pyqrse.kernels.basekernels.QRSEKernelBase</span></code></p></li>
+</ul>
+</div></blockquote>
+<p>The default kernel is the SQRSEKernel. Available kernels can be
+seen by running:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="go">&gt;&gt;&gt;pyqrse.available_kernels()</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>data</strong> (<em>np.array or str or None</em>) – If 1d np.array, will set <strong>self.data</strong>
+to that array. If str, will load data as ‘path/to/data.cvs. If None,
+will use params to instantiate the model. When given a string loads
+data using the pandas.read_csv module. Depending on the format of
+the data, it may be necessary to use <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html">pandas.read_csv</a> keywords.</p></li>
+<li><p><strong>params</strong> (<em>np.array or None</em>) – must be an np.array of the appropriate
+length.</p></li>
+<li><p><strong>i_ticks</strong> (<em>int</em>) – the number of ticks in grid of integration values.
+default is 1000.</p></li>
+<li><p><strong>i_stds</strong> (<em>int</em>) – the number of data standard deviations to i_bounds to.
+default is 10.</p></li>
+<li><p><strong>about_data</strong> (<em>str</em>) – saves notes about the data to the <strong>self.notes</strong>
+dictionary.</p></li>
+<li><p><strong>norm_data</strong> (<em>book</em>) – if True, will normalize data. If data is normalized
+data sufficient statistics can be accessed at <strong>self.data_suff_stats</strong></p></li>
+<li><p><strong>kwargs</strong> – optional keyword arguments for <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html">pandas.read_csv</a> and
+<a class="reference internal" href="source/pyqrse.model.html#pyqrse.model.model.QRSEModel.setup_from_params" title="pyqrse.model.model.QRSEModel.setup_from_params"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pyqrse.model.model.QRSEModel.setup_from_params()</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
 <dl class="attribute">
 <dt>
 <code class="sig-name descname">notes</code><em class="property"> = None</em></dt>
@@ -268,17 +319,20 @@ useful if saving object to different location</p></li>
 <dl class="method">
 <dt>
 <em class="property">property </em><code class="sig-name descname">i_bounds</code></dt>
-<dd></dd></dl>
+<dd><p>(min, max) of bounds of integration</p>
+</dd></dl>
 
 <dl class="method">
 <dt>
 <em class="property">property </em><code class="sig-name descname">params</code></dt>
-<dd></dd></dl>
+<dd><p>np.array of parameter values</p>
+</dd></dl>
 
 <dl class="method">
 <dt>
 <em class="property">property </em><code class="sig-name descname">n_params</code></dt>
-<dd></dd></dl>
+<dd><p>number of free model parameters. does not include xi.</p>
+</dd></dl>
 
 <dl class="method">
 <dt>
@@ -302,22 +356,26 @@ False, is equivalent to using self.params = new_params</p></li>
 <dl class="method">
 <dt>
 <em class="property">property </em><code class="sig-name descname">actions</code></dt>
-<dd></dd></dl>
+<dd><p>action set</p>
+</dd></dl>
 
 <dl class="method">
 <dt>
 <em class="property">property </em><code class="sig-name descname">pnames</code></dt>
-<dd></dd></dl>
+<dd><p>parameter names</p>
+</dd></dl>
 
 <dl class="method">
 <dt>
 <em class="property">property </em><code class="sig-name descname">pnames_latex</code></dt>
-<dd></dd></dl>
+<dd><p>latex formatted parameter names</p>
+</dd></dl>
 
 <dl class="method">
 <dt>
 <em class="property">property </em><code class="sig-name descname">xi</code></dt>
-<dd></dd></dl>
+<dd><p>mean of the data</p>
+</dd></dl>
 
 <dl class="method">
 <dt>
@@ -332,7 +390,7 @@ False, is equivalent to using self.params = new_params</p></li>
 <dl class="method">
 <dt>
 <em class="property">property </em><code class="sig-name descname">fparams</code></dt>
-<dd><p>FULL PARAMETERS</p>
+<dd><p>full parameter values</p>
 <p>Appends xi to params if the kernel uses xi</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -356,7 +414,7 @@ False, is equivalent to using self.params = new_params</p></li>
 <dl class="method">
 <dt>
 <em class="property">property </em><code class="sig-name descname">fpnames_latex</code></dt>
-<dd><p>FULL PARAMETER NAMES LATEX</p>
+<dd><p>full latex formatted parameter names</p>
 <p>Appends xi to pnames_latex if the kernel uses xi</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -379,18 +437,22 @@ False, is equivalent to using self.params = new_params</p></li>
 
 <dl class="method">
 <dt>
-<code class="sig-name descname">code</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
-<dd></dd></dl>
+<em class="property">property </em><code class="sig-name descname">code</code></dt>
+<dd><p>QRSEModel Identification code for the Kernel</p>
+</dd></dl>
 
 <dl class="method">
 <dt>
 <code class="sig-name descname">kernel</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span></dt>
-<dd><dl class="field-list simple">
+<dd><p>value unnormalized kernel function</p>
+<p>kernel = exp(potential + entropy)</p>
+<p>evaluated at self.params</p>
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> – float or np.ndarray</p>
+<dd class="field-odd"><p><strong>x</strong> (<em>float or np.array([float]</em>) – value of data being tested</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>exp(potential + entropy of the action distribution)</p>
+<dd class="field-even"><p>float or np.array([float])</p>
 </dd>
 </dl>
 </dd></dl>
@@ -398,12 +460,15 @@ False, is equivalent to using self.params = new_params</p></li>
 <dl class="method">
 <dt>
 <code class="sig-name descname">log_kernel</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span></dt>
-<dd><dl class="field-list simple">
+<dd><p>Log of the unnormalized kernel function</p>
+<p>log_kernel = potential + entropy</p>
+<p>evaluated at self.params</p>
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> – float or np.ndarray</p>
+<dd class="field-odd"><p><strong>x</strong> (<em>float or np.array([float]</em>) – value of data being tested</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>potential + entropy of the action distribution</p>
+<dd class="field-even"><p>float or np.array([float])</p>
 </dd>
 </dl>
 </dd></dl>
@@ -411,12 +476,13 @@ False, is equivalent to using self.params = new_params</p></li>
 <dl class="method">
 <dt>
 <code class="sig-name descname">potential</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span></dt>
-<dd><dl class="field-list simple">
+<dd><p>potential function of the kernel</p>
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> – float or np.ndarray</p>
+<dd class="field-odd"><p><strong>x</strong> (<em>float or np.array([float]</em>) – value of data being tested</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>value of the potential of kernel</p>
+<dd class="field-even"><p>float or np.array([float])</p>
 </dd>
 </dl>
 </dd></dl>
@@ -424,12 +490,15 @@ False, is equivalent to using self.params = new_params</p></li>
 <dl class="method">
 <dt>
 <code class="sig-name descname">action_entropy</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span></dt>
-<dd><dl class="field-list simple">
+<dd><p>Entropy of conditional action distribution</p>
+<p>H(p(a|x)) = SUM p(a_i|x) for i=1,2 (binary) (i=1,2,3 for ternary)</p>
+<p><strong>action entropy</strong> is evaluated using self.params</p>
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> – float or np.ndarray</p>
+<dd class="field-odd"><p><strong>x</strong> (<em>float or np.array([float]</em>) – value of data being tested</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>entropy of action distribution</p>
+<dd class="field-even"><p>float or np.array([float])</p>
 </dd>
 </dl>
 </dd></dl>
@@ -437,7 +506,8 @@ False, is equivalent to using self.params = new_params</p></li>
 <dl class="method">
 <dt>
 <code class="sig-name descname">mode</code><span class="sig-paren">(</span><em class="sig-param">use_sp=True</em><span class="sig-paren">)</span></dt>
-<dd><dl class="field-list simple">
+<dd><p>Mode of the QRSE distribution</p>
+<dl class="field-list simple">
 <dt class="field-odd">Use_sp</dt>
 <dd class="field-odd"><p>if False will find optimum over grid of ticks
 if True (default) will use scipy integrate/maximize</p>
@@ -451,7 +521,8 @@ if True (default) will use scipy integrate/maximize</p>
 <dl class="method">
 <dt>
 <code class="sig-name descname">mean</code><span class="sig-paren">(</span><em class="sig-param">use_sp=True</em><span class="sig-paren">)</span></dt>
-<dd><dl class="field-list simple">
+<dd><p>Mean of the QRSE distribution</p>
+<dl class="field-list simple">
 <dt class="field-odd">Use_sp</dt>
 <dd class="field-odd"><p>if False (default) will find optimum over grid of ticks
 if True will use scipy integrate/maximize</p>
@@ -465,7 +536,8 @@ if True will use scipy integrate/maximize</p>
 <dl class="method">
 <dt>
 <code class="sig-name descname">std</code><span class="sig-paren">(</span><em class="sig-param">use_sp=True</em><span class="sig-paren">)</span></dt>
-<dd><dl class="field-list simple">
+<dd><p>Standard Deviation of the QRSE distribution</p>
+<dl class="field-list simple">
 <dt class="field-odd">Use_sp</dt>
 <dd class="field-odd"><p>if False (default) will find optimum over grid of ticks
 if True will use scipy integrate/maximize</p>
@@ -522,12 +594,14 @@ be adjusted</p></li>
 <dl class="method">
 <dt>
 <code class="sig-name descname">log_partition</code><span class="sig-paren">(</span><em class="sig-param">params=None</em><span class="sig-paren">)</span></dt>
-<dd><dl class="field-list simple">
+<dd><p>evaluate the log of the QRSE partition function numerically</p>
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>params</strong> – </p>
+<dd class="field-odd"><p><strong>params</strong> (<em>np.array</em>) – if params are None, will use self.params,
+otherwise will evaluate at params.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>the value of the log_partition function</p>
+<dd class="field-even"><p>the value of the log partition function (float)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -535,10 +609,24 @@ be adjusted</p></li>
 <dl class="method">
 <dt>
 <code class="sig-name descname">partition</code><span class="sig-paren">(</span><em class="sig-param">params=None</em>, <em class="sig-param">use_sp=False</em><span class="sig-paren">)</span></dt>
-<dd><p>:rtype : object
-:param params:
-:param use_sp:
-:return: the value of the partition function</p>
+<dd><p>evaluate the QRSE partition function numerically</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>params</strong> (<em>np.array</em>) – if params are None, will use self.params,
+otherwise will evaluate at params.</p></li>
+<li><p><strong>use_sp</strong> (<em>bool</em>) – If True, will evaluate using scipy.integrate.quad
+over the range self.i_bounds. If False (default), will evalaute
+over a grid values by summing the value of the log_kernel
+over the grid adjusting for step size and taking exp(log_part).
+The grid method (False) tends to be quicker and generally the
+loss of precision numerical integration in negligible.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the value of the partition function (float)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -594,13 +682,13 @@ be adjusted</p></li>
 <dl class="method">
 <dt>
 <code class="sig-name descname">log_prior</code><span class="sig-paren">(</span><em class="sig-param">params</em><span class="sig-paren">)</span></dt>
-<dd><p>The log_prior function used in the negative log likelihood functionality
-(fitting, sampling)</p>
-<p>By default log_prior returns 0, which is equivalent to a prior-less model</p>
-<p>log_prior can be overridden for an individual QRSEModel instance as follows:</p>
-<ol class="arabic simple">
-<li><p>Instantiate the instance of the QRSEModel:</p></li>
-</ol>
+<dd><p>The log of the prior distribution of parameter values</p>
+<p>Used in for fitting the model to data. By default returns 0.,
+which is equivalent having no prior.</p>
+<p>Can be overridden for an individual QRSEModel
+instance as follows:</p>
+<ol class="arabic">
+<li><p>Instantiate the instance of the QRSEModel:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">qrse1</span> <span class="o">=</span> <span class="n">QRSEModel</span><span class="p">(</span><span class="s1">&#39;AT&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
 
 <span class="c1"># or</span>
@@ -608,11 +696,11 @@ be adjusted</p></li>
 <span class="n">qrse1</span> <span class="o">=</span> <span class="n">QRSE</span><span class="p">(</span><span class="s1">&#39;SF&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
 </pre></div>
 </div>
-<ol class="arabic" start="2">
+</li>
 <li><p>Define a new function for the prior:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">new_log_prior</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">new_log_prior</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
 
-    <span class="c1"># self must be included as the first arg in the function</span>
+    <span class="c1"># self is not included like in normal methods</span>
     <span class="c1"># params will be a 1d np.array the same length as n_params</span>
 
 
@@ -626,18 +714,18 @@ be adjusted</p></li>
     <span class="c1"># penalize likelihood function</span>
 
     <span class="n">negative_squared_loss</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">params</span> <span class="o">-</span> <span class="n">hyper_parameters</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
-    <span class="k">return</span> <span class="n">negative_squared_loss</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">negative_squared_loss</span><span class="p">)</span>
 </pre></div>
 </div>
 </li>
-<li><p>Redefine the ‘instance’ method to be the new function:</p>
+<li><p>Redefine the <cite>instance</cite> method to be the new function:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">qrse1</span><span class="o">.</span><span class="n">log_prior</span> <span class="o">=</span> <span class="n">new_log_prior</span>
 </pre></div>
 </div>
 </li>
 </ol>
-<p>It is generally advised to change ‘log_prior’. Attempts to change
-<em>log_prior</em> at the ‘class’ level i.e:</p>
+<p>It is generally advised to change <strong>log_prior</strong> at the <cite>instance</cite> level.
+Changing it at the <cite>class</cite> level i.e:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">QRSEModel</span><span class="o">.</span><span class="n">log_prior</span> <span class="o">=</span> <span class="n">new_log_prior</span>
 </pre></div>
 </div>
@@ -645,13 +733,39 @@ be adjusted</p></li>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">QRSE</span><span class="o">.</span><span class="n">log_prior</span> <span class="o">=</span> <span class="n">new_log_prior</span>
 </pre></div>
 </div>
-<p>will change log_prior for ALL instances of the QRSEModel class.</p>
+<p>will change <strong>log_prior</strong> for ALL instances of the QRSEModel class.</p>
+<p>Also, see <a class="reference internal" href="source/pyqrse.model.html#pyqrse.model.model.QRSEModel.set_log_prior" title="pyqrse.model.model.QRSEModel.set_log_prior"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pyqrse.model.model.QRSEModel.set_log_prior()</span></code></a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>params</strong> – np.array</p>
+<dd class="field-odd"><p><strong>params</strong> (<em>np.array</em>) – parameter values to evaluate</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">set_log_prior</code><span class="sig-paren">(</span><em class="sig-param">new_log_prior</em><span class="sig-paren">)</span></dt>
+<dd><p>sets new log prior function so that it can access ‘self’</p>
+<p>Alternative setter for <a class="reference internal" href="source/pyqrse.model.html#pyqrse.model.model.QRSEModel.log_prior" title="pyqrse.model.model.QRSEModel.log_prior"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pyqrse.model.model.QRSEModel.log_prior()</span></code></a>.
+If accessing ‘self’ isn’t necessary, follow the instructions for that
+method.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>new_log_prior</strong> (<em>function</em>) – new prior function
+must of the form:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">new_log_prior</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+    <span class="c1"># complicated mathematics that</span>
+    <span class="c1"># use params in addition to</span>
+    <span class="c1"># self.attributes and/or self.methods</span>
+    <span class="k">return</span> <span class="n">float_value_of_log_prior</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>params must be an np.array of the appropriate length</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -801,44 +915,21 @@ Pickling allows it to be saved and reloaded later.</p>
 <dt>
 <code class="sig-name descname">entropy</code><span class="sig-paren">(</span><em class="sig-param">etype='joint'</em><span class="sig-paren">)</span></dt>
 <dd><p>Entropy of the QRSEModel</p>
-<p>Will return joint, conditional, or total entropy.</p>
+<p>Will find the joint H(x, a), conditional H(x|a), or marginal entropy
+H(x). Note that conditional entropy H(x|a) is different from
+the entropy of the conditional distribution at some value x, H(p(a|x)).</p>
+<p>To find H(p(a|x)) use the <strong>.action_entropy</strong> method:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="source/pyqrse.model.html#pyqrse.model.model.QRSEModel.action_entropy" title="pyqrse.model.model.QRSEModel.action_entropy"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pyqrse.model.model.QRSEModel.action_entropy()</span></code></a></p></li>
+</ul>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>etype</strong> (<em>str or list(str)</em>) – ‘joint’, ‘cond’, ‘total’. If entered as
-as a list, will return an array of entropy values</p>
+<dd class="field-odd"><p><strong>etype</strong> (<em>str or list(str)</em>) – type of entropy returned. The options
+are ‘joint’, ‘cond’, or ‘marg’. If entered as as a list, will
+return an array of entropy values</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>float or np.array of floats</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt>
-<code class="sig-name descname">marg_actions</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Marginal Distribution of the actions</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt>
-<code class="sig-name descname">joint_entropy</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt>
-<code class="sig-name descname">marg_entropy</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p></p>
 </dd>
 </dl>
 </dd></dl>
