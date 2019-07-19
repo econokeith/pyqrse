@@ -22,11 +22,22 @@ def split_strip_parser(parser, key1, key2):
 
 def kernel_hierarchy_to_hash_bfs(kernel):
     """
-    returns all subclasses of a kernel function as a hash
-     key = kernel's code , value = non-instantiated kernel object
-     example: kernel_hash['S'] = SQRSEKernel
-    :param kernel:
-    :return:
+    creates a dictionary of kernels (values) and their string codes (key)
+
+    key = kernel's code
+    value = non-instantiated kernel object
+
+    Example: ::
+
+        >>>kernel_hash['S']
+        pyqrse.kernels.binarykernels.SQRSEKernel
+
+    Arg:
+        kernel (QRSEKernelBase object) :
+
+    Returns:
+        dict
+
     """
 
     kernel_hash = {}
@@ -64,11 +75,11 @@ def kernel_hierarchy_to_hash_bfs(kernel):
 
 def docthief(mark_function):
     """
-    decorator function that allows the thief to return the mark_function's
-    docstring
+    Gives decorated function the __docstring__ of the mark_function
 
-    :param mark_function:
-    :return: function whose docstring is the same as the mark_function
+    Args:
+        mark_function : function to copy __docstring__ from
+
     """
     def decorator(thief_function):
         def wrapper(*args, **kwargs):
