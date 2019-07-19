@@ -18,6 +18,8 @@ The [example](https://github.com/econokeith/pyqrse/blob/master/example/) folder 
 We suggest downloading and using the [Anaconda](https://www.anaconda.com/distribution/) Python 3 Distribution, which includes most
 of the important python scientific computing packages.
 
+Note: pyqrse is the early alpha stage of development and subject to change
+
 **pyqrse** requires the following standard members of the python scientific computing suite that are included in the Anaconda distribution:
 * [numpy](https://docs.scipy.org/doc/numpy/index.html): computational engine for scientific computing in python
 * [scipy](https://docs.scipy.org/doc/scipy/reference/): advanced math and statistics functionality
