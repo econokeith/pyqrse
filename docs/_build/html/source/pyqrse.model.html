@@ -177,13 +177,9 @@ from the kernel</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul>
 <li><p><strong>kernel</strong> (<em>str, object</em>) – can either be a kernel code or QRSE kernel
-class object, which includes any subclass of:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">pyqrse.kernels.basekernels.QRSEKernelBase</span></code></p></li>
-</ul>
-</div></blockquote>
-<p>The default kernel is the SQRSEKernel. Available kernels can be
+class object, which includes any
+<a class="reference internal" href="pyqrse.kernels.html#pyqrse.kernels.basekernels.QRSEKernelBase" title="pyqrse.kernels.basekernels.QRSEKernelBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">QRSE</span> <span class="pre">kernel</span></code></a>.
+The default kernel is the SQRSEKernel. Available kernels can be
 seen by running:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="go">&gt;&gt;&gt;pyqrse.available_kernels()</span>
 </pre></div>
@@ -205,7 +201,7 @@ dictionary.</p></li>
 <li><p><strong>norm_data</strong> (<em>book</em>) – if True, will normalize data. If data is normalized
 data sufficient statistics can be accessed at <strong>self.data_suff_stats</strong></p></li>
 <li><p><strong>kwargs</strong> – optional keyword arguments for <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html">pandas.read_csv</a> and
-<a class="reference internal" href="#pyqrse.model.model.QRSEModel.setup_from_params" title="pyqrse.model.model.QRSEModel.setup_from_params"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pyqrse.model.model.QRSEModel.setup_from_params()</span></code></a></p></li>
+<a class="reference internal" href="#pyqrse.model.model.QRSEModel.setup_from_params" title="pyqrse.model.model.QRSEModel.setup_from_params"><code class="xref py py-meth docutils literal notranslate"><span class="pre">self.setup_from_params</span></code></a></p></li>
 </ul>
 </dd>
 </dl>
@@ -258,7 +254,8 @@ see pyqrse.fittools.optimizer.QRSEFitter</p>
 <dl class="method">
 <dt id="pyqrse.model.model.QRSEModel.setup_from_params">
 <code class="sig-name descname">setup_from_params</code><span class="sig-paren">(</span><em class="sig-param">parameters</em>, <em class="sig-param">start=2</em>, <em class="sig-param">imax=100</em>, <em class="sig-param">minmax=(2e-07</em>, <em class="sig-param">4.5e-05)</em>, <em class="sig-param">find_mode=True</em>, <em class="sig-param">stds=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.model.model.QRSEModel.setup_from_params" title="Permalink to this definition">¶</a></dt>
-<dd><p>Will attempt to set model wide variables appropriate to model
+<dd><p>Find bounds of integration for a given parameterization</p>
+<p>Will attempt to set model wide variables appropriate to model
 given parameters. does a binary search over the kernel values
 to find the points whose value is between the minmax bounds.</p>
 <p>This function will not guarantee results when the starting point
@@ -627,8 +624,9 @@ loss of precision numerical integration in negligible.</p></li>
 
 <dl class="method">
 <dt id="pyqrse.model.model.QRSEModel.nll">
-<code class="sig-name descname">nll</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">data=None</em>, <em class="sig-param">params=None</em>, <em class="sig-param">weights=None</em>, <em class="sig-param">use_sp=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.model.model.QRSEModel.nll" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
+<code class="sig-name descname">nll</code><span class="sig-paren">(</span><em class="sig-param">data=None</em>, <em class="sig-param">params=None</em>, <em class="sig-param">weights=None</em>, <em class="sig-param">use_sp=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pyqrse.model.model.QRSEModel.nll" title="Permalink to this definition">¶</a></dt>
+<dd><p>value of the negative log likelihood function</p>
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> – </p></li>
@@ -729,7 +727,7 @@ Changing it at the <cite>class</cite> level i.e:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">QRSE</span><span class="o">.</span><span class="n">log_prior</span> <span class="o">=</span> <span class="n">new_log_prior</span>
 </pre></div>
 </div>
-<p>will change <strong>log_prior</strong> for ALL instances of the QRSEModel class.</p>
+<p>will NOT work as intended.</p>
 <p>Also, see <a class="reference internal" href="#pyqrse.model.model.QRSEModel.set_log_prior" title="pyqrse.model.model.QRSEModel.set_log_prior"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pyqrse.model.model.QRSEModel.set_log_prior()</span></code></a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
