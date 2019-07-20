@@ -42,10 +42,8 @@ class QRSEModel(HistoryMixin, PickleMixin):
 
     Args:
         kernel (str, object) : can either be a kernel code or QRSE kernel
-            class object, which includes any subclass of:
-
-                * :class:`pyqrse.kernels.basekernels.QRSEKernelBase`
-
+            class object, which includes any
+            :class:`QRSE kernel <pyqrse.kernels.basekernels.QRSEKernelBase>`.
             The default kernel is the SQRSEKernel. Available kernels can be
             seen by running: ::
 
@@ -75,9 +73,12 @@ class QRSEModel(HistoryMixin, PickleMixin):
             data sufficient statistics can be accessed at **self.data_suff_stats**
 
         kwargs : optional keyword arguments for pandas.read_csv_ and
-            :meth:`pyqrse.model.model.QRSEModel.setup_from_params`
+            :meth:`self.setup_from_params<pyqrse.model.model.QRSEModel.setup_from_params>`
 
     .. _pandas.read_csv: https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html
+
+
+
 
     """
     _kernel_counter = collections.defaultdict(int)
@@ -253,6 +254,8 @@ class QRSEModel(HistoryMixin, PickleMixin):
                           find_mode=True, stds=None):
 
         """
+        Find bounds of integration for a given parameterization
+
         Will attempt to set model wide variables appropriate to model
         given parameters. does a binary search over the kernel values
         to find the points whose value is between the minmax bounds.
@@ -825,7 +828,8 @@ class QRSEModel(HistoryMixin, PickleMixin):
 
     def nll(self, data=None, params=None, weights=None, use_sp=False):
         """
-        nll(self, data=None, params=None, weights=None, use_sp=False)
+        value of the negative log likelihood function
+
         :param data:
         :param params:
         :param weights:

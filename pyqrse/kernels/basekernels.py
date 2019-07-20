@@ -143,6 +143,7 @@ class QRSEKernelBase:
 
         Returns:
             tuple(float) or tuple(np.array([float]))
+
         """
         pass
 
@@ -158,6 +159,7 @@ class QRSEKernelBase:
 
         Returns:
             float or np.array([float])
+
         """
         pass
 
@@ -171,6 +173,7 @@ class QRSEKernelBase:
 
         Returns:
             float or np.array([float])
+
         """
         pass
 
@@ -183,6 +186,7 @@ class QRSEKernelBase:
         Args:
             x (float or np.array([float]): value of data being tested
             params (np.array([float])): array of parameter values
+
         Returns:
             float or np.array([float])
         """
@@ -197,6 +201,7 @@ class QRSEKernelBase:
         Args:
             x (float or np.array([float]): value of data being tested
             params (np.array([float])): array of parameter values
+
         Returns:
             float or np.array([float])
         """
