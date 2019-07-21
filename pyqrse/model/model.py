@@ -56,7 +56,6 @@ class QRSEModel(HistoryMixin, PickleMixin):
             data using the pandas.read_csv module. Depending on the format of
             the data, it may be necessary to use pandas.read_csv_ keywords.
 
-
         params (np.array or None) : must be an np.array of the appropriate
             length.
 
@@ -77,8 +76,8 @@ class QRSEModel(HistoryMixin, PickleMixin):
 
     .. _pandas.read_csv: https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html
 
-
-
+    If the model is instantiated without data, data should only be added with by
+    using the :meth: '
 
     """
     _kernel_counter = collections.defaultdict(int)
@@ -240,14 +239,11 @@ class QRSEModel(HistoryMixin, PickleMixin):
                           ps=ps,
                           ndata=ndata)
 
-
 ##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##
 ##                                                                            ##
 ##-##-##-## FUNCTIONS AND ATTRIBUTES RELATED TO USING THE MODEL OBJECT  ##-##-##
 ##                                                                            ##
 ##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##-##
-
-
 
     def setup_from_params(self, parameters, start=2, imax=100,
                           minmax=(2e-07, 4.5e-05),
@@ -588,7 +584,7 @@ class QRSEModel(HistoryMixin, PickleMixin):
         """
         return self.kernel.code
 
-    def kernel(self, x):
+    def kernel_fun(self, x):
         """
         value unnormalized kernel function
 
@@ -757,7 +753,7 @@ class QRSEModel(HistoryMixin, PickleMixin):
                 default is 1, which return a single sample. If n > 1, returns
                 an n length np.array of samples
 
-            bounds (list or tuple or None) : [-10, 10, 10000] / (-10, 10, 10000)
+            bounds (list, tuple or None) : [-10, 10, 10000] / (-10, 10, 10000)
                 create 10000 ticks between -10 and 10 as an estimate of the
                 pdf of the Model. If None (default), will will use
                 predetermined ticks based on bounds of integration
@@ -1105,7 +1101,7 @@ class QRSEModel(HistoryMixin, PickleMixin):
         if etype is 'marg':
             return self._marg_entropy()
         elif etype is 'cond':
-            return self.cond_entropy()
+            return self._cond_entropy()
         else:
             return self._joint_entropy()
 
@@ -1138,7 +1134,7 @@ class QRSEModel(HistoryMixin, PickleMixin):
 
         return sp.integrate.quad(integrand, self.i_min, self.i_max)[0]
 
-    def cond_entropy(self):
+    def _cond_entropy(self):
         """
 
         :return:
