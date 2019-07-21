@@ -117,6 +117,8 @@ def matrix_print(mat_to_print, rb=None, cb="|", f=2):
     prints matrix or np.arrays prettier
 
     Args:
+        mat_to_print (2d list) : list of lists where each item in each row
+            is either a str, int, or float
         rb(str): Single character to string for rows in between the
             rows of the matrix. If None (default), no breaks between rows
         cb(str): Single character to demarcate column breaks. Defaults is "|"
@@ -177,6 +179,7 @@ def matrix_print(mat_to_print, rb=None, cb="|", f=2):
 
     print(output)
 
+#short-hand to use in notebooks
 @docthief(matrix_print)
 def mprint(mat_to_print, rb=None, cb="|", f=2):
     return matrix_print(mat_to_print, rb=rb, cb=cb, f=f)
@@ -189,7 +192,8 @@ class ReadOnlyClassProperty:
     """
     read-only class property
 
-    Allows class methods to be called like properties.
+    Allows class methods to be called like property with no
+    setter declared.
 
     """
     def __init__(self, method):
