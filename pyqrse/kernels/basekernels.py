@@ -2,6 +2,7 @@ __author__='Keith Blackwell'
 import autograd.numpy as np
 import seaborn as sns; sns.set()
 import pyqrse.utilities.defaults
+import pyqrse.utilities.helpers as helpers
 import copy
 
 __all__ = ['QRSEKernelBase', 'QRSEKernelBaseBinary', 'QRSEKernelBaseTernary']
@@ -59,8 +60,15 @@ class QRSEKernelBase:
         """
         return cls._ktype
 
-    def __init__(self):
+    @helpers.read_only_class_property
+    def generic_actions(cls):
+        return cls._generic_actions
 
+    @helpers.read_only_class_property
+    def ktype(cls):
+        return cls._ktype
+
+    def __init__(self):
 
         self.use_entropy = 0
         self.use_xi = False
@@ -221,7 +229,7 @@ class QRSEKernelBase:
         """
         return np.array([0.])
 
-    def indifference(self, params):
+    def indif(self, params):
         """
         The point of indifference between actions.
 
@@ -245,10 +253,10 @@ class QRSEKernelBase:
     def denorm_params(self, params):
         pass
 
-    def _x_offset_left(self, x, params):
+    def _x_left(self, x, params):
         pass
 
-    def _x_offset_right(self, x, params):
+    def _x_right(self, x, params):
         pass
 
     def _make_evs(self, x, params):

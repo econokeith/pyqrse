@@ -70,7 +70,7 @@ class SQRSEKernel(QRSEKernelBaseBinary):
             mean, std =  self._mean, self._std
         return np.array([std, 1./std, mean])
 
-    def indifference(self, params):
+    def indif(self, params):
         return params[2]
 
 

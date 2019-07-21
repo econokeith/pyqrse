@@ -204,3 +204,7 @@ class ReadOnlyClassProperty:
 
     def __set__(self, owner, value):
         raise AttributeError("this attribute is protected")
+
+
+def read_only_class_property(function):
+    return ReadOnlyClassProperty(function)

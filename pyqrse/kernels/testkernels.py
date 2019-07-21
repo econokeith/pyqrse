@@ -7,14 +7,8 @@ import pyqrse.kernels.binarykernels as binary
 import pyqrse.kernels.ternarykernels as ternary
 import pyqrse.kernels.basekernels as base
 
-# Kernels in this section should be given _code = None unless
-# they are intended to
-# or ternary they must
-# be assigned a unique code
-
-
-
-
+# Kernels in this section are not automatically imported into the
+# kernel_hash used by QRSEModel. They must be imported by hand.
 
 class AAQRSEKernelLSE(ternary.QRSEKernelBaseTernary):
 
@@ -69,7 +63,7 @@ class AAQRSEKernelLSE(ternary.QRSEKernelBaseTernary):
     def potential(self, x , params):
         b = params[-1]
         p_buy, _, p_sell = self.logits(x, params)
-        return -b*(p_buy - p_sell)*(x-self.indifference(params))
+        return -b*(p_buy - p_sell)*(x-self.indif(params))
 
     def make_es(self, x, params):
         return 0.
@@ -158,7 +152,45 @@ class AAC2QRSEKernel(ternary.AAQRSEKernel):
         self.xi = mean
         return np.array([std, std, mean+.1*std, mean-.1*std, 1/std])
 
+class AMQRSEKernel(ternary.AAQRSEKernel):
 
+    _code = "AM"
+    _pnames_base = ['t', 'm_{a0}', 'm_{a2}', 'b']
+
+    _pnames_latex_base =[r'$T',
+                         r'$\mu_{{{a0}}}$',
+                         r'$\mu_{{{a2}}}$',
+                         r'$\beta$']
+
+    def __init__(self):
+        super().__init__()
+
+        self.name = "AM-QRSE"
+        self.long_name = "Asymmetric-Mu QRSE"
+
+    def set_params0(self, data=None, weights=None):
+        if data is not None:
+            mean, std = mean_std_fun(data, weights)
+        else:
+            mean, std =  self._mean, self._std
+        self.xi = mean
+        return np.array([std, mean+.1*std, mean-.1*std, 1/std])
+
+    def indifference(self, params):
+        _, mb, ms = params[:3]
+        return (mb+ms)/2
+
+
+    def _make_evs(self, x, params):
+        x_off = self._x_left(x, params)
+
+        t, mb, ms = params[:3]
+        vb = (x_off-mb)/t
+        vs = -(x_off-ms)/t
+        e_b = np.exp(vb)
+        e_s = np.exp(vs)
+        e_h = 1.
+        return e_b, e_h, e_s, vb, vs
 
 
 
@@ -410,7 +442,7 @@ class AXQRSEKernel(ternary.AAQRSEKernel):
 
         tb, ts, mb, ms, b_b, b_s = params
         p_buy, _, p_sell = self.logits(x, params)
-        return -(b_b*p_buy - b_s*p_sell)*self._x_offset_right(x, params)
+        return -(b_b*p_buy - b_s*p_sell)*self._x_right(x, params)
 
     def log_kernel(self, x, params):
         b_b, b_s = params[-2:]
@@ -421,7 +453,7 @@ class AXQRSEKernel(ternary.AAQRSEKernel):
 
         entropy = -(e_b*vb + e_s*vs)/part + np.log(part)
 
-        potential = -(b_b*p_buy - b_s*p_sell)*self._x_offset_right(x, params)
+        potential = -(b_b*p_buy - b_s*p_sell)*self._x_right(x, params)
 
         return potential + entropy
 
@@ -434,7 +466,7 @@ class AXQRSEKernel(ternary.AAQRSEKernel):
         return np.array([std, std, mean+.1*std, mean-.1*std, 1/std, 1/std])
 
 
-    def _x_offset_right(self, x, params):
+    def _x_right(self, x, params):
         return x - self.xi
 
 
@@ -449,8 +481,8 @@ class AQRSEKernel(AXQRSEKernel):
         self.name = "A-QRSE"
         self.long_name = "Asymmetric QRSE"
 
-    def _x_offset_right(self, x, params):
-        return x - self.indifference(params)
+    def _x_right(self, x, params):
+        return x - self.indif(params)
 
 # class ABMQRSEKernel(binary.ABXQRSEKernel):
 #
