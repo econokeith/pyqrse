@@ -180,3 +180,23 @@ def matrix_print(mat_to_print, rb=None, cb="|", f=2):
 @docthief(matrix_print)
 def mprint(mat_to_print, rb=None, cb="|", f=2):
     return matrix_print(mat_to_print, rb=rb, cb=cb, f=f)
+
+# Todo : Figure out how to have sphinx recognize this as a propery or class method
+# Todo : embed in an easier to
+
+# this can't been tested with @classmethod decorator
+class ReadOnlyClassProperty:
+    """
+    read-only class property
+
+    Allows class methods to be called like properties.
+
+    """
+    def __init__(self, method):
+        self.method = method
+
+    def __get__(self, owner, otype):
+        return self.method(otype)
+
+    def __set__(self, owner, value):
+        raise AttributeError("this attribute is protected")

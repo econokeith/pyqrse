@@ -72,12 +72,17 @@ class QRSEModel(HistoryMixin, PickleMixin):
             data sufficient statistics can be accessed at **self.data_suff_stats**
 
         kwargs : optional keyword arguments for pandas.read_csv_ and
-            :meth:`self.setup_from_params<pyqrse.model.model.QRSEModel.setup_from_params>`
+            :meth:`~<pyqrse.model.model.QRSEModel.setup_from_params>`
 
     .. _pandas.read_csv: https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html
 
-    If the model is instantiated without data, data should only be added with by
-    using the :meth: '
+    * If the model is instantiated without data, data should only be added with
+        using the :meth:`add_data<pyqrse.model.model.QRSEModel.add_data>` method
+
+    * If the model is instantiated without data or params, model parameter
+    values should be added using the
+    :meth:`self.setup_from_params<pyqrse.model.model.QRSEModel.setup_from_params>`
+    method.
 
     """
     _kernel_counter = collections.defaultdict(int)
@@ -507,6 +512,9 @@ class QRSEModel(HistoryMixin, PickleMixin):
 
     @property
     def use_xi(self):
+        """
+        does the model use xi?
+        """
         return self.kernel.use_xi
 
     @property
