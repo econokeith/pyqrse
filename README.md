@@ -4,7 +4,7 @@ Python 3 package for estimating Quantal Response Statistical Equilibrium Models
 
 **Note: pyqrse is the early alpha stage of development and subject to change. This site is here as a basic markup on the intended structure**
 
-![qrse pic](./asymmetric_qrse.gif)
+![qrse pic](./asymetric_qrse.gif)
 ## Documentation
 
 [Documentation](https://pyqrse.readthedocs.io) is under construction. However, the search of functionality and module index are up and running.
